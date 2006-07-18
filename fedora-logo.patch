@@ -1,0 +1,56 @@
+Change cube logo defaults to use fedora logo and colors.
+
+From: Kristian Høgsberg <krh@redhat.com>
+
+
+---
+
+ plugins/compiz.schemas.in.in |    4 ++--
+ plugins/cube.c               |    8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/plugins/compiz.schemas.in.in b/plugins/compiz.schemas.in.in
+index 949cfe6..59c3e81 100644
+--- a/plugins/compiz.schemas.in.in
++++ b/plugins/compiz.schemas.in.in
+@@ -913,7 +913,7 @@
+             <applyto>/apps/compiz/plugins/cube/screen0/options/color</applyto>
+             <owner>compiz</owner>
+             <type>string</type>
+-            <default>#efebe7ff</default>
++            <default>#00194aff</default>
+             <locale name="C">
+                 <short>Cube Color</short>
+                 <long>
+@@ -956,7 +956,7 @@
+             <owner>compiz</owner>
+             <type>list</type>
+             <list_type>string</list_type>
+-            <default>[novell.png]</default>
++            <default>[/usr/share/pixmaps/fedora-logo.png]</default>
+             <locale name="C">
+                 <short>Image files</short>
+                 <long>
+diff --git a/plugins/cube.c b/plugins/cube.c
+index 6439b9e..6563cca 100644
+--- a/plugins/cube.c
++++ b/plugins/cube.c
+@@ -44,14 +44,14 @@ #include <X11/Xproto.h>
+ 
+ #include <compiz.h>
+ 
+-#define CUBE_COLOR_RED_DEFAULT   0xefef
+-#define CUBE_COLOR_GREEN_DEFAULT 0xebeb
+-#define CUBE_COLOR_BLUE_DEFAULT  0xe7e7
++#define CUBE_COLOR_RED_DEFAULT   0x0000
++#define CUBE_COLOR_GREEN_DEFAULT 0x1919
++#define CUBE_COLOR_BLUE_DEFAULT  0x4a4a
+ 
+ #define CUBE_IN_DEFAULT FALSE
+ 
+ static char *cubeImages[] = {
+-    "novell.png"
++    "/usr/share/pixmaps/fedora-logo.png"
+ };
+ #define N_CUBE_IMAGES (sizeof (cubeImages) / sizeof (cubeImages[0]))
+ 

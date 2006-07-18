@@ -10,8 +10,8 @@ Release:        0.6.20060717git%{?dist}
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-# libdrm is not available on s390
-ExcludeArch:   	s390 s390x
+# libdrm is not available on these arches
+ExcludeArch:   	s390 s390x ppc64
 
 Requires:	xorg-x11-server-Xorg >= 1.1.0-26
 Requires:	mesa-libGL >= 6.5-9

@@ -10,7 +10,7 @@ From: Kristian Høgsberg <krh@redhat.com>
  2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/plugins/compiz.schemas.in.in b/plugins/compiz.schemas.in.in
-index 949cfe6..59c3e81 100644
+index 899622d..dddbfcd 100644
 --- a/plugins/compiz.schemas.in.in
 +++ b/plugins/compiz.schemas.in.in
 @@ -913,7 +913,7 @@
@@ -32,7 +32,7 @@ index 949cfe6..59c3e81 100644
                  <short>Image files</short>
                  <long>
 diff --git a/plugins/cube.c b/plugins/cube.c
-index 6439b9e..6563cca 100644
+index 0576b8d..e9e8299 100644
 --- a/plugins/cube.c
 +++ b/plugins/cube.c
 @@ -44,14 +44,14 @@ #include <X11/Xproto.h>

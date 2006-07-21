@@ -1,11 +1,14 @@
-%define		sha1 99c96865db7b46b881fcd44f709008043ecfcb66
+#						-*- mode: rpm-spec -*-
+
+%define		sha1 fc6b7773fc52f6104b66a9f86c18395f8a958848
+%define		snapshot 20060721
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.6.20060717git%{?dist}
+Release:        0.8.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -32,6 +35,7 @@ Patch102: tfp-server-extension.patch
 Patch103: composite-cube-logo.patch
 Patch104: fbconfig-depth-fix.patch
 Patch105: fedora-logo.patch
+Patch106: glfinish.patch
 
 
 %description
@@ -51,11 +55,12 @@ for binding redirected top-level windows to texture objects.
 %patch103 -p1 -b .composite-cube-logo
 %patch104 -p1 -b .fbconfig-depth-fix
 %patch105 -p1 -b .fedora-logo
+%patch106 -p1 -b .glfinish
 
 %build
 %configure --disable-libsvg-cairo
 
-make %{?_smp_mflags}
+make %{?_smp_mflags} 
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -92,6 +97,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*/LC_MESSAGES/compiz.mo
 
 %changelog
+* Fri Jul 21 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.8.20060720git
+- Add workaround for AIGLX throttling problem.
+
+* Thu Jul 20 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.7.20060720git
+- Drop scale plugin from snapshot.
+
 * Tue Jul 18 2006 Matthias Clasen <mclasen@redhat.com> - 0.0.13-0.6.20060717git
 - Don't build on s390
 
@@ -103,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Fri Jul  7 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13.fedora1-4
 - Drop the fullscreen hardcode patch and require X server that has
-GLX_MESA_copy_sub_buffer.
+  GLX_MESA_copy_sub_buffer.
 
 * Tue Jun 27 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13.fedora1-3
 - Unbreak --replace.
@@ -113,4 +124,4 @@ GLX_MESA_copy_sub_buffer.
 
 * Wed Jun 14 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13.fedora1-1
 - Spec file for compiz, borrowing bits and pieces from Alphonse Van
-Assches spec file (#192432).
+  Assches spec file (#192432).

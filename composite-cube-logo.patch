@@ -9,7 +9,7 @@ From: Kristian Høgsberg <krh@redhat.com>
  1 files changed, 17 insertions(+), 0 deletions(-)
 
 diff --git a/plugins/cube.c b/plugins/cube.c
-index b605e22..6439b9e 100644
+index b222685..0576b8d 100644
 --- a/plugins/cube.c
 +++ b/plugins/cube.c
 @@ -1204,11 +1204,28 @@ cubePaintTransformedScreen (CompScreen		

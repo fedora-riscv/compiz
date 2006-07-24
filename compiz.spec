@@ -83,9 +83,6 @@ unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
-rm -rf $RPM_BUILD_ROOT%{_includedir}/compiz
-rm -rf $RPM_BUILD_ROOT%{_libdir}/pkgconfig
-
 %post
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
 /usr/bin/gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/compiz.schemas > /dev/null

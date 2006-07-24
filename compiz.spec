@@ -8,7 +8,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.8.%{snapshot}git%{?dist}
+Release:        0.9.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -18,7 +18,7 @@ ExcludeArch:   	s390 s390x ppc64
 
 Requires:	xorg-x11-server-Xorg >= 1.1.0-26
 Requires:	mesa-libGL >= 6.5-9
-Requires:       fedora-logos
+Requires:       redhat-logos
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
 BuildRequires:  libXfixes-devel, libXrandr-devel, libXrender-devel
@@ -45,6 +45,19 @@ compositing effects in window management, such as a minimization
 effect and a cube workspace.  Compiz is an OpenGL compositing manager
 that use Compiz use EXT_texture_from_pixmap OpenGL extension extension
 for binding redirected top-level windows to texture objects.
+
+
+%package devel
+Summary: Development packages for compiz.
+Group: Development/Libraries
+Requires: compiz = %{PACKAGE_VERSION}
+
+%description devel
+The compiz-devel package includes the header files,
+and developer docs for the compiz package.
+
+Install compiz-devel if you want to develop plugins for the compiz
+windows and compositing manager.
 
 %prep
 %setup -q -n %{name}-%{sha1}
@@ -96,7 +109,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gnome/wm-properties/compiz.desktop
 %{_datadir}/locale/*/LC_MESSAGES/compiz.mo
 
+%files devel
+%defattr(-, root, root)
+%{_libdir}/pkgconfig/compiz.pc
+%{_includedir}/compiz
+
 %changelog
+* Mon Jul 24 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.9.20060721git
+- Add devel package and require redhat-logos instead of fedora-logos (#199757).
+
 * Fri Jul 21 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.8.20060720git
 - Add workaround for AIGLX throttling problem.
 

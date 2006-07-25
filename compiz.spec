@@ -18,7 +18,7 @@ ExcludeArch:   	s390 s390x ppc64
 
 Requires:	xorg-x11-server-Xorg >= 1.1.0-26
 Requires:	mesa-libGL >= 6.5-9
-Requires:       redhat-logos
+Requires:       system-logos
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
 BuildRequires:  libXfixes-devel, libXrandr-devel, libXrender-devel
@@ -112,6 +112,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Tue Jul 25 2006 Kristian Høgsberg <krh@redhat.com>
+- Require system-logos instead.
+
 * Mon Jul 24 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.10.20060721git
 - Bump version to work around tagging weirdness.
 

@@ -8,7 +8,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.11.%{snapshot}git%{?dist}
+Release:        0.12.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -77,7 +77,7 @@ make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=0
+export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
@@ -85,11 +85,15 @@ find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
 %post
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
-/usr/bin/gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/compiz.schemas > /dev/null
+/usr/bin/gconftool-2 --makefile-install-rule \
+	%{_sysconfdir}/gconf/schemas/compiz.schemas > /dev/null
 
 %preun
-export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz.schemas > /dev/null
+if [ "$1" -eq 0 ]; then
+  export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+  gconftool-2 --makefile-uninstall-rule \
+	%{_sysconfdir}/gconf/schemas/compiz.schemas > /dev/null
+fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -112,6 +116,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Wed Jul 26 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.12.20060721git
+- Fix gconf hooks.
+
 * Wed Jul 26 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.11.20060721git
 - Bump and build for fc5 AIGLX repo.
 

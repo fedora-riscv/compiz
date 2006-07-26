@@ -8,7 +8,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.12.%{snapshot}git%{?dist}
+Release:        0.11.%{snapshot}git.fc5.aiglx
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -116,11 +116,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Wed Jul 26 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.11.20060721git.fc5.aiglx
+- Bump and build for fc5 AIGLX repo.
+
 * Wed Jul 26 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.12.20060721git
 - Fix gconf hooks.
-
-* Wed Jul 26 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.11.20060721git
-- Bump and build for fc5 AIGLX repo.
 
 * Tue Jul 25 2006 Kristian Høgsberg <krh@redhat.com>
 - Require system-logos instead.

@@ -18,6 +18,7 @@ ExcludeArch:   	s390 s390x ppc64
 
 Requires:	xorg-x11-server-Xorg >= 1.1.0-26
 Requires:	mesa-libGL >= 6.5-9
+Requires:	libwnck >= 2.15.4
 Requires:       system-logos
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
@@ -116,6 +117,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Mon Jul 31 2006 Kristian Høgsberg <krh@redhat.com> 0.0.13-0.12.20060721git.fc5.aiglx
+- Add libwnck requires.
+
 * Wed Jul 26 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.11.20060721git.fc5.aiglx
 - Bump and build for fc5 AIGLX repo.
 

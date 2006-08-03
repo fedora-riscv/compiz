@@ -22,6 +22,7 @@ Requires:	xorg-x11-server-Xorg >= 1.1.0-26
 Requires:	mesa-libGL >= 6.5-9
 Requires:	libwnck >= 2.15.4
 Requires:       system-logos
+Requires:	gnome-session >= 2.15.4-3
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
 BuildRequires:  libXfixes-devel, libXrandr-devel, libXrender-devel
@@ -135,7 +136,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
-* Wed Aug  2 2006 Soren Sandmann <sandmann@redhat.com> 0.0.13-0.13.20060721git.fc5.aiglx
+* Thu Aug  3 2006 Soren Sandmann <sandmann@redhat.com> 0.0.13-0.14.20060721git.fc5.aiglx
+- Add Requires: gnome-session 2.15.4-3
+
+* Wed Aug  3 2006 Soren Sandmann <sandmann@redhat.com> 0.0.13-0.13.20060721git.fc5.aiglx
 - New version of dialog box. Macro the version number.
 
 * Wed Aug  2 2006 Soren Sandmann <sandmann@redhat.com> 0.0.13-0.13.20060721git.fc5.aiglx

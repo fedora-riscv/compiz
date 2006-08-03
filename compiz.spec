@@ -3,12 +3,14 @@
 %define		sha1 fc6b7773fc52f6104b66a9f86c18395f8a958848
 %define		snapshot 20060721
 
+%define		dialogversion	0.6.1
+
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.13.%{snapshot}git.fc5.aiglx
+Release:        0.14.%{snapshot}git.fc5.aiglx
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -29,7 +31,7 @@ BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
 BuildRequires:  gettext
 
 Source0:        %{name}-%{sha1}.tar.bz2
-Source1:	desktop-effects-0.6.tar.gz
+Source1:	desktop-effects-%{dialogversion}.tar.gz
 
 Patch100: gl-include-inferiors.patch
 Patch101: aiglx-defaults.patch
@@ -62,7 +64,7 @@ Install compiz-devel if you want to develop plugins for the compiz
 windows and compositing manager.
 
 %prep
-%setup -q -T -b1 -n desktop-effects-0.6
+%setup -q -T -b1 -n desktop-effects-%{dialogversion}
 %setup -q -n %{name}-%{sha1}
 
 %patch100 -p1 -b .gl-include-inferiors
@@ -79,7 +81,7 @@ windows and compositing manager.
 make %{?_smp_mflags} 
 
 # desktop-effects
-cd ../desktop-effects-0.6
+cd ../desktop-effects-%{dialogversion}
 %configure 
 make
 
@@ -91,7 +93,7 @@ make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 
 echo INSTALLING DESKTOP EFFECTS
-cd ../desktop-effects-0.6
+cd ../desktop-effects-%{dialogversion}
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
@@ -133,6 +135,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Wed Aug  2 2006 Soren Sandmann <sandmann@redhat.com> 0.0.13-0.13.20060721git.fc5.aiglx
+- New version of dialog box. Macro the version number.
+
 * Wed Aug  2 2006 Soren Sandmann <sandmann@redhat.com> 0.0.13-0.13.20060721git.fc5.aiglx
 - Add 'desktop effects' dialog box.
 

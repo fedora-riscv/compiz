@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.14.%{snapshot}git.fc5.aiglx
+Release:        0.15.%{snapshot}git.fc5.aiglx
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -22,7 +22,7 @@ Requires:	xorg-x11-server-Xorg >= 1.1.0-26
 Requires:	mesa-libGL >= 6.5-9
 Requires:	libwnck >= 2.15.4
 Requires:       system-logos
-Requires:	gnome-session >= 2.15.4-3
+Requires:	gnome-session >= 2.15.90-2.fc6
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
 BuildRequires:  libXfixes-devel, libXrandr-devel, libXrender-devel
@@ -41,6 +41,7 @@ Patch103: composite-cube-logo.patch
 Patch104: fbconfig-depth-fix.patch
 Patch105: fedora-logo.patch
 Patch106: glfinish.patch
+Patch107: desktop-effects-0.6.1-delete-session.patch
 
 
 %description
@@ -75,6 +76,10 @@ windows and compositing manager.
 %patch104 -p1 -b .fbconfig-depth-fix
 %patch105 -p1 -b .fedora-logo
 %patch106 -p1 -b .glfinish
+
+pushd ../desktop-effects-%{dialogversion} >& /dev/null
+%patch107 -p1 -b .delete-session
+popd
 
 %build
 %configure --disable-libsvg-cairo
@@ -136,6 +141,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Thu Aug 10 2006 Ray Strode <rstrode@redhat.com> 0.0.13-0.15.20060721git.fc5.aiglx
+- Add Requires: gnome-session 2.15.90-2.fc6 (bug 201473)
+- unlink session file on changing wms (bug 201473)
+
 * Thu Aug  3 2006 Soren Sandmann <sandmann@redhat.com> 0.0.13-0.14.20060721git.fc5.aiglx
 - Add Requires: gnome-session 2.15.4-3
 

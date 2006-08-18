@@ -5,34 +5,11 @@ From: Kristian Høgsberg <krh@redhat.com>
 
 ---
 
- plugins/compiz.schemas.in.in |    4 ++--
- plugins/cube.c               |    8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ plugins/cube.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/plugins/compiz.schemas.in.in b/plugins/compiz.schemas.in.in
-index 899622d..dddbfcd 100644
---- a/plugins/compiz.schemas.in.in
-+++ b/plugins/compiz.schemas.in.in
-@@ -913,7 +913,7 @@
-             <applyto>/apps/compiz/plugins/cube/screen0/options/color</applyto>
-             <owner>compiz</owner>
-             <type>string</type>
--            <default>#efebe7ff</default>
-+            <default>#00194aff</default>
-             <locale name="C">
-                 <short>Cube Color</short>
-                 <long>
-@@ -956,7 +956,7 @@
-             <owner>compiz</owner>
-             <type>list</type>
-             <list_type>string</list_type>
--            <default>[novell.png]</default>
-+            <default>[/usr/share/pixmaps/fedora-logo.png]</default>
-             <locale name="C">
-                 <short>Image files</short>
-                 <long>
 diff --git a/plugins/cube.c b/plugins/cube.c
-index 0576b8d..e9e8299 100644
+index 339d843..783b408 100644
 --- a/plugins/cube.c
 +++ b/plugins/cube.c
 @@ -44,14 +44,14 @@ #include <X11/Xproto.h>

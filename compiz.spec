@@ -1,7 +1,7 @@
 #						-*- mode: rpm-spec -*-
 
-%define		sha1 fc6b7773fc52f6104b66a9f86c18395f8a958848
-%define		snapshot 20060721
+%define		sha1 3173a142efe5e7af83ebb534a074d9d2a0c67a86
+%define		snapshot 20060817
 
 %define		dialogversion	0.6.1
 
@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.15.%{snapshot}git.fc5.aiglx
+Release:        0.16.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -42,7 +42,7 @@ Patch104: fbconfig-depth-fix.patch
 Patch105: fedora-logo.patch
 Patch106: glfinish.patch
 Patch107: desktop-effects-0.6.1-delete-session.patch
-
+Patch108: resize-move-keybindings.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -80,6 +80,8 @@ windows and compositing manager.
 pushd ../desktop-effects-%{dialogversion} >& /dev/null
 %patch107 -p1 -b .delete-session
 popd
+
+%patch108 -p1 -b .resize-move-keybindings
 
 %build
 %configure --disable-libsvg-cairo
@@ -141,6 +143,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Thu Aug 17 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.16.20060817git.fc6
+- Rebase to latest upstream changes which has the rest of the bindings
+  rewrite.  Add resize-move-keybindings.patch to make move and resize
+  bindings work like metacity.
+- Add back scale plugin.
+
 * Thu Aug 10 2006 Ray Strode <rstrode@redhat.com> 0.0.13-0.15.20060721git.fc5.aiglx
 - Add Requires: gnome-session 2.15.90-2.fc6 (bug 201473)
 - unlink session file on changing wms (bug 201473)

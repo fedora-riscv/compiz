@@ -9,7 +9,7 @@ too.
  1 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/src/screen.c b/src/screen.c
-index b9be10b..14e7083 100644
+index 0941107..9ec30d5 100644
 --- a/src/screen.c
 +++ b/src/screen.c
 @@ -897,7 +897,7 @@ addScreen (CompDisplay *display,

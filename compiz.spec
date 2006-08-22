@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.16.%{snapshot}git%{?dist}
+Release:        0.17.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -42,7 +42,10 @@ Patch104: fbconfig-depth-fix.patch
 Patch105: fedora-logo.patch
 Patch106: glfinish.patch
 Patch107: desktop-effects-0.6.1-delete-session.patch
-Patch108: resize-move-keybindings.patch
+
+# Patches already upstream
+Patch200: resize-move-keybindings.patch
+Patch201: sync-override-redirect-windows.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -81,7 +84,8 @@ pushd ../desktop-effects-%{dialogversion} >& /dev/null
 %patch107 -p1 -b .delete-session
 popd
 
-%patch108 -p1 -b .resize-move-keybindings
+%patch200 -p1 -b .resize-move-keybindings
+%patch201 -p1 -b .sync-override-redirect-windows
 
 %build
 %configure --disable-libsvg-cairo
@@ -143,6 +147,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Tue Aug 22 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.17.20060817git.fc6
+- Add patch from upstream to also use sync protocol for override
+  redirect windows (sync-override-redirect-windows.patch).
+
 * Thu Aug 17 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.16.20060817git.fc6
 - Rebase to latest upstream changes which has the rest of the bindings
   rewrite.  Add resize-move-keybindings.patch to make move and resize

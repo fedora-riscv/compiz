@@ -3,14 +3,14 @@
 %define		sha1 3173a142efe5e7af83ebb534a074d9d2a0c67a86
 %define		snapshot 20060817
 
-%define		dialogversion	0.6.1
+%define		dialogversion	0.6.19
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.17.%{snapshot}git%{?dist}
+Release:        0.18.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -32,7 +32,7 @@ BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
 BuildRequires:  gettext
 
 Source0:        %{name}-%{sha1}.tar.bz2
-Source1:	desktop-effects-%{dialogversion}.tar.gz
+Source1:	desktop-effects-%{dialogversion}.tar.bz2
 
 Patch100: gl-include-inferiors.patch
 Patch101: aiglx-defaults.patch
@@ -41,7 +41,6 @@ Patch103: composite-cube-logo.patch
 Patch104: fbconfig-depth-fix.patch
 Patch105: fedora-logo.patch
 Patch106: glfinish.patch
-Patch107: desktop-effects-0.6.1-delete-session.patch
 
 # Patches already upstream
 Patch200: resize-move-keybindings.patch
@@ -79,10 +78,6 @@ windows and compositing manager.
 %patch104 -p1 -b .fbconfig-depth-fix
 %patch105 -p1 -b .fedora-logo
 %patch106 -p1 -b .glfinish
-
-pushd ../desktop-effects-%{dialogversion} >& /dev/null
-%patch107 -p1 -b .delete-session
-popd
 
 %patch200 -p1 -b .resize-move-keybindings
 %patch201 -p1 -b .sync-override-redirect-windows
@@ -147,6 +142,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Aug 25 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.18.20060817git.fc6
+- Rebase to desktop-effects 0.6.19 and drop
+  desktop-effects-0.6.1-delete-session.patch
+
 * Tue Aug 22 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.17.20060817git.fc6
 - Add patch from upstream to also use sync protocol for override
   redirect windows (sync-override-redirect-windows.patch).

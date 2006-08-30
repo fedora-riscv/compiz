@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.19.%{snapshot}git%{?dist}
+Release:        0.20.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -41,6 +41,7 @@ Patch103: composite-cube-logo.patch
 Patch104: fbconfig-depth-fix.patch
 Patch105: fedora-logo.patch
 Patch106: glfinish.patch
+Patch107: cow.patch
 
 # Patches already upstream
 Patch200: resize-move-keybindings.patch
@@ -78,6 +79,7 @@ windows and compositing manager.
 %patch104 -p1 -b .fbconfig-depth-fix
 %patch105 -p1 -b .fedora-logo
 %patch106 -p1 -b .glfinish
+%patch107 -p1 -b .cow
 
 %patch200 -p1 -b .resize-move-keybindings
 %patch201 -p1 -b .sync-override-redirect-windows
@@ -142,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Tue Aug 29 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.20.20060817git.fc6
+- Add cow.patch to make compiz use the composite overlay window.
+
 * Fri Aug 25 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.19-20060817git.fc6
 - Rebase to desktop-effects 0.6.41
 

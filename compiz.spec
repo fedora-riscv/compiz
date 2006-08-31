@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.20.%{snapshot}git%{?dist}
+Release:        0.21.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -34,7 +34,6 @@ BuildRequires:  gettext
 Source0:        %{name}-%{sha1}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
 
-Patch100: gl-include-inferiors.patch
 Patch101: aiglx-defaults.patch
 Patch102: tfp-server-extension.patch
 Patch103: composite-cube-logo.patch
@@ -72,7 +71,6 @@ windows and compositing manager.
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
 %setup -q -n %{name}-%{sha1}
 
-%patch100 -p1 -b .gl-include-inferiors
 %patch101 -p1 -b .aiglx-defaults
 %patch102 -p1 -b .tfp-server-extension
 %patch103 -p1 -b .composite-cube-logo
@@ -144,6 +142,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Wed Aug 30 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.21.20060817git.fc6
+- Drop gl-include-inferiors.patch now that compiz uses COW and the X
+  server evicts offscreen pixmaps automatically on
+  GLX_EXT_texture_from_pixmap usage.
+
 * Tue Aug 29 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.20.20060817git.fc6
 - Add cow.patch to make compiz use the composite overlay window.
 

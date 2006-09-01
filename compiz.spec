@@ -29,7 +29,7 @@ BuildRequires:  libXfixes-devel, libXrandr-devel, libXrender-devel
 BuildRequires:  libXcomposite-devel, libXdamage-devel, libXext-devel
 BuildRequires:  libXt-devel, libXmu-devel, libICE-devel, libSM-devel
 BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
-BuildRequires:  gettext autoconf automake
+BuildRequires:  gettext autoconf automake libtool
 
 Source0:        %{name}-%{sha1}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
@@ -152,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Sep 1 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.22.20060817git.fc6
+- Add libtool to BuildRequires
+
 * Fri Sep 1 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.22.20060817git.fc6
 - Add automake and autoconf to BuildRequires 
 

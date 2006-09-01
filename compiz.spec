@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.21.%{snapshot}git%{?dist}
+Release:        0.22.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -34,6 +34,11 @@ BuildRequires:  gettext
 Source0:        %{name}-%{sha1}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
 
+# Patches already upstream
+Patch000: resize-move-keybindings.patch
+Patch001: sync-override-redirect-windows.patch
+
+# Patches that are not upstream
 Patch101: aiglx-defaults.patch
 Patch102: tfp-server-extension.patch
 Patch103: composite-cube-logo.patch
@@ -41,10 +46,7 @@ Patch104: fbconfig-depth-fix.patch
 Patch105: fedora-logo.patch
 Patch106: glfinish.patch
 Patch107: cow.patch
-
-# Patches already upstream
-Patch200: resize-move-keybindings.patch
-Patch201: sync-override-redirect-windows.patch
+Patch108: plane.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -71,6 +73,9 @@ windows and compositing manager.
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
 %setup -q -n %{name}-%{sha1}
 
+%patch000 -p1 -b .resize-move-keybindings
+%patch001 -p1 -b .sync-override-redirect-windows
+
 %patch101 -p1 -b .aiglx-defaults
 %patch102 -p1 -b .tfp-server-extension
 %patch103 -p1 -b .composite-cube-logo
@@ -78,11 +83,16 @@ windows and compositing manager.
 %patch105 -p1 -b .fedora-logo
 %patch106 -p1 -b .glfinish
 %patch107 -p1 -b .cow
-
-%patch200 -p1 -b .resize-move-keybindings
-%patch201 -p1 -b .sync-override-redirect-windows
+%patch108 -p1 -b .plane
 
 %build
+rm -rf $RPM_BUILD_ROOT
+
+CPPFLAGS="$CPPFLAGS -I$RPM_BUILD_ROOT%{_includedir}"
+export CPPFLAGS
+
+autoreconf
+
 %configure --disable-libsvg-cairo
 
 make %{?_smp_mflags} 
@@ -142,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Sep 1 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.22.20060817git.fc6
+- Add a patch to put viewports on a plane.
+
 * Wed Aug 30 2006 Kristian Høgsberg <krh@redhat.com> - 0.0.13-0.21.20060817git.fc6
 - Drop gl-include-inferiors.patch now that compiz uses COW and the X
   server evicts offscreen pixmaps automatically on

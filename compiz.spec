@@ -3,7 +3,7 @@
 %define		sha1 3173a142efe5e7af83ebb534a074d9d2a0c67a86
 %define		snapshot 20060817
 
-%define		dialogversion	0.6.41
+%define		dialogversion	0.6.61
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
@@ -152,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Sep 1 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.22.20060817git.fc6
+- Upgrade to 0.6.61 of the dialog
+
 * Fri Sep 1 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.22.20060817git.fc6
 - Add libtool to BuildRequires
 

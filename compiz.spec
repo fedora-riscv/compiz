@@ -152,6 +152,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Wed Sep  6 2006 Kristian Høgsberg <krh@redhat.com>
+- Update fbconfig-depth-fix.patch to also skip fbconfigs without
+  corresponding visuals.
+
 * Tue Sep 5 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.25.20060817git.fc6
 - Make number of vertical size configurable
 

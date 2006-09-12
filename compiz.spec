@@ -152,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Tue Sep 12 2006 Soren Sandmann <sandmann@redhat.com>
+- Don't attempt to move the viewport when dx = dy = 0.(last bit of 206088).
+
 * Tue Sep 12 2006 Soren Sandmann <sandamnn@redhat.com>
 - Fix plane.patch to draw correctly when no timeout is running. (206088).
 

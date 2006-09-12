@@ -152,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Tue Sep 12 2006 Soren Sandmann <sandamnn@redhat.com>
+- Fix plane.patch to draw correctly when no timeout is running. (206088).
+
 * Wed Sep  6 2006 Kristian Høgsberg <krh@redhat.com>
 - Update fbconfig-depth-fix.patch to also skip fbconfigs without
   corresponding visuals.

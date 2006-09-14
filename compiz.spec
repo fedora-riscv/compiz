@@ -47,6 +47,7 @@ Patch105: fedora-logo.patch
 Patch106: glfinish.patch
 Patch107: cow.patch
 Patch108: plane.patch
+Patch109: double-click.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -84,6 +85,7 @@ windows and compositing manager.
 %patch106 -p1 -b .glfinish
 %patch107 -p1 -b .cow
 %patch108 -p1 -b .plane
+%patch109 -p1 -b .double-click
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -152,6 +154,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Thu Sep 14 2006 Soren Sandmann <sandmann@redhat.com>
+- Add patch to fix double clicking (bug 201783).
+
 * Tue Sep 12 2006 Soren Sandmann <sandmann@redhat.com>
 - Don't attempt to move the viewport when dx = dy = 0.(last bit of 206088).
 

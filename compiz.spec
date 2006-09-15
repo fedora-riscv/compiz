@@ -3,7 +3,7 @@
 %define		sha1 3173a142efe5e7af83ebb534a074d9d2a0c67a86
 %define		snapshot 20060817
 
-%define		dialogversion	0.6.61
+%define		dialogversion	0.6.83
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
@@ -158,6 +158,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Sep 15 2006 Soren Sandmann <sandamnn@redhat.com>
+- Upgrade to version 0.6.83 of desktop-effects. (bug 206500)
+
 * Fri Sep 15 2006 Soren Sandmann <sandmann@redhat.com>
 - Add patch to only accept button 1 for close/minimize/maximize (bug 201628)
 

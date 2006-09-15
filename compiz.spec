@@ -159,7 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Sep 15 2006 Soren Sandmann <sandmann@redhat.com>
-- Add patch to only accept button 1 for close/minimize/maximize
+- Add patch to only accept button 1 for close/minimize/maximize (bug 201628)
 
 * Fri Sep 15 2006 Soren Sandmann <sandmann@redhat.com>
 - Add patch to fix thumbnail sorting (bug 201605)

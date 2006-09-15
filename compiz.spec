@@ -48,6 +48,7 @@ Patch106: glfinish.patch
 Patch107: cow.patch
 Patch108: plane.patch
 Patch109: double-click.patch
+Patch110: thumbnail-sorting.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -86,6 +87,7 @@ windows and compositing manager.
 %patch107 -p1 -b .cow
 %patch108 -p1 -b .plane
 %patch109 -p1 -b .double-click
+%patch110 -p1 -b .thumbnail-sorting
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -154,6 +156,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Sep 15 2006 Soren Sandmann <sandmann@redhat.com>
+- Add patch to fix thumbnail sorting (bug 201605)
+
 * Thu Sep 14 2006 Soren Sandmann <sandmann@redhat.com>
 - Add patch to fix double clicking (bug 201783).
 

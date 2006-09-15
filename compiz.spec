@@ -49,6 +49,7 @@ Patch107: cow.patch
 Patch108: plane.patch
 Patch109: double-click.patch
 Patch110: thumbnail-sorting.patch
+Patch111: button-clicks.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -88,6 +89,7 @@ windows and compositing manager.
 %patch108 -p1 -b .plane
 %patch109 -p1 -b .double-click
 %patch110 -p1 -b .thumbnail-sorting
+%patch111 -p1 -b .button-clicks
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -156,6 +158,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Sep 15 2006 Soren Sandmann <sandmann@redhat.com>
+- Add patch to only accept button 1 for close/minimize/maximize
+
 * Fri Sep 15 2006 Soren Sandmann <sandmann@redhat.com>
 - Add patch to fix thumbnail sorting (bug 201605)
 

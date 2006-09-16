@@ -50,6 +50,7 @@ Patch108: plane.patch
 Patch109: double-click.patch
 Patch110: thumbnail-sorting.patch
 Patch111: button-clicks.patch
+Patch112: positioning.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -90,6 +91,7 @@ windows and compositing manager.
 %patch109 -p1 -b .double-click
 %patch110 -p1 -b .thumbnail-sorting
 %patch111 -p1 -b .button-clicks
+%patch112 -p1 -b .positioning
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -158,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Sep 15 2006 Soren Sandmann <sandmann@redhat.com>
+- Add patch to fix mispositioning of window decorator event windows (bug 201624)
+
 * Fri Sep 15 2006 Soren Sandmann <sandamnn@redhat.com>
 - Upgrade to version 0.6.83 of desktop-effects. (bug 206500)
 

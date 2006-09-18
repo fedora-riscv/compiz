@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.25.%{snapshot}git%{?dist}
+Release:        0.26.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -172,8 +172,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Sep 18 2006 Soren Sandmann <sandmann@redhat.com>
+- Change plane patch to correctly initialize the screen size to the
+  defaults (bug 206088).
+
+* Mon Sep 18 2006 Soren Sandmann <sandmann@redhat.com>
 - Run update-desktop-database and gtk-update-icon-cache in post. Add icons
-  to list of packaged files. Also bump to 0.6.137 of dialog (which makes
+  to list of packaged files. Also bump to 0.6.137 of dialog (which just makes
   directories before attempting to install to them).
 
 * Mon Sep 18 2006 Soren Sandmann <sandmann@redhat.com>

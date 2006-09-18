@@ -160,7 +160,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
-* Mon sep 18 2006 Soren Sandmann <sandmann@redhat.com>
+* Mon Sep 18 2006 Soren Sandmann <sandmann@redhat.com>
 - Upgrade to 0.6.107 of the desktop-effects dialog box. Only change is
   that the new version has icons.
 

@@ -3,7 +3,7 @@
 %define		sha1 3173a142efe5e7af83ebb534a074d9d2a0c67a86
 %define		snapshot 20060817
 
-%define		dialogversion	0.6.83
+%define		dialogversion	0.6.107
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
@@ -160,6 +160,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Mon sep 18 2006 Soren Sandmann <sandmann@redhat.com>
+- Upgrade to 0.6.107 of the desktop-effects dialog box. Only change is
+  that the new version has icons.
+
 * Fri Sep 15 2006 Soren Sandmann <sandmann@redhat.com>
 - Add patch to fix mispositioning of window decorator event windows (bug 201624)
 

@@ -3,7 +3,7 @@
 %define		sha1 3173a142efe5e7af83ebb534a074d9d2a0c67a86
 %define		snapshot 20060817
 
-%define		dialogversion	0.6.107
+%define		dialogversion	0.6.137
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
@@ -125,9 +125,14 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
 %post
+update-desktop-database -q %{_datadir}/applications
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
 /usr/bin/gconftool-2 --makefile-install-rule \
 	%{_sysconfdir}/gconf/schemas/compiz.schemas > /dev/null
+touch %{_datadir}/icons/hicolor
+if [ -x /usr/bin/gtk-update-icon-cache ]; then
+	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
+fi
 
 %preun
 if [ "$1" -eq 0 ]; then
@@ -153,6 +158,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/desktop-effects
 %{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/applications/desktop-effects.desktop
+%{_datadir}/icons/hicolor/16x16/apps/desktop-effects.png
+%{_datadir}/icons/hicolor/24x24/apps/desktop-effects.png
+%{_datadir}/icons/hicolor/32x32/apps/desktop-effects.png
+%{_datadir}/icons/hicolor/36x36/apps/desktop-effects.png
+%{_datadir}/icons/hicolor/48x48/apps/desktop-effects.png
+%{_datadir}/icons/hicolor/96x96/apps/desktop-effects.png
 
 %files devel
 %defattr(-, root, root)
@@ -160,6 +171,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Mon Sep 18 2006 Soren Sandmann <sandmann@redhat.com>
+- Run update-desktop-database and gtk-update-icon-cache in post. Add icons
+  to list of packaged files. Also bump to 0.6.137 of dialog (which makes
+  directories before attempting to install to them).
+
 * Mon Sep 18 2006 Soren Sandmann <sandmann@redhat.com>
 - Upgrade to 0.6.107 of the desktop-effects dialog box. Only change is
   that the new version has icons.

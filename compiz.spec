@@ -171,7 +171,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
-* Mon Sep 18 2006 Soren Sandmann <sandmann@redhat.com>
+* Mon Sep 18 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.26.20060817git.fc6
 - Change plane patch to correctly initialize the screen size to the
   defaults (bug 206088).
 

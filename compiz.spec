@@ -51,6 +51,7 @@ Patch109: double-click.patch
 Patch110: thumbnail-sorting.patch
 Patch111: button-clicks.patch
 Patch112: positioning.patch
+Patch113: resize-offset.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -92,6 +93,7 @@ windows and compositing manager.
 %patch110 -p1 -b .thumbnail-sorting
 %patch111 -p1 -b .button-clicks
 %patch112 -p1 -b .positioning
+%patch113 -p1 -b .resize-offset
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -171,6 +173,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Thu Sep 21 2006 Soren Sandmann <sandmann@redhat.com>
+- Add patch to fix resizing smaller than minimum size (resize-offset.patch, bug 201623).
+
 * Tue Sep 19 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.27.20060817git.fc6
 - Change .plane patch to 
   (a) not set the background color to pink in the plane plugin. 

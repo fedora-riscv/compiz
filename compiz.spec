@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.27.%{snapshot}git%{?dist}
+Release:        0.28.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -173,6 +173,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Mon Sep 25 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.28.20060817git.fc6
+- Change plane.patch to not do cyclical window movement in dimensions
+  where the desktop has size 1 (bug 207263).
+
 * Thu Sep 21 2006 Soren Sandmann <sandmann@redhat.com>
 - Add patch to fix resizing smaller than minimum size (resize-offset.patch, bug 201623).
 

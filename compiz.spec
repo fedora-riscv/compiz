@@ -53,6 +53,7 @@ Patch111: button-clicks.patch
 Patch112: positioning.patch
 Patch113: resize-offset.patch
 Patch114: restart.patch
+Patch115: icon-menu.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -96,6 +97,7 @@ windows and compositing manager.
 %patch112 -p1 -b .positioning
 %patch113 -p1 -b .resize-offset
 %patch114 -p1 -b .restart
+%patch115 -p1 -b .icon-menu
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -175,6 +177,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Wed Sep 27 2006 Soren Sandmann <sandmann@redhat.com>
+- Add patch to show a menu when the window icon is clicked. (Bug 201629).
+
 * Tue Sep 26 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.29.20060817git.fc6
 - Add restart.patch to make compiz ask the session manager to restart it
   if it crashes (bug 200280).

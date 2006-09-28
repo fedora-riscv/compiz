@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.29.%{snapshot}git%{?dist}
+Release:        0.30.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -54,6 +54,7 @@ Patch112: positioning.patch
 Patch113: resize-offset.patch
 Patch114: restart.patch
 Patch115: icon-menu.patch
+Patch116: terminate-move.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -98,6 +99,7 @@ windows and compositing manager.
 %patch113 -p1 -b .resize-offset
 %patch114 -p1 -b .restart
 %patch115 -p1 -b .icon-menu
+%patch116 -p1 -b .terminate-move
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -177,6 +179,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Thu Sep 28 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.30.20060817git.fc6
+- Add patch to terminate keyboard moves when a mouse buttons is pressed. (Bug 207792).
+
 * Thu Sep 28 2006 Soren Sandmann <sandmann@redhat.com>
 - Change default plugin list to not include the plane plugin. (Bug 208448).
 - Change default keybinding for shrink to be Pause (Bug 206187).

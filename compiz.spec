@@ -177,6 +177,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Thu Sep 28 2006 Soren Sandmann <sandmann@redhat.com>
+- Change default plugin list to not include the plane plugin. (Bug 208448).
+- Change default keybinding for shrink to be Pause (Bug 206187).
+
 * Wed Sep 27 2006 Soren Sandmann <sandmann@redhat.com>
 - Add patch to show a menu when the window icon is clicked. (Bug 201629).
 

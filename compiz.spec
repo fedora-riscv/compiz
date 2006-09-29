@@ -3,7 +3,7 @@
 %define		sha1 3173a142efe5e7af83ebb534a074d9d2a0c67a86
 %define		snapshot 20060817
 
-%define		dialogversion	0.6.137
+%define		dialogversion	0.6.163
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
@@ -32,7 +32,7 @@ BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
 BuildRequires:  gettext autoconf automake libtool
 
 Source0:        %{name}-%{sha1}.tar.bz2
-Source1:	desktop-effects-%{dialogversion}.tar.bz2
+Source1:	desktop-effects-%{dialogversion}.tar.gz
 
 # Patches already upstream
 Patch000: resize-move-keybindings.patch
@@ -179,6 +179,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Sep 29 2006 Soren Sandmann <sandmann@redhat.com>
+- Update to desktop-effects-0.6.163, which has translation enabled. (Bug 208257)
+
 * Thu Sep 28 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.30.20060817git.fc6
 - Add patch to terminate keyboard moves when a mouse buttons is pressed. (Bug 207792).
 

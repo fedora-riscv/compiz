@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.30.%{snapshot}git%{?dist}
+Release:        0.31.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -179,6 +179,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Sat Sep 30 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.31.20060818git.fc6
+- Build
+
 * Fri Sep 29 2006 Soren Sandmann <sandmann@redhat.com>
 - Update to desktop-effects-0.6.163, which has translation enabled. (Bug 208257)
 

@@ -30,6 +30,7 @@ BuildRequires:  libXcomposite-devel, libXdamage-devel, libXext-devel
 BuildRequires:  libXt-devel, libXmu-devel, libICE-devel, libSM-devel
 BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
 BuildRequires:  gettext autoconf automake libtool
+BuildRequires:  intltool >= 0.35
 
 Source0:        %{name}-%{sha1}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.gz
@@ -179,6 +180,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Sat Sep 30 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.31.20060818git.fc6
+- Add buildrequires on intltool
+
 * Sat Sep 30 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.31.20060818git.fc6
 - Build
 

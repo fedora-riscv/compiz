@@ -10,7 +10,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.0.13
-Release:        0.31.%{snapshot}git%{?dist}
+Release:        0.32.%{snapshot}git%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -30,6 +30,7 @@ BuildRequires:  libXcomposite-devel, libXdamage-devel, libXext-devel
 BuildRequires:  libXt-devel, libXmu-devel, libICE-devel, libSM-devel
 BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
 BuildRequires:  gettext autoconf automake libtool
+BuildRequires:  desktop-file-utils
 BuildRequires:  intltool >= 0.35
 
 Source0:        %{name}-%{sha1}.tar.bz2
@@ -129,6 +130,10 @@ unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 echo INSTALLING DESKTOP EFFECTS
 cd ../desktop-effects-%{dialogversion}
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
+desktop-file-install --vendor redhat --delete-original      \
+  --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
+  --add-category X-Red-Hat-Base                             \
+  $RPM_BUILD_ROOT%{_datadir}/applications/desktop-effects.desktop
 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
@@ -166,7 +171,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*/LC_MESSAGES/compiz.mo
 %{_bindir}/desktop-effects
 %{_datadir}/compiz/desktop-effects.glade
-%{_datadir}/applications/desktop-effects.desktop
+%{_datadir}/applications/redhat-desktop-effects.desktop
 %{_datadir}/icons/hicolor/16x16/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/24x24/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/32x32/apps/desktop-effects.png
@@ -180,6 +185,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Mon Oct 2 2006 Soren Sandmann <sandmann@redhat.ocm> - 0.0.13-0.32.20060818git.fc6
+- Install the .desktop file with desktop-file-install. Add X-Red-Hat-Base to make it appear in "Preferences", rather than "More Preferences".
+
 * Sat Sep 30 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.31.20060818git.fc6
 - Add buildrequires on intltool
 

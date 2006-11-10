@@ -1,18 +1,6 @@
-Change cube logo defaults to use fedora logo and colors.
-
-From: Kristian Høgsberg <krh@redhat.com>
-
-
----
-
- plugins/cube.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/plugins/cube.c b/plugins/cube.c
-index 339d843..783b408 100644
---- a/plugins/cube.c
-+++ b/plugins/cube.c
-@@ -44,14 +44,14 @@ #include <X11/Xproto.h>
+--- compiz-0.3.2/plugins/cube.c.fedora-logo	2006-11-10 14:40:19.000000000 -0500
++++ compiz-0.3.2/plugins/cube.c	2006-11-10 14:42:29.000000000 -0500
+@@ -46,14 +46,14 @@
  
  #include <compiz.h>
  
@@ -26,7 +14,7 @@ index 339d843..783b408 100644
  #define CUBE_IN_DEFAULT FALSE
  
  static char *cubeImages[] = {
--    "novell.png"
+-    "freedesktop.png"
 +    "/usr/share/pixmaps/fedora-logo.png"
  };
  #define N_CUBE_IMAGES (sizeof (cubeImages) / sizeof (cubeImages[0]))

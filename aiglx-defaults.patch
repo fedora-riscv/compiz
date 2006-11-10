@@ -1,18 +1,6 @@
-Change the compiz indirect rendering and tfp binding settings to
-
-From: Kristian Høgsberg <krh@redhat.com>
-
-work with AIGLX.
----
-
- src/main.c |   16 +++++++++++++---
- 1 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/src/main.c b/src/main.c
-index 3d3a9c5..bbafd2b 100644
---- a/src/main.c
-+++ b/src/main.c
-@@ -78,8 +78,8 @@ CompWindow *lastFoundWindow = 0;
+--- compiz-0.3.2/src/main.c.aiglx-defaults	2006-09-22 11:44:54.000000000 -0400
++++ compiz-0.3.2/src/main.c	2006-11-10 14:32:24.000000000 -0500
+@@ -78,8 +78,8 @@
  CompWindow *lastDamagedWindow = 0;
  
  Bool replaceCurrentWm = FALSE;
@@ -21,9 +9,9 @@ index 3d3a9c5..bbafd2b 100644
 +Bool indirectRendering = TRUE;
 +Bool strictBinding = TRUE;
  
- static void
- usage (void)
-@@ -90,8 +90,10 @@ usage (void)
+ #ifdef USE_COW
+ Bool useCow = FALSE;
+@@ -94,8 +94,10 @@
  	    "[--refresh-rate RATE]\n       "
  	    "[--fast-filter] "
  	    "[--indirect-rendering] "
@@ -35,22 +23,3 @@ index 3d3a9c5..bbafd2b 100644
  	    "[--replace] "
  	    "[--sm-disable] "
  	    "[--sm-client-id ID] "
-@@ -182,10 +184,18 @@ main (int argc, char **argv)
- 	{
- 	    indirectRendering = TRUE;
- 	}
-+	else if (!strcmp (argv[i], "--direct-rendering"))
-+	{
-+	    indirectRendering = FALSE;
-+	}
- 	else if (!strcmp (argv[i], "--strict-binding"))
- 	{
- 	    strictBinding = TRUE;
- 	}
-+	else if (!strcmp (argv[i], "--xgl-binding"))
-+	{
-+	    strictBinding = FALSE;
-+	}
- 	else if (!strcmp (argv[i], "--replace"))
- 	{
- 	    replaceCurrentWm = TRUE;

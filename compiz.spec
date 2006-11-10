@@ -1,16 +1,13 @@
 #						-*- mode: rpm-spec -*-
 
-%define		sha1 3173a142efe5e7af83ebb534a074d9d2a0c67a86
-%define		snapshot 20060817
-
 %define		dialogversion	0.6.163
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
-Version:        0.0.13
-Release:        0.32.%{snapshot}git%{?dist}
+Version:        0.3.2
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -33,26 +30,22 @@ BuildRequires:  gettext autoconf automake libtool
 BuildRequires:  desktop-file-utils
 BuildRequires:  intltool >= 0.35
 
-Source0:        %{name}-%{sha1}.tar.bz2
+Source0:        %{name}-%{version}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.gz
-
-# Patches already upstream
-Patch000: resize-move-keybindings.patch
-Patch001: sync-override-redirect-windows.patch
 
 # Patches that are not upstream
 Patch101: aiglx-defaults.patch
 Patch102: tfp-server-extension.patch
 Patch103: composite-cube-logo.patch
-Patch104: fbconfig-depth-fix.patch
+#Patch104: fbconfig-depth-fix.patch
 Patch105: fedora-logo.patch
 Patch106: glfinish.patch
-Patch107: cow.patch
-Patch108: plane.patch
-Patch109: double-click.patch
-Patch110: thumbnail-sorting.patch
-Patch111: button-clicks.patch
-Patch112: positioning.patch
+#Patch107: cow.patch
+#Patch108: plane.patch
+#Patch109: double-click.patch
+#Patch110: thumbnail-sorting.patch
+#Patch111: button-clicks.patch
+#Patch112: positioning.patch
 Patch113: resize-offset.patch
 Patch114: restart.patch
 Patch115: icon-menu.patch
@@ -81,23 +74,20 @@ windows and compositing manager.
 
 %prep
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
-%setup -q -n %{name}-%{sha1}
-
-%patch000 -p1 -b .resize-move-keybindings
-%patch001 -p1 -b .sync-override-redirect-windows
+%setup -q 
 
 %patch101 -p1 -b .aiglx-defaults
 %patch102 -p1 -b .tfp-server-extension
 %patch103 -p1 -b .composite-cube-logo
-%patch104 -p1 -b .fbconfig-depth-fix
+#%patch104 -p1 -b .fbconfig-depth-fix
 %patch105 -p1 -b .fedora-logo
 %patch106 -p1 -b .glfinish
-%patch107 -p1 -b .cow
-%patch108 -p1 -b .plane
-%patch109 -p1 -b .double-click
-%patch110 -p1 -b .thumbnail-sorting
-%patch111 -p1 -b .button-clicks
-%patch112 -p1 -b .positioning
+#%patch107 -p1 -b .cow
+#%patch108 -p1 -b .plane
+#%patch109 -p1 -b .double-click
+#%patch110 -p1 -b .thumbnail-sorting
+#%patch111 -p1 -b .button-clicks
+#%patch112 -p1 -b .positioning
 %patch113 -p1 -b .resize-offset
 %patch114 -p1 -b .restart
 %patch115 -p1 -b .icon-menu
@@ -185,6 +175,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Fri Nov 10 2006 Matthias Clasen <mclasen@redhat.com> - 0.3.2-1
+- Update to 0.3.2
+- Drop upstreamed patches
+
 * Mon Oct 2 2006 Soren Sandmann <sandmann@redhat.ocm> - 0.0.13-0.32.20060818git.fc6
 - Install the .desktop file with desktop-file-install. Add X-Red-Hat-Base to make it appear in "Preferences", rather than "More Preferences".
 

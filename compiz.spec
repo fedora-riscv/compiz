@@ -31,7 +31,7 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  intltool >= 0.35
 BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
-BuildRequires:  metacity-devel
+BuildRequires:  metacity
 
 Source0:        %{name}-%{version}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.gz

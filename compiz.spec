@@ -29,6 +29,9 @@ BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
 BuildRequires:  gettext autoconf automake libtool
 BuildRequires:  desktop-file-utils
 BuildRequires:  intltool >= 0.35
+BuildRequires:  dbus-devel
+BuildRequires:  librsvg2-devel
+BuildRequires:  metacity-devel
 
 Source0:        %{name}-%{version}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.gz
@@ -37,15 +40,10 @@ Source1:	desktop-effects-%{dialogversion}.tar.gz
 Patch101: aiglx-defaults.patch
 Patch102: tfp-server-extension.patch
 Patch103: composite-cube-logo.patch
-#Patch104: fbconfig-depth-fix.patch
+
 Patch105: fedora-logo.patch
 Patch106: glfinish.patch
-#Patch107: cow.patch
-#Patch108: plane.patch
-#Patch109: double-click.patch
-#Patch110: thumbnail-sorting.patch
-#Patch111: button-clicks.patch
-#Patch112: positioning.patch
+
 Patch113: resize-offset.patch
 Patch114: restart.patch
 Patch115: icon-menu.patch
@@ -64,7 +62,8 @@ for binding redirected top-level windows to texture objects.
 %package devel
 Summary: Development packages for compiz.
 Group: Development/Libraries
-Requires: compiz = %{PACKAGE_VERSION}
+Requires: compiz = %{version}-%{release}
+Requires: pkgconfig
 
 %description devel
 The compiz-devel package includes the header files,
@@ -80,15 +79,10 @@ windows and compositing manager.
 %patch101 -p1 -b .aiglx-defaults
 %patch102 -p1 -b .tfp-server-extension
 %patch103 -p1 -b .composite-cube-logo
-#%patch104 -p1 -b .fbconfig-depth-fix
+
 %patch105 -p1 -b .fedora-logo
 %patch106 -p1 -b .glfinish
-#%patch107 -p1 -b .cow
-#%patch108 -p1 -b .plane
-#%patch109 -p1 -b .double-click
-#%patch110 -p1 -b .thumbnail-sorting
-#%patch111 -p1 -b .button-clicks
-#%patch112 -p1 -b .positioning
+
 %patch113 -p1 -b .resize-offset
 %patch114 -p1 -b .restart
 %patch115 -p1 -b .icon-menu
@@ -103,12 +97,19 @@ export CPPFLAGS
 
 autoreconf
 
-%configure --disable-libsvg-cairo
+%configure 			\
+	--enable-gconf 		\
+	--enable-dbus 		\
+	--enable-librsvg 	\
+	--enable-gtk 		\
+	--enable-metacity 	\
+	--enable-gnome
 
 make %{?_smp_mflags} 
 
 # desktop-effects
 cd ../desktop-effects-%{dialogversion}
+sed -i -e "s/gnome-window-decorator/gtk-window-decorator/" desktop-effects.c
 %configure 
 make
 
@@ -154,7 +155,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog COPYING* INSTALL README TODO
 %{_bindir}/compiz
-%{_bindir}/gnome-window-decorator
+%{_bindir}/gtk-window-decorator
 %{_libdir}/compiz/*.so
 %{_libdir}/window-manager-settings/libcompiz.so
 %{_sysconfdir}/gconf/schemas/compiz.schemas

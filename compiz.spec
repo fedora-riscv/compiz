@@ -50,6 +50,7 @@ Patch113: resize-offset.patch
 Patch114: restart.patch
 Patch115: icon-menu.patch
 Patch116: terminate-move.patch
+Patch117: new-metacity-theme.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -92,6 +93,7 @@ windows and compositing manager.
 %patch114 -p1 -b .restart
 %patch115 -p1 -b .icon-menu
 %patch116 -p1 -b .terminate-move
+%patch117 -p1 -b .new-metacity-theme
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -178,6 +180,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Nov 10 2006 Matthias Clasen <mclasen@redhat.com> - 0.3.2-1
 - Update to 0.3.2
 - Drop upstreamed patches
+- Work with new metacity theme api
 
 * Mon Oct 2 2006 Soren Sandmann <sandmann@redhat.ocm> - 0.0.13-0.32.20060818git.fc6
 - Install the .desktop file with desktop-file-install. Add X-Red-Hat-Base to make it appear in "Preferences", rather than "More Preferences".

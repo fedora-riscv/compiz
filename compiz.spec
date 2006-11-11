@@ -21,6 +21,11 @@ Requires:	libwnck >= 2.15.4
 Requires:       system-logos
 Requires:	gnome-session >= 2.15.90-2.fc6
 
+Requires(pre):	GConf2
+Requires(post):	GConf2
+Requires(preun):GConf2
+Requires(post): desktop-file-utils
+
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
 BuildRequires:  libXfixes-devel, libXrandr-devel, libXrender-devel
 BuildRequires:  libXcomposite-devel, libXdamage-devel, libXext-devel
@@ -135,17 +140,27 @@ find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 update-desktop-database -q %{_datadir}/applications
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
 /usr/bin/gconftool-2 --makefile-install-rule \
-	%{_sysconfdir}/gconf/schemas/compiz.schemas > /dev/null
+	%{_sysconfdir}/gconf/schemas/compiz.schemas \
+	%{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 touch %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
 	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
+fi
+
+%pre
+if [ "$1" -gt 1 ]; then
+  export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+  gconftool-2 --makefile-uninstall-rule \
+	%{_sysconfdir}/gconf/schemas/compiz.schemas \
+	%{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
 
 %preun
 if [ "$1" -eq 0 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
   gconftool-2 --makefile-uninstall-rule \
-	%{_sysconfdir}/gconf/schemas/compiz.schemas > /dev/null
+	%{_sysconfdir}/gconf/schemas/compiz.schemas \
+	%{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
 
 %clean
@@ -159,6 +174,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/compiz/*.so
 %{_libdir}/window-manager-settings/libcompiz.so
 %{_sysconfdir}/gconf/schemas/compiz.schemas
+%{_sysconfdir}/gconf/schemas/gwd.schemas
 %{_datadir}/compiz/*.png
 %{_datadir}/gnome/wm-properties/compiz.desktop
 %{_datadir}/locale/*/LC_MESSAGES/compiz.mo

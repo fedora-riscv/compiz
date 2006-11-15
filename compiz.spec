@@ -7,7 +7,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -48,6 +48,7 @@ Patch103: composite-cube-logo.patch
 
 Patch105: fedora-logo.patch
 Patch106: glfinish.patch
+Patch107: cow.patch
 
 Patch113: resize-offset.patch
 Patch114: restart.patch
@@ -87,6 +88,7 @@ windows and compositing manager.
 
 %patch105 -p1 -b .fedora-logo
 %patch106 -p1 -b .glfinish
+%patch107 -p1 -b .cow
 
 %patch113 -p1 -b .resize-offset
 %patch114 -p1 -b .restart
@@ -194,6 +196,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Wed Nov 15 2006 Matthias Clasen <mclasen@redhat.com> - 0.3.2-2
+- Use cow by default, bug 208044
+
 * Fri Nov 10 2006 Matthias Clasen <mclasen@redhat.com> - 0.3.2-1
 - Update to 0.3.2
 - Drop upstreamed patches

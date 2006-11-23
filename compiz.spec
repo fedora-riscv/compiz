@@ -6,8 +6,8 @@ Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
-Version:        0.3.2
-Release:        2%{?dist}
+Version:        0.3.4
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -54,7 +54,6 @@ Patch113: resize-offset.patch
 Patch114: restart.patch
 Patch115: icon-menu.patch
 Patch116: terminate-move.patch
-Patch117: new-metacity-theme.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -94,7 +93,6 @@ windows and compositing manager.
 %patch114 -p1 -b .restart
 %patch115 -p1 -b .icon-menu
 %patch116 -p1 -b .terminate-move
-%patch117 -p1 -b .new-metacity-theme
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -196,6 +194,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Thu Nov 23 2006 Matthias Clasen <mclasen@redhat.com> - 0.3.4-1
+- Update to 0.3.4
+
 * Wed Nov 15 2006 Matthias Clasen <mclasen@redhat.com> - 0.3.2-2
 - Use cow by default, bug 208044
 

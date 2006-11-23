@@ -1,5 +1,5 @@
---- compiz-0.3.2/src/main.c.aiglx-defaults	2006-09-22 11:44:54.000000000 -0400
-+++ compiz-0.3.2/src/main.c	2006-11-10 14:32:24.000000000 -0500
+--- compiz-0.3.4/src/main.c.aiglx-defaults	2006-11-11 13:11:36.000000000 -0500
++++ compiz-0.3.4/src/main.c	2006-11-23 01:25:37.000000000 -0500
 @@ -78,8 +78,8 @@
  CompWindow *lastDamagedWindow = 0;
  
@@ -8,18 +8,22 @@
 -Bool strictBinding = FALSE;
 +Bool indirectRendering = TRUE;
 +Bool strictBinding = TRUE;
+ Bool noDetection = FALSE;
  
  #ifdef USE_COW
- Bool useCow = FALSE;
-@@ -94,8 +94,10 @@
+@@ -95,10 +95,13 @@
  	    "[--refresh-rate RATE]\n       "
  	    "[--fast-filter] "
  	    "[--indirect-rendering] "
 +	    "[--direct-rendering]\n       "
  	    "[--strict-binding] "
--	    "[--test-mode]\n       "
+-	    "[--replace]\n       "
 +	    "[--xgl-binding] "
-+	    "[--test-mode]\n       " 
- 	    "[--replace] "
++	    "[--test-mode]\n       "
++	    "[--replace] "
  	    "[--sm-disable] "
- 	    "[--sm-client-id ID] "
+-	    "[--sm-client-id ID] "
++	    "[--sm-client-id ID]\n       "
+ 	    "[--no-detection] "
+ 	    "[--version]\n       "
+ 

@@ -19,3 +19,23 @@
  };
  #define N_CUBE_IMAGES (sizeof (cubeImages) / sizeof (cubeImages[0]))
  
+--- compiz-0.3.4/plugins/compiz.schemas.in.fedora-logo       2006-11-15 18:28:01.000000000 +0100
++++ compiz-0.3.4/plugins/compiz.schemas.in   2006-11-25 10:29:49.000000000 +0100
+@@ -15725,7 +15725,7 @@
+             <applyto>/apps/compiz/plugins/cube/screen0/options/color</applyto>
+             <owner>compiz</owner>
+             <type>string</type>
+-            <default>#efebe7ff</default>
++            <default>#00194aff</default>
+             <locale name="C">
+                 <short>Cube Color</short>
+                 <long>Color of top and bottom sides of the cube</long>
+@@ -15918,7 +15918,7 @@
+             <owner>compiz</owner>
+             <type>list</type>
+             <list_type>string</list_type>
+-            <default>[freedesktop.png]</default>
++            <default>[/usr/share/pixmaps/fedora-logo.png]</default>
+             <locale name="C">
+                 <short>Image files</short>
+                 <long>List of PNG and SVG files that should be rendered on top face of cube</long>

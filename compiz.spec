@@ -7,7 +7,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -194,6 +194,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 
 %changelog
+* Sat Nov 25 2006 Matthias Clasen <mclasen@redhat.com> - 0.3.4-2
+- Update the fedora logo patch (#217224)
+
 * Thu Nov 23 2006 Matthias Clasen <mclasen@redhat.com> - 0.3.4-1
 - Update to 0.3.4
 

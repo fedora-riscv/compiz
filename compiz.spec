@@ -65,7 +65,7 @@ for binding redirected top-level windows to texture objects.
 
 
 %package devel
-Summary: Development packages for compiz.
+Summary: Development packages for compiz
 Group: Development/Libraries
 Requires: compiz = %{version}-%{release}
 Requires: pkgconfig

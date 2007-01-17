@@ -33,6 +33,7 @@ BuildRequires:  libXt-devel, libXmu-devel, libICE-devel, libSM-devel
 BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  intltool >= 0.35
+BuildRequires:  gettext 
 BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity

@@ -1,13 +1,13 @@
 #						-*- mode: rpm-spec -*-
 
-%define		dialogversion	0.6.163
+%define		dialogversion	0.7.0
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
-Version:        0.3.4
-Release:        2%{?dist}
+Version:        0.3.6
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -31,7 +31,6 @@ BuildRequires:  libXfixes-devel, libXrandr-devel, libXrender-devel
 BuildRequires:  libXcomposite-devel, libXdamage-devel, libXext-devel
 BuildRequires:  libXt-devel, libXmu-devel, libICE-devel, libSM-devel
 BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
-BuildRequires:  gettext autoconf automake libtool
 BuildRequires:  desktop-file-utils
 BuildRequires:  intltool >= 0.35
 BuildRequires:  dbus-devel
@@ -39,20 +38,14 @@ BuildRequires:  librsvg2-devel
 BuildRequires:  metacity
 
 Source0:        %{name}-%{version}.tar.bz2
-Source1:	desktop-effects-%{dialogversion}.tar.gz
+Source1:	desktop-effects-%{dialogversion}.tar.bz2
 
 # Patches that are not upstream
 Patch101: aiglx-defaults.patch
 Patch102: tfp-server-extension.patch
 Patch103: composite-cube-logo.patch
-
 Patch105: fedora-logo.patch
-Patch106: glfinish.patch
-Patch107: cow.patch
-
-Patch113: resize-offset.patch
 Patch114: restart.patch
-Patch115: icon-menu.patch
 Patch116: terminate-move.patch
 
 %description
@@ -84,14 +77,8 @@ windows and compositing manager.
 %patch101 -p1 -b .aiglx-defaults
 %patch102 -p1 -b .tfp-server-extension
 %patch103 -p1 -b .composite-cube-logo
-
 %patch105 -p1 -b .fedora-logo
-%patch106 -p1 -b .glfinish
-%patch107 -p1 -b .cow
-
-%patch113 -p1 -b .resize-offset
 %patch114 -p1 -b .restart
-%patch115 -p1 -b .icon-menu
 %patch116 -p1 -b .terminate-move
 
 %build
@@ -99,8 +86,6 @@ rm -rf $RPM_BUILD_ROOT
 
 CPPFLAGS="$CPPFLAGS -I$RPM_BUILD_ROOT%{_includedir}"
 export CPPFLAGS
-
-autoreconf
 
 %configure 			\
 	--enable-gconf 		\
@@ -110,13 +95,11 @@ autoreconf
 	--enable-metacity 	\
 	--enable-gnome
 
-make %{?_smp_mflags} 
+make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 
 # desktop-effects
 cd ../desktop-effects-%{dialogversion}
-sed -i -e "s/gnome-window-decorator/gtk-window-decorator/" desktop-effects.c
 %configure 
-make
 
 
 %install
@@ -126,15 +109,21 @@ make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 
 echo INSTALLING DESKTOP EFFECTS
-cd ../desktop-effects-%{dialogversion}
+pushd ../desktop-effects-%{dialogversion}
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 desktop-file-install --vendor redhat --delete-original      \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
   --add-category X-Red-Hat-Base                             \
   $RPM_BUILD_ROOT%{_datadir}/applications/desktop-effects.desktop
+popd
 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
+
+%find_lang compiz
+%find_lang desktop-effects
+
+cat compiz.lang desktop-effects.lang > all.lang
 
 %post
 update-desktop-database -q %{_datadir}/applications
@@ -166,11 +155,12 @@ fi
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
+%files -f all.lang
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog COPYING* INSTALL README TODO
 %{_bindir}/compiz
 %{_bindir}/gtk-window-decorator
+%{_libdir}/libdecoration.so.*
 %{_libdir}/compiz/*.so
 %{_libdir}/window-manager-settings/libcompiz.so
 %{_sysconfdir}/gconf/schemas/compiz.schemas
@@ -191,9 +181,19 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-, root, root)
 %{_libdir}/pkgconfig/compiz.pc
+%{_libdir}/pkgconfig/libdecoration.pc
 %{_includedir}/compiz
+%{_libdir}/libdecoration.so
 
 %changelog
+* Tue Jan 16 2007 Kristian Høgsberg <krh@localhost.localdomain> - 0.3.6-1
+- Update to 0.3.6, update patches.
+- Drop autotool build requires.
+- Drop glfinish.patch, cow.patch, resize-offset.patch and icon-menu-patch.
+- Add libdecoration.so
+- Update to desktop-effects-0.7.0, which spawns the right decorator
+  and plays nicely with unknown plugins.
+
 * Sat Nov 25 2006 Matthias Clasen <mclasen@redhat.com> - 0.3.4-2
 - Update the fedora logo patch (#217224)
 
@@ -208,7 +208,7 @@ rm -rf $RPM_BUILD_ROOT
 - Drop upstreamed patches
 - Work with new metacity theme api
 
-* Mon Oct 2 2006 Soren Sandmann <sandmann@redhat.ocm> - 0.0.13-0.32.20060818git.fc6
+* Mon Oct 2 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.32.20060818git.fc6
 - Install the .desktop file with desktop-file-install. Add X-Red-Hat-Base to make it appear in "Preferences", rather than "More Preferences".
 
 * Sat Sep 30 2006 Soren Sandmann <sandmann@redhat.com> - 0.0.13-0.31.20060818git.fc6

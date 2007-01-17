@@ -1,20 +1,8 @@
-Composite cube logo against background color.
-
-From: Kristian Høgsberg <krh@redhat.com>
-
-
----
-
- plugins/cube.c |   17 +++++++++++++++++
- 1 files changed, 17 insertions(+), 0 deletions(-)
-
-diff --git a/plugins/cube.c b/plugins/cube.c
-index 31edd5c..339d843 100644
---- a/plugins/cube.c
-+++ b/plugins/cube.c
-@@ -1162,11 +1162,28 @@ cubePaintTransformedScreen (CompScreen		
+--- compiz-0.3.6/plugins/cube.c~	2007-01-15 19:26:18.000000000 -0500
++++ compiz-0.3.6/plugins/cube.c	2007-01-15 19:30:29.000000000 -0500
+@@ -1421,11 +1421,27 @@
  
- 	if (cs->invert == 1 && s->size == 4 && cs->texture.name)
+ 	if (cs->invert == 1 && hsize == 4 && cs->texture.name)
  	{
 +	    glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 +
@@ -31,7 +19,6 @@ index 31edd5c..339d843 100644
 +	    glTexEnvf (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
 +
  	    enableTexture (s, &cs->texture, COMP_TEXTURE_FILTER_GOOD);
-+
  	    glTexCoordPointer (2, GL_FLOAT, 0, cs->tc);
  	    glDrawArrays (GL_TRIANGLE_FAN, 0, cs->nvertices >> 1);
  	    disableTexture (s, &cs->texture);

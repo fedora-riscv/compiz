@@ -1,18 +1,6 @@
-Make compiz look for GLX_EXT_texture_from_pixmap in the server extensions
-
-From: Kristian Høgsberg <krh@redhat.com>
-
-too.
----
-
- src/screen.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/src/screen.c b/src/screen.c
-index 0941107..9ec30d5 100644
---- a/src/screen.c
-+++ b/src/screen.c
-@@ -897,7 +897,7 @@ addScreen (CompDisplay *display,
+--- compiz-0.3.6/src/screen.c~	2006-12-29 14:24:40.000000000 -0500
++++ compiz-0.3.6/src/screen.c	2007-01-12 16:01:34.000000000 -0500
+@@ -1384,7 +1384,7 @@
      Window		 *children;
      unsigned int	 nchildren;
      int			 defaultDepth, nvisinfo, nElements, value, i;
@@ -21,16 +9,15 @@ index 0941107..9ec30d5 100644
      GLint	         stencilBits;
      XSetWindowAttributes attrib;
      GLfloat		 globalAmbient[]  = { 0.1f, 0.1f,  0.1f, 0.1f };
-@@ -1117,7 +1117,11 @@ addScreen (CompDisplay *display,
-     XFree (visinfo);
+@@ -1630,7 +1630,10 @@
+ 	    i++;
  
-     glxExtensions = glXQueryExtensionsString (s->display->display, screenNum);
--    if (!strstr (glxExtensions, "GLX_EXT_texture_from_pixmap"))
-+    glxServerExtensions = glXQueryServerString(s->display->display,
-+					       screenNum, GLX_EXTENSIONS );
-+
-+    if (!strstr (glxExtensions, "GLX_EXT_texture_from_pixmap") &&
-+	!strstr (glxServerExtensions, "GLX_EXT_texture_from_pixmap"))
-     {
- 	fprintf (stderr, "%s: GLX_EXT_texture_from_pixmap is missing\n",
- 		 programName);
+ 	glxExtensions = glXQueryExtensionsString (dpy, screenNum);
+-	if (!strstr (glxExtensions, "GLX_EXT_texture_from_pixmap"))
++	glxServerExtensions = glXQueryServerString(s->display->display,
++						   screenNum, GLX_EXTENSIONS);
++	if (!strstr (glxExtensions, "GLX_EXT_texture_from_pixmap") &&
++	    !strstr (glxServerExtensions, "GLX_EXT_texture_from_pixmap"))
+ 	{
+ 	    if (i > 0)
+ 	    {

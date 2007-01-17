@@ -1,5 +1,5 @@
---- compiz-0.3.2/plugins/cube.c.fedora-logo	2006-11-10 14:40:19.000000000 -0500
-+++ compiz-0.3.2/plugins/cube.c	2006-11-10 14:42:29.000000000 -0500
+--- compiz-0.3.6/plugins/cube.c.foo	2007-01-12 18:21:50.000000000 -0500
++++ compiz-0.3.6/plugins/cube.c	2007-01-12 18:22:25.000000000 -0500
 @@ -46,14 +46,14 @@
  
  #include <compiz.h>
@@ -14,14 +14,14 @@
  #define CUBE_IN_DEFAULT FALSE
  
  static char *cubeImages[] = {
--    "freedesktop.png"
-+    "/usr/share/pixmaps/fedora-logo.png"
+-    "freedesktop"
++    "fedora-logo"
  };
  #define N_CUBE_IMAGES (sizeof (cubeImages) / sizeof (cubeImages[0]))
  
---- compiz-0.3.4/plugins/compiz.schemas.in.fedora-logo       2006-11-15 18:28:01.000000000 +0100
-+++ compiz-0.3.4/plugins/compiz.schemas.in   2006-11-25 10:29:49.000000000 +0100
-@@ -15725,7 +15725,7 @@
+--- compiz-0.3.6/plugins/compiz.schemas.in.foo	2006-12-28 22:27:00.000000000 -0500
++++ compiz-0.3.6/plugins/compiz.schemas.in	2007-01-12 18:21:50.000000000 -0500
+@@ -15753,7 +15753,7 @@
              <applyto>/apps/compiz/plugins/cube/screen0/options/color</applyto>
              <owner>compiz</owner>
              <type>string</type>
@@ -30,12 +30,12 @@
              <locale name="C">
                  <short>Cube Color</short>
                  <long>Color of top and bottom sides of the cube</long>
-@@ -15918,7 +15918,7 @@
+@@ -15946,7 +15946,7 @@
              <owner>compiz</owner>
              <type>list</type>
              <list_type>string</list_type>
--            <default>[freedesktop.png]</default>
-+            <default>[/usr/share/pixmaps/fedora-logo.png]</default>
+-            <default>[freedesktop]</default>
++            <default>[/usr/share/pixmaps/fedora-logo]</default>
              <locale name="C">
                  <short>Image files</short>
                  <long>List of PNG and SVG files that should be rendered on top face of cube</long>

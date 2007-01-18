@@ -187,7 +187,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
-* Tue Jan 16 2007 Kristian Høgsberg <krh@localhost.localdomain> - 0.3.6-1
+* Tue Jan 16 2007 Kristian Høgsberg <krh@redhat.com> - 0.3.6-1
 - Update to 0.3.6, update patches.
 - Drop autotool build requires.
 - Drop glfinish.patch, cow.patch, resize-offset.patch and icon-menu-patch.

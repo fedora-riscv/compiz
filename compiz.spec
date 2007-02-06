@@ -1,13 +1,11 @@
-#						-*- mode: rpm-spec -*-
-
-%define		dialogversion	0.7.0
+%define		dialogversion	0.7.1
 
 Name:           compiz
 Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -19,7 +17,7 @@ Requires:	xorg-x11-server-Xorg >= 1.1.0-26
 Requires:	mesa-libGL >= 6.5-9
 Requires:	libwnck >= 2.15.4
 Requires:       system-logos
-Requires:	gnome-session >= 2.15.90-2.fc6
+Requires:	gnome-session >= 2.16
 
 Requires(pre):	GConf2
 Requires(post):	GConf2
@@ -187,6 +185,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Tue Feb  6 2007 Kristian Høgsberg <krh@redhat.com> 0.3.6
+- Require gnome-session > 2.16 so it starts gtk-window-decorator.
+- Update to desktop-effects 0.7.1 that doesn't refuse to work with Xinerama.
+
 * Tue Jan 16 2007 Kristian Høgsberg <krh@redhat.com> - 0.3.6-1
 - Update to 0.3.6, update patches.
 - Drop autotool build requires.

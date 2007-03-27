@@ -5,7 +5,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.6
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -92,7 +92,8 @@ export CPPFLAGS
 	--enable-librsvg 	\
 	--enable-gtk 		\
 	--enable-metacity 	\
-	--enable-gnome
+	--enable-gnome		\
+	--disable-kde
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 
@@ -191,6 +192,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Tue Mar 27 2007 Kristian Høgsberg <krh@redhat.com> 0.3.6-4
+- Explicitly disable KDE parts (#234128).
+
 * Mon Mar 26 2007 Matthias Clasen <mclasen@redhat.com> 0.3.6-3
 - Fix some directory ownership issues (#233825)
 - Small spec cleanups

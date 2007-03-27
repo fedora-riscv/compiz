@@ -5,7 +5,7 @@ Url:            http://www.freedesktop.org/Software/compiz
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -112,7 +112,6 @@ pushd ../desktop-effects-%{dialogversion}
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 desktop-file-install --vendor redhat --delete-original      \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
-  --add-category X-Red-Hat-Base                             \
   $RPM_BUILD_ROOT%{_datadir}/applications/desktop-effects.desktop
 popd
 
@@ -130,7 +129,7 @@ export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
 /usr/bin/gconftool-2 --makefile-install-rule \
 	%{_sysconfdir}/gconf/schemas/compiz.schemas \
 	%{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
-touch %{_datadir}/icons/hicolor
+touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
 	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
 fi
@@ -151,6 +150,12 @@ if [ "$1" -eq 0 ]; then
 	%{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
 
+%postun
+touch --no-create %{_datadir}/icons/hicolor
+if [ -x /usr/bin/gtk-update-icon-cache ]; then
+	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
+fi
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -160,13 +165,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/compiz
 %{_bindir}/gtk-window-decorator
 %{_libdir}/libdecoration.so.*
+%dir %{_libdir}/compiz
 %{_libdir}/compiz/*.so
 %{_libdir}/window-manager-settings/libcompiz.so
 %{_sysconfdir}/gconf/schemas/compiz.schemas
 %{_sysconfdir}/gconf/schemas/gwd.schemas
+%dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
 %{_datadir}/gnome/wm-properties/compiz.desktop
-%{_datadir}/locale/*/LC_MESSAGES/compiz.mo
 %{_bindir}/desktop-effects
 %{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/applications/redhat-desktop-effects.desktop
@@ -185,6 +191,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Mon Mar 26 2007 Matthias Clasen <mclasen@redhat.com> 0.3.6-3
+- Fix some directory ownership issues (#233825)
+- Small spec cleanups
+
 * Tue Feb  6 2007 Kristian Høgsberg <krh@redhat.com> 0.3.6
 - Require gnome-session > 2.16 so it starts gtk-window-decorator.
 - Update to desktop-effects 0.7.1 that doesn't refuse to work with Xinerama.

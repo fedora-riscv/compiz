@@ -1,11 +1,11 @@
 %define		dialogversion	0.7.1
 
 Name:           compiz
-Url:            http://www.freedesktop.org/Software/compiz
+Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.6
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -18,6 +18,7 @@ Requires:	mesa-libGL >= 6.5-9
 Requires:	libwnck >= 2.15.4
 Requires:       system-logos
 Requires:	gnome-session >= 2.16
+Requires:	metacity >= 2.18
 
 Requires(pre):	GConf2
 Requires(post):	GConf2
@@ -46,6 +47,7 @@ Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch114: restart.patch
 Patch116: terminate-move.patch
+Patch117: close-session.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -79,6 +81,7 @@ windows and compositing manager.
 %patch105 -p1 -b .fedora-logo
 %patch114 -p1 -b .restart
 %patch116 -p1 -b .terminate-move
+%patch117 -p1 -b .close-session
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -192,6 +195,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Wed Mar 28 2007 Kristian Høgsberg <krh@redhat.com> - 0.3.6-5
+- Update URL (#208214).
+- Require at least metacity 2.18 (#232831).
+- Add close-session.patch to deregister from SM when replaced (#229113).
+
 * Tue Mar 27 2007 Kristian Høgsberg <krh@redhat.com> 0.3.6-4
 - Explicitly disable KDE parts (#234128).
 

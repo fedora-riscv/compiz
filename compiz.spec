@@ -6,7 +6,7 @@ Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.6
-Release:        6%{?dist}
+Release:        7%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -98,7 +98,7 @@ export CPPFLAGS
 	--enable-gtk 		\
 	--enable-metacity 	\
 	--enable-gnome		\
-	--with-default-plugs=%{plugins} \
+	--with-default-plugins=%{plugins} \
 	--disable-kde
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
@@ -198,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Wed Apr  4 2007 Kristian Høgsberg <krh@hinata.boston.redhat.com> - 0.3.6-7
+- Fix typo in ./configure option.
+
 * Wed Apr  4 2007 Kristian Høgsberg <krh@redhat.com> - 0.3.6-6
 - Add place and clone plugins to default plugin list.
 

@@ -1,11 +1,12 @@
 %define		dialogversion	0.7.1
+%define		plugins place,png,decoration,clone,fade,minimize,move,resize,switcher,scale
 
 Name:           compiz
 Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.6
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -92,10 +93,12 @@ export CPPFLAGS
 %configure 			\
 	--enable-gconf 		\
 	--enable-dbus 		\
+	--enable-place 		\
 	--enable-librsvg 	\
 	--enable-gtk 		\
 	--enable-metacity 	\
 	--enable-gnome		\
+	--with-default-plugs=%{plugins} \
 	--disable-kde
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
@@ -195,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Wed Apr  4 2007 Kristian Høgsberg <krh@redhat.com> - 0.3.6-6
+- Add place and clone plugins to default plugin list.
+
 * Wed Mar 28 2007 Kristian Høgsberg <krh@redhat.com> - 0.3.6-5
 - Update URL (#208214).
 - Require at least metacity 2.18 (#232831).

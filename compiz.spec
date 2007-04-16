@@ -6,7 +6,7 @@ Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.6
-Release:        7%{?dist}
+Release:        8%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -36,7 +36,7 @@ BuildRequires:  intltool >= 0.35
 BuildRequires:  gettext 
 BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
-BuildRequires:  metacity
+BuildRequires:  metacity-devel >= 2.18
 
 Source0:        %{name}-%{version}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
@@ -198,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Mon Apr 16 2007 Kristian Høgsberg <krh@hinata.boston.redhat.com> - 0.3.6-8
+- Update metacity build requires to metacity-devel.
+
 * Wed Apr  4 2007 Kristian Høgsberg <krh@hinata.boston.redhat.com> - 0.3.6-7
 - Fix typo in ./configure option.
 

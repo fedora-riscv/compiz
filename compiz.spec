@@ -6,7 +6,7 @@ Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.6
-Release:        8%{?dist}
+Release:        9%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -168,7 +168,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f all.lang
 %defattr(-, root, root)
-%doc AUTHORS ChangeLog COPYING* INSTALL README TODO
+%doc AUTHORS ChangeLog COPYING* README TODO
 %{_bindir}/compiz
 %{_bindir}/gtk-window-decorator
 %{_libdir}/libdecoration.so.*
@@ -198,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Sat Apr 21 2007 Matthias Clasen <mclasen@redhat.com> - 0.3.6-9
+- Don't install INSTALL
+
 * Mon Apr 16 2007 Kristian Høgsberg <krh@hinata.boston.redhat.com> - 0.3.6-8
 - Update metacity build requires to metacity-devel.
 

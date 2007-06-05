@@ -49,6 +49,7 @@ Patch105: fedora-logo.patch
 Patch114: restart.patch
 Patch116: terminate-move.patch
 Patch117: close-session.patch
+Patch118: compiz-0.3.6-wnck-modal-window.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -83,6 +84,7 @@ windows and compositing manager.
 %patch114 -p1 -b .restart
 %patch116 -p1 -b .terminate-move
 %patch117 -p1 -b .close-session
+%patch118 -p1 -b .wnck-modal-window
 
 %build
 rm -rf $RPM_BUILD_ROOT

@@ -6,7 +6,7 @@ Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.3.6
-Release:        9%{?dist}
+Release:        10%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -198,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Mon Jun  4 2007 Matthias Clasen <mclasen@redhat.com> - 0.3.6-10
+- Rebuild against new libwnck
+
 * Sat Apr 21 2007 Matthias Clasen <mclasen@redhat.com> - 0.3.6-9
 - Don't install INSTALL
 

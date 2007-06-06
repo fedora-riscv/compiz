@@ -1,15 +1,15 @@
---- compiz-0.3.6/src/screen.c~	2006-12-29 14:24:40.000000000 -0500
-+++ compiz-0.3.6/src/screen.c	2007-01-12 16:01:34.000000000 -0500
-@@ -1384,7 +1384,7 @@
+--- compiz-0.4.0/src/screen.c.tfp-server-extension	2007-04-02 05:05:49.000000000 -0400
++++ compiz-0.4.0/src/screen.c	2007-06-05 23:20:52.000000000 -0400
+@@ -1396,7 +1396,7 @@ addScreen (CompDisplay *display,
      Window		 *children;
      unsigned int	 nchildren;
      int			 defaultDepth, nvisinfo, nElements, value, i;
 -    const char		 *glxExtensions, *glExtensions;
 +    const char		 *glxExtensions, *glxServerExtensions, *glExtensions;
-     GLint	         stencilBits;
      XSetWindowAttributes attrib;
      GLfloat		 globalAmbient[]  = { 0.1f, 0.1f,  0.1f, 0.1f };
-@@ -1630,7 +1630,10 @@
+     GLfloat		 ambientLight[]   = { 0.0f, 0.0f,  0.0f, 0.0f };
+@@ -1645,7 +1645,10 @@ addScreen (CompDisplay *display,
  	    i++;
  
  	glxExtensions = glXQueryExtensionsString (dpy, screenNum);

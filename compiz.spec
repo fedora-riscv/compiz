@@ -5,8 +5,8 @@ Name:           compiz
 Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
-Version:        0.3.6
-Release:        10%{?dist}
+Version:        0.4.0
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -38,7 +38,7 @@ BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 
-Source0:        %{name}-%{version}.tar.bz2
+Source0:        http://xorg.freedesktop.org/archive/individual/app/%{name}-%{version}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
 
 # Patches that are not upstream
@@ -46,8 +46,6 @@ Patch101: aiglx-defaults.patch
 Patch102: tfp-server-extension.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
-Patch114: restart.patch
-Patch116: terminate-move.patch
 Patch117: close-session.patch
 Patch118: compiz-0.3.6-wnck-modal-window.patch
 
@@ -81,8 +79,6 @@ windows and compositing manager.
 %patch102 -p1 -b .tfp-server-extension
 %patch103 -p1 -b .composite-cube-logo
 %patch105 -p1 -b .fedora-logo
-%patch114 -p1 -b .restart
-%patch116 -p1 -b .terminate-move
 %patch117 -p1 -b .close-session
 %patch118 -p1 -b .wnck-modal-window
 
@@ -200,6 +196,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Tue Jun  5 2007 Matthias Clasen <mclasen@redhat.com> - 0.4.0-1
+- Update to 0.4.0
+
 * Mon Jun  4 2007 Matthias Clasen <mclasen@redhat.com> - 0.3.6-10
 - Rebuild against new libwnck
 

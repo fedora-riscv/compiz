@@ -37,6 +37,7 @@ BuildRequires:  gettext
 BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
+BuildRequires:  mesa-libGLU-devel
 
 Source0:        http://xorg.freedesktop.org/archive/individual/app/%{name}-%{version}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2

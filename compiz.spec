@@ -1,11 +1,11 @@
-%define		dialogversion	0.7.1
+%define		dialogversion	0.7.2
 %define		plugins place,png,decoration,clone,fade,minimize,move,resize,switcher,scale
 
 Name:           compiz
 Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
-Version:        0.4.0
+Version:        0.5.2
 Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
@@ -18,7 +18,7 @@ Requires:	xorg-x11-server-Xorg >= 1.1.0-26
 Requires:	mesa-libGL >= 6.5-9
 Requires:	libwnck >= 2.15.4
 Requires:       system-logos
-Requires:	gnome-session >= 2.16
+Requires:	gnome-session >= 2.19.6-4
 Requires:	metacity >= 2.18
 
 Requires(pre):	GConf2
@@ -47,7 +47,6 @@ Patch101: aiglx-defaults.patch
 Patch102: tfp-server-extension.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
-Patch117: close-session.patch
 Patch118: compiz-0.3.6-wnck-modal-window.patch
 
 %description
@@ -76,12 +75,9 @@ windows and compositing manager.
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
 %setup -q 
 
-%patch101 -p1 -b .aiglx-defaults
-%patch102 -p1 -b .tfp-server-extension
-%patch103 -p1 -b .composite-cube-logo
+# %patch103 -p1 -b .composite-cube-logo
 %patch105 -p1 -b .fedora-logo
-%patch117 -p1 -b .close-session
-%patch118 -p1 -b .wnck-modal-window
+# %patch118 -p1 -b .wnck-modal-window
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -132,9 +128,9 @@ cat compiz.lang desktop-effects.lang > all.lang
 %post
 update-desktop-database -q %{_datadir}/applications
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
+
 /usr/bin/gconftool-2 --makefile-install-rule \
-	%{_sysconfdir}/gconf/schemas/compiz.schemas \
-	%{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
+	%{_sysconfdir}/gconf/schemas/*.schemas >& /dev/null || :
 touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
 	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
@@ -144,16 +140,14 @@ fi
 if [ "$1" -gt 1 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
   gconftool-2 --makefile-uninstall-rule \
-	%{_sysconfdir}/gconf/schemas/compiz.schemas \
-	%{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
+	%{_sysconfdir}/gconf/schemas/*.schemas >& /dev/null || :
 fi
 
 %preun
 if [ "$1" -eq 0 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
   gconftool-2 --makefile-uninstall-rule \
-	%{_sysconfdir}/gconf/schemas/compiz.schemas \
-	%{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
+	%{_sysconfdir}/gconf/schemas/*.schemas >& /dev/null || :
 fi
 
 %postun
@@ -174,11 +168,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/compiz
 %{_libdir}/compiz/*.so
 %{_libdir}/window-manager-settings/libcompiz.so
-%{_sysconfdir}/gconf/schemas/compiz.schemas
-%{_sysconfdir}/gconf/schemas/gwd.schemas
+%{_sysconfdir}/gconf/schemas/*.schemas
 %dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
 %{_datadir}/gnome/wm-properties/compiz.desktop
+%{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
+%{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
 %{_bindir}/desktop-effects
 %{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/applications/redhat-desktop-effects.desktop
@@ -193,10 +188,23 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_libdir}/pkgconfig/compiz.pc
 %{_libdir}/pkgconfig/libdecoration.pc
+%{_libdir}/pkgconfig/compiz-cube.pc
+%{_libdir}/pkgconfig/compiz-gconf.pc
+%{_libdir}/pkgconfig/compiz-scale.pc
+%{_datadir}/compiz/*.xml
+%{_datadir}/compiz/schemas.xslt
 %{_includedir}/compiz
 %{_libdir}/libdecoration.so
 
 %changelog
+* Thu Aug  9 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-1
+- Update to 0.5.2.
+- Require at least gnome-session 2.19.6-2 so gnome-wm starts compiz
+  with LIBGL_ALWAYS_INDIRECT set.
+
+* Wed Jun 27 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.0-1
+- Update to 0.5.0
+
 * Tue Jun  5 2007 Matthias Clasen <mclasen@redhat.com> - 0.4.0-1
 - Update to 0.4.0
 

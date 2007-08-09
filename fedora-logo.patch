@@ -1,41 +1,24 @@
---- compiz-0.3.6/plugins/cube.c.foo	2007-01-12 18:21:50.000000000 -0500
-+++ compiz-0.3.6/plugins/cube.c	2007-01-12 18:22:25.000000000 -0500
-@@ -46,14 +46,14 @@
- 
- #include <compiz.h>
- 
--#define CUBE_COLOR_RED_DEFAULT   0xefef
--#define CUBE_COLOR_GREEN_DEFAULT 0xebeb
--#define CUBE_COLOR_BLUE_DEFAULT  0xe7e7
-+#define CUBE_COLOR_RED_DEFAULT   0x0000
-+#define CUBE_COLOR_GREEN_DEFAULT 0x1919
-+#define CUBE_COLOR_BLUE_DEFAULT  0x4a4a
- 
- #define CUBE_IN_DEFAULT FALSE
- 
- static char *cubeImages[] = {
--    "freedesktop"
-+    "fedora-logo"
- };
- #define N_CUBE_IMAGES (sizeof (cubeImages) / sizeof (cubeImages[0]))
- 
---- compiz-0.3.6/plugins/compiz.schemas.in.foo	2006-12-28 22:27:00.000000000 -0500
-+++ compiz-0.3.6/plugins/compiz.schemas.in	2007-01-12 18:21:50.000000000 -0500
-@@ -15753,7 +15753,7 @@
-             <applyto>/apps/compiz/plugins/cube/screen0/options/color</applyto>
-             <owner>compiz</owner>
-             <type>string</type>
--            <default>#efebe7ff</default>
-+            <default>#00194aff</default>
-             <locale name="C">
-                 <short>Cube Color</short>
-                 <long>Color of top and bottom sides of the cube</long>
-@@ -15946,7 +15946,7 @@
-             <owner>compiz</owner>
-             <type>list</type>
-             <list_type>string</list_type>
--            <default>[freedesktop]</default>
-+            <default>[/usr/share/pixmaps/fedora-logo]</default>
-             <locale name="C">
-                 <short>Image files</short>
-                 <long>List of PNG and SVG files that should be rendered on top face of cube</long>
+--- compiz-0.5.2/metadata/cube.xml~	2007-08-03 14:39:29.000000000 -0400
++++ compiz-0.5.2/metadata/cube.xml	2007-08-08 18:48:30.000000000 -0400
+@@ -197,9 +197,9 @@
+ 		<long xml:lang="zh_CN">立方体顶边和底边的颜色</long>
+ 		<long xml:lang="zh_TW">立方體的頂面和底面顏色</long>
+ 		<default>
+-		    <red>0xfefe</red>
+-		    <green>0xffff</green>
+-		    <blue>0xc7c7</blue>
++		    <red>0x1919</red>
++		    <green>0x4a4a</green>
++		    <blue>0xffff</blue>
+ 		</default>
+ 	    </option>
+ 	    <option type="bool" name="in">
+@@ -319,7 +319,7 @@
+ 		<long xml:lang="zh_TW">應該要描繪至立方體頂面的 PNG 和 SVG 檔案清單</long>
+ 		<type>string</type>
+ 		<default>
+-		    <value>freedesktop</value>
++		    <value>/usr/share/pixmaps/fedora-logo</value>
+ 		</default>
+ 	    </option>
+ 	    <option type="bool" name="skydome">

@@ -1,4 +1,4 @@
-%define		dialogversion	0.7.2
+%define		dialogversion	0.7.3
 %define		plugins place,png,decoration,clone,fade,minimize,move,resize,switcher,scale
 
 Name:           compiz
@@ -6,7 +6,7 @@ Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -18,7 +18,7 @@ Requires:	xorg-x11-server-Xorg >= 1.1.0-26
 Requires:	mesa-libGL >= 6.5-9
 Requires:	libwnck >= 2.15.4
 Requires:       system-logos
-Requires:	gnome-session >= 2.19.6-4
+Requires:	gnome-session >= 2.19.6-5
 Requires:	metacity >= 2.18
 
 Requires(pre):	GConf2
@@ -197,6 +197,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Fri Aug 10 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-3
+- Require desktop-effects 0.7.3 and gnome-session 2.19.6-5 which pass
+  'glib' on the command line too.
+
 * Fri Aug 10 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-2
 - Move xml meta data files to main package.
 

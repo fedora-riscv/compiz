@@ -6,7 +6,7 @@ Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -164,18 +164,19 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog COPYING* README TODO
 %{_bindir}/compiz
 %{_bindir}/gtk-window-decorator
+%{_bindir}/desktop-effects
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
 %{_libdir}/compiz/*.so
 %{_libdir}/window-manager-settings/libcompiz.so
 %{_sysconfdir}/gconf/schemas/*.schemas
 %dir %{_datadir}/compiz
+%{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/compiz/*.png
+%{_datadir}/compiz/*.xml
 %{_datadir}/gnome/wm-properties/compiz.desktop
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
-%{_bindir}/desktop-effects
-%{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/applications/redhat-desktop-effects.desktop
 %{_datadir}/icons/hicolor/16x16/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/24x24/apps/desktop-effects.png
@@ -191,12 +192,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/compiz-cube.pc
 %{_libdir}/pkgconfig/compiz-gconf.pc
 %{_libdir}/pkgconfig/compiz-scale.pc
-%{_datadir}/compiz/*.xml
 %{_datadir}/compiz/schemas.xslt
 %{_includedir}/compiz
 %{_libdir}/libdecoration.so
 
 %changelog
+* Fri Aug 10 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-2
+- Move xml meta data files to main package.
+
 * Thu Aug  9 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-1
 - Update to 0.5.2.
 - Require at least gnome-session 2.19.6-2 so gnome-wm starts compiz

@@ -1,12 +1,13 @@
-%define		dialogversion	0.7.3
-%define		plugins place,png,decoration,clone,fade,minimize,move,resize,switcher,scale
+%define		snapshot	0ec3ec
+%define		dialogversion	0.7.4
+%define		plugins		place,png,decoration,clone,fade,minimize,move,resize,switcher,scale
 
 Name:           compiz
 Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        3%{?dist}
+Release:        3.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -39,7 +40,7 @@ BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
 
-Source0:        http://xorg.freedesktop.org/archive/individual/app/%{name}-%{version}.tar.gz
+Source0:        %{name}-%{snapshot}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
 
 # Patches that are not upstream
@@ -73,7 +74,7 @@ windows and compositing manager.
 
 %prep
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
-%setup -q 
+%setup -q  -n compiz-%{snapshot}
 
 # %patch103 -p1 -b .composite-cube-logo
 %patch105 -p1 -b .fedora-logo
@@ -85,15 +86,16 @@ rm -rf $RPM_BUILD_ROOT
 CPPFLAGS="$CPPFLAGS -I$RPM_BUILD_ROOT%{_includedir}"
 export CPPFLAGS
 
-%configure 			\
-	--enable-gconf 		\
-	--enable-dbus 		\
-	--enable-place 		\
-	--enable-librsvg 	\
-	--enable-gtk 		\
-	--enable-metacity 	\
-	--enable-gnome		\
-	--with-default-plugins=%{plugins} \
+%configure 					\
+	--enable-gconf 				\
+	--enable-dbus 				\
+	--enable-place 				\
+	--enable-librsvg 			\
+	--enable-gtk 				\
+	--enable-metacity 			\
+	--enable-gnome				\
+	--with-default-plugins=%{plugins}	\
+	--enable-gnome-keybindings		\
 	--disable-kde
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
@@ -197,6 +199,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Tue Aug 14 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-3.0ec3ec
+- Build git snapshot from fedora branch at
+  git://people.freedesktop.org/~krh/compiz, brances from 0.6 upstream
+  branch.
+- Fixes #237486.
+
 * Fri Aug 10 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-3
 - Require desktop-effects 0.7.3 and gnome-session 2.19.6-5 which pass
   'glib' on the command line too.

@@ -1,5 +1,5 @@
 %define		snapshot	0ec3ec
-%define		dialogversion	0.7.4
+%define		dialogversion	0.7.5
 %define		plugins		place,png,decoration,clone,fade,minimize,move,resize,switcher,scale
 
 Name:           compiz
@@ -7,7 +7,7 @@ Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        3.%{snapshot}%{?dist}
+Release:        4.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -199,6 +199,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Tue Aug 14 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-4.0ec3ec
+- Build with desktop-effects so we don't pick up metacity work spaces.
+  Fixes #250568.
+
 * Tue Aug 14 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-3.0ec3ec
 - Build git snapshot from fedora branch at
   git://people.freedesktop.org/~krh/compiz, brances from 0.6 upstream

@@ -1,24 +1,25 @@
---- compiz-0.5.2/metadata/cube.xml~	2007-08-03 14:39:29.000000000 -0400
-+++ compiz-0.5.2/metadata/cube.xml	2007-08-08 18:48:30.000000000 -0400
-@@ -197,9 +197,9 @@
- 		<long xml:lang="zh_CN">立方体顶边和底边的颜色</long>
- 		<long xml:lang="zh_TW">立方體的頂面和底面顏色</long>
+diff -up compiz-0ec3ec/metadata/cube.xml.in.fedora-logo compiz-0ec3ec/metadata/cube.xml.in
+--- compiz-0ec3ec/metadata/cube.xml.in.fedora-logo	2007-08-13 17:49:03.000000000 -0400
++++ compiz-0ec3ec/metadata/cube.xml.in	2007-08-15 18:07:54.000000000 -0400
+@@ -42,9 +42,9 @@
+ 		<_short>Cube Color</_short>
+ 		<_long>Color of top and bottom sides of the cube</_long>
  		<default>
 -		    <red>0xfefe</red>
 -		    <green>0xffff</green>
 -		    <blue>0xc7c7</blue>
-+		    <red>0x1919</red>
-+		    <green>0x4a4a</green>
-+		    <blue>0xffff</blue>
++		    <red>0x0000</red>
++		    <green>0x1919</green>
++		    <blue>0x4a4a</blue>
  		</default>
  	    </option>
- 	    <option type="bool" name="in">
-@@ -319,7 +319,7 @@
- 		<long xml:lang="zh_TW">應該要描繪至立方體頂面的 PNG 和 SVG 檔案清單</long>
+ 	    <option name="in" type="bool">
+@@ -62,7 +62,7 @@
+ 		<_long>List of PNG and SVG files that should be rendered on top face of cube</_long>
  		<type>string</type>
  		<default>
 -		    <value>freedesktop</value>
 +		    <value>/usr/share/pixmaps/fedora-logo</value>
  		</default>
  	    </option>
- 	    <option type="bool" name="skydome">
+ 	    <option name="skydome" type="bool">

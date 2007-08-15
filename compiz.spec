@@ -1,13 +1,13 @@
 %define		snapshot	0ec3ec
 %define		dialogversion	0.7.5
-%define		plugins		place,png,decoration,clone,fade,minimize,move,resize,switcher,scale
+%define		plugins		glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,plane
 
 Name:           compiz
 Url:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        4.%{snapshot}%{?dist}
+Release:        5.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -15,8 +15,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # libdrm is not available on these arches
 ExcludeArch:   	s390 s390x ppc64
 
-Requires:	xorg-x11-server-Xorg >= 1.1.0-26
-Requires:	mesa-libGL >= 6.5-9
+Requires:	xorg-x11-server-Xorg >= 1.3.0.0-19.fc8
+Requires:	mesa-libGL >= 7.0.1-2.fc8
 Requires:	libwnck >= 2.15.4
 Requires:       system-logos
 Requires:	gnome-session >= 2.19.6-5
@@ -44,11 +44,9 @@ Source0:        %{name}-%{snapshot}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
 
 # Patches that are not upstream
-Patch101: aiglx-defaults.patch
-Patch102: tfp-server-extension.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
-Patch118: compiz-0.3.6-wnck-modal-window.patch
+Patch110: run-command-key.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -76,9 +74,9 @@ windows and compositing manager.
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
 %setup -q  -n compiz-%{snapshot}
 
-# %patch103 -p1 -b .composite-cube-logo
+%patch103 -p1 -b .composite-cube-logo
 %patch105 -p1 -b .fedora-logo
-# %patch118 -p1 -b .wnck-modal-window
+%patch110 -p1 -b .run-command-key
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -199,6 +197,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Wed Aug 15 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-5.0ec3ec
+- Reorder plugin list to avoid 'place' getting removed on startup.
+- Add run-command-key.patch to put the run command key in the GNOME
+  keyboard shortcut dialog (#213576).
+- Drop a bunch of obsolete patches.
+- Bump mesa-libGL and X server requires to fix TFP bugs for
+  power-of-two textures (#251935).
+- Rebase fedora-logo and composite-cube-logo patch.
+
 * Tue Aug 14 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-4.0ec3ec
 - Build with desktop-effects so we don't pick up metacity work spaces.
   Fixes #250568.

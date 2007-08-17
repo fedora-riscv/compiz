@@ -290,7 +290,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
-* Fri Aug 17 2007 Adel Gadllah <adel.gadllah@gmail.com> 0.5.2-6-0ec3ec
+* Fri Aug 17 2007 Adel Gadllah <adel.gadllah@gmail.com> 0.5.2-6.0ec3ec
 - Split into gnome and kde subpackages
 - Minor cleanups
 

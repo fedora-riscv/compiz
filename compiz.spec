@@ -44,7 +44,6 @@ Source1:	desktop-effects-%{dialogversion}.tar.bz2
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch110: run-command-key.patch
-Patch111: kde-decorator.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -100,7 +99,6 @@ and other kde integration related stuff
 %patch103 -p1 -b .composite-cube-logo
 %patch105 -p1 -b .fedora-logo
 %patch110 -p1 -b .run-command-key
-%patch111 -p1 -b .kde-decorator
 
 %build
 rm -rf $RPM_BUILD_ROOT

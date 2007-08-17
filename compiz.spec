@@ -3,11 +3,11 @@
 %define		plugins		glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,plane
 
 Name:           compiz
-Url:            http://www.go-compiz.org
+URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        5.%{snapshot}%{?dist}
+Release:        6.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -17,14 +17,9 @@ ExcludeArch:   	s390 s390x ppc64
 
 Requires:	xorg-x11-server-Xorg >= 1.3.0.0-19.fc8
 Requires:	mesa-libGL >= 7.0.1-2.fc8
-Requires:	libwnck >= 2.15.4
-Requires:       system-logos
-Requires:	gnome-session >= 2.19.6-5
-Requires:	metacity >= 2.18
+Requires:      system-logos
 
-Requires(pre):	GConf2
-Requires(post):	GConf2
-Requires(preun):GConf2
+
 Requires(post): desktop-file-utils
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
@@ -34,11 +29,12 @@ BuildRequires:  libXt-devel, libXmu-devel, libICE-devel, libSM-devel
 BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  intltool >= 0.35
-BuildRequires:  gettext 
+BuildRequires:  gettext
 BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
+BuildRequires:  kdelibs-devel, dbus-qt
 
 Source0:        %{name}-%{snapshot}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
@@ -54,7 +50,7 @@ managers for the X Window System. The integration allows it to perform
 compositing effects in window management, such as a minimization
 effect and a cube workspace.  Compiz is an OpenGL compositing manager
 that use Compiz use EXT_texture_from_pixmap OpenGL extension extension
-for binding redirected top-level windows to texture objects.
+for binding redirected top-level windows to texture objects
 
 
 %package devel
@@ -68,7 +64,32 @@ The compiz-devel package includes the header files,
 and developer docs for the compiz package.
 
 Install compiz-devel if you want to develop plugins for the compiz
-windows and compositing manager.
+windows and compositing manager
+
+%package gnome
+Summary: Compiz gnome integration bits
+Group: User Interface/Desktops
+Requires: gnome-session >= 2.19.6-5
+Requires: metacity >= 2.18
+Requires: libwnck >= 2.15.4
+Requires: %{name} = %{version}
+Requires(pre): GConf2
+Requires(post): GConf2
+Requires(preun): GConf2
+
+%description gnome
+The compiz-gnome package contains gtk-window-decorator,
+and other gnome integration related stuff
+
+%package kde
+Summary: Compiz kde integration bits
+Group: User Interface/Desktops
+Requires: %{name} = %{version}
+
+%description kde
+The compiz-kde package contains kde-window-decorator,
+and other kde integration related stuff
+
 
 %prep
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
@@ -94,7 +115,7 @@ export CPPFLAGS
 	--enable-gnome				\
 	--with-default-plugins=%{plugins}	\
 	--enable-gnome-keybindings		\
-	--disable-kde
+	--enable-kde
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 
@@ -125,7 +146,12 @@ find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
 cat compiz.lang desktop-effects.lang > all.lang
 
-%post
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%post gnome
 update-desktop-database -q %{_datadir}/applications
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
 
@@ -136,25 +162,26 @@ if [ -x /usr/bin/gtk-update-icon-cache ]; then
 	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
 fi
 
-%pre
+%pre gnome
 if [ "$1" -gt 1 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
   gconftool-2 --makefile-uninstall-rule \
 	%{_sysconfdir}/gconf/schemas/*.schemas >& /dev/null || :
 fi
 
-%preun
+%preun gnome
 if [ "$1" -eq 0 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
   gconftool-2 --makefile-uninstall-rule \
 	%{_sysconfdir}/gconf/schemas/*.schemas >& /dev/null || :
 fi
 
-%postun
+%postun gnome
 touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
 	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
 fi
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -163,20 +190,79 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog COPYING* README TODO
 %{_bindir}/compiz
-%{_bindir}/gtk-window-decorator
-%{_bindir}/desktop-effects
+%{_libdir}/compiz/libblur.so
+%{_libdir}/compiz/libclone.so
+%{_libdir}/compiz/libcube.so
+%{_libdir}/compiz/libdbus.so
+%{_libdir}/compiz/libdecoration.so
+%{_libdir}/compiz/libfade.so
+%{_libdir}/compiz/libini.so
+%{_libdir}/compiz/libinotify.so
+%{_libdir}/compiz/libminimize.so
+%{_libdir}/compiz/libmove.so
+%{_libdir}/compiz/libplace.so
+%{_libdir}/compiz/libplane.so
+%{_libdir}/compiz/libpng.so
+%{_libdir}/compiz/libregex.so
+%{_libdir}/compiz/libresize.so
+%{_libdir}/compiz/librotate.so
+%{_libdir}/compiz/libscale.so
+%{_libdir}/compiz/libscreenshot.so
+%{_libdir}/compiz/libswitcher.so
+%{_libdir}/compiz/libvideo.so
+%{_libdir}/compiz/libwater.so
+%{_libdir}/compiz/libwobbly.so
+%{_libdir}/compiz/libzoom.so
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
-%{_libdir}/compiz/*.so
-%{_libdir}/window-manager-settings/libcompiz.so
-%{_sysconfdir}/gconf/schemas/*.schemas
 %dir %{_datadir}/compiz
-%{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/compiz/*.png
-%{_datadir}/compiz/*.xml
+%{_datadir}/compiz/annotate.xml
+%{_datadir}/compiz/blur.xml
+%{_datadir}/compiz/clone.xml
+%{_datadir}/compiz/core.xml
+%{_datadir}/compiz/cube.xml
+%{_datadir}/compiz/dbus.xml
+%{_datadir}/compiz/decoration.xml
+%{_datadir}/compiz/fade.xml
+%{_datadir}/compiz/fs.xml
+%{_datadir}/compiz/ini.xml
+%{_datadir}/compiz/inotify.xml
+%{_datadir}/compiz/minimize.xml
+%{_datadir}/compiz/move.xml
+%{_datadir}/compiz/place.xml
+%{_datadir}/compiz/plane.xml
+%{_datadir}/compiz/png.xml
+%{_datadir}/compiz/regex.xml
+%{_datadir}/compiz/resize.xml
+%{_datadir}/compiz/rotate.xml
+%{_datadir}/compiz/scale.xml
+%{_datadir}/compiz/schemas.xslt
+%{_datadir}/compiz/screenshot.xml
+%{_datadir}/compiz/svg.xml
+%{_datadir}/compiz/switcher.xml
+%{_datadir}/compiz/video.xml
+%{_datadir}/compiz/water.xml
+%{_datadir}/compiz/wobbly.xml
+%{_datadir}/compiz/zoom.xml
+
+
+
+%files gnome
+%defattr(-, root, root)
+%{_bindir}/gtk-window-decorator
+%{_bindir}/desktop-effects
+%{_libdir}/window-manager-settings/libcompiz.so
+%{_libdir}/compiz/libannotate.so
+%{_libdir}/compiz/libgconf.so
+%{_libdir}/compiz/libglib.so
+%{_libdir}/compiz/libsvg.so
+%{_datadir}/compiz/gconf.xml
+%{_datadir}/compiz/glib.xml
 %{_datadir}/gnome/wm-properties/compiz.desktop
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
+%{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/applications/redhat-desktop-effects.desktop
 %{_datadir}/icons/hicolor/16x16/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/24x24/apps/desktop-effects.png
@@ -184,6 +270,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/36x36/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/48x48/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/96x96/apps/desktop-effects.png
+%{_sysconfdir}/gconf/schemas/*.schemas
+
+%files kde
+%defattr(-, root, root)
+%{_bindir}/kde-window-decorator
+
 
 %files devel
 %defattr(-, root, root)
@@ -197,6 +289,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Fri Aug 17 2007 Adel Gadllah <adel.gadllah@gmail.com> 0.5.2-6-0ec3ec
+- Split into gnome and kde subpackages
+- Minor cleanups
+
 * Wed Aug 15 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-5.0ec3ec
 - Reorder plugin list to avoid 'place' getting removed on startup.
 - Add run-command-key.patch to put the run command key in the GNOME

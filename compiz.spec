@@ -34,7 +34,8 @@ BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
-BuildRequires:  kdebase-devel, kdelibs-devel, dbus-qt
+BuildRequires:  kdebase-devel, kdelibs-devel
+BuildRequires:	dbus-qt, dbus-qt-devel-0.70-1.fc7
 
 Source0:        %{name}-%{snapshot}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
@@ -43,6 +44,7 @@ Source1:	desktop-effects-%{dialogversion}.tar.bz2
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch110: run-command-key.patch
+Patch111: kde-decorator.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -98,6 +100,7 @@ and other kde integration related stuff
 %patch103 -p1 -b .composite-cube-logo
 %patch105 -p1 -b .fedora-logo
 %patch110 -p1 -b .run-command-key
+%patch111 -p1 -b .kde-decorator
 
 %build
 rm -rf $RPM_BUILD_ROOT

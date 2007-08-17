@@ -34,7 +34,7 @@ BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
-BuildRequires:  kdelibs-devel, dbus-qt
+BuildRequires:  kdebase-devel, kdelibs-devel, dbus-qt
 
 Source0:        %{name}-%{snapshot}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2

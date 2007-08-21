@@ -1,0 +1,41 @@
+commit fe5ef3cb092a35aef03303d5895e6db3afca240a
+Author: Kristian Høgsberg <krh@redhat.com>
+Date:   Tue Aug 21 10:56:19 2007 -0400
+
+    Set SM restart style to SmRestartIfRunning on exit.
+
+diff --git a/src/session.c b/src/session.c
+index 9c6cc07..a354c3b 100644
+--- a/src/session.c
++++ b/src/session.c
+@@ -89,11 +89,10 @@ setCloneRestartCommands (SmcConn connection)
+ }
+ 
+ static void
+-setRestartStyle (SmcConn connection)
++setRestartStyle (SmcConn connection, char hint)
+ {
+     SmProp	prop, *pProp;
+     SmPropValue propVal;
+-    char        hint = SmRestartImmediately;
+ 
+     prop.name = SmRestartStyleHint;
+     prop.type = SmCARD8;
+@@ -139,7 +138,7 @@ saveYourselfGotProps (SmcConn   connection,
+     }
+ 
+ out:
+-    setRestartStyle (connection);
++    setRestartStyle (connection, SmRestartImmediately);
+     setCloneRestartCommands (connection);
+ 
+     SmcSaveYourselfDone (connection, 1);
+@@ -227,6 +226,8 @@ closeSession (void)
+ {
+     if (connected)
+     {
++	setRestartStyle (smcConnection, SmRestartIfRunning);
++
+ 	if (SmcCloseConnection (smcConnection, 0, NULL) != SmcConnectionInUse)
+ 	    connected = FALSE;
+ 	if (smClientId) {

@@ -1,5 +1,5 @@
 %define		snapshot	0ec3ec
-%define		dialogversion	0.7.5
+%define		dialogversion	0.7.6
 %define		plugins		glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,plane
 
 Name:           compiz
@@ -7,7 +7,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        6.%{snapshot}%{?dist}
+Release:        7.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -17,7 +17,7 @@ ExcludeArch:   	s390 s390x ppc64
 
 Requires:	xorg-x11-server-Xorg >= 1.3.0.0-19.fc8
 Requires:	mesa-libGL >= 7.0.1-2.fc8
-Requires:      system-logos
+Requires:       system-logos
 
 
 Requires(post): desktop-file-utils
@@ -44,6 +44,7 @@ Source1:	desktop-effects-%{dialogversion}.tar.bz2
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch110: run-command-key.patch
+Patch111: more-sm-junk.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -59,6 +60,9 @@ Summary: Development packages for compiz
 Group: Development/Libraries
 Requires: compiz = %{version}-%{release}
 Requires: pkgconfig
+Requires: libXcomposite-devel libXfixes-devel libXdamage-devel libXrandr-devel
+Requires: libXinerama-devel libICE-devel libSM-devel libxml2-devel
+Requires: libxslt-devel startup-notification-devel
 
 %description devel
 The compiz-devel package includes the header files,
@@ -99,6 +103,7 @@ and other kde integration related stuff
 %patch103 -p1 -b .composite-cube-logo
 %patch105 -p1 -b .fedora-logo
 %patch110 -p1 -b .run-command-key
+%patch111 -p1 -b .more-sm-junk
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -290,6 +295,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so
 
 %changelog
+* Tue Aug 21 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-7.0ec3ec
+- Add more-sm-junk.patch so we set SM restart style to
+  SmRestartIfRunning on exit (#247163, #245971).
+- Add Requires to compiz-devel (#253407).
+- Update to desktop-effects 0.7.6, which terminates decorator when
+  switching to metacity or on compiz failure (#215247, #215032).
+
 * Fri Aug 17 2007 Adel Gadllah <adel.gadllah@gmail.com> 0.5.2-6.0ec3ec
 - Split into gnome and kde subpackages
 - Minor cleanups

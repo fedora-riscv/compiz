@@ -1,5 +1,12 @@
 %define		snapshot	0ec3ec
-%define		dialogversion	0.7.6
+%define		dialogversion	0.7.7
+
+%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom
+
+%define		gnome_plugins	annotate gconf glib svg
+
+# List of plugins passed to ./configure.  The order is important
+
 %define		plugins		glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,plane
 
 Name:           compiz
@@ -7,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        7.%{snapshot}%{?dist}
+Release:        8.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -43,6 +50,7 @@ Source1:	desktop-effects-%{dialogversion}.tar.bz2
 # Patches that are not upstream
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
+Patch106: redhat-logo.patch
 Patch110: run-command-key.patch
 Patch111: more-sm-junk.patch
 
@@ -101,7 +109,11 @@ and other kde integration related stuff
 %setup -q  -n compiz-%{snapshot}
 
 %patch103 -p1 -b .composite-cube-logo
+%if 0
 %patch105 -p1 -b .fedora-logo
+%else
+%patch106 -p1 -b .redhat-logo
+%endif
 %patch110 -p1 -b .run-command-key
 %patch111 -p1 -b .more-sm-junk
 
@@ -147,10 +159,24 @@ popd
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
+for f in %{core_plugins} %{gnome_plugins}; do
+  gconftool-2 --makefile-uninstall-rule $f >& /dev/null || :
+done
+
 %find_lang compiz
 %find_lang desktop-effects
 
-cat compiz.lang desktop-effects.lang > all.lang
+cat compiz.lang desktop-effects.lang > core-files.txt
+
+for f in %{core_plugins}; do
+  echo %{_libdir}/compiz/lib$f.so
+  echo %{_datadir}/compiz/$f.xml
+done >> core-files.txt
+
+for f in %{gnome_plugins}; do
+  echo %{_libdir}/compiz/lib$f.so
+  echo %{_datadir}/compiz/$f.xml
+done > gnome-files.txt
 
 
 %post -p /sbin/ldconfig
@@ -159,28 +185,35 @@ cat compiz.lang desktop-effects.lang > all.lang
 
 %post gnome
 update-desktop-database -q %{_datadir}/applications
-export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
 
-/usr/bin/gconftool-2 --makefile-install-rule \
-	%{_sysconfdir}/gconf/schemas/*.schemas >& /dev/null || :
+export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
+for f in %{core_plugins} %{gnome_plugins}; do
+  gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
+done
+
 touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
 	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
 fi
 
+
 %pre gnome
 if [ "$1" -gt 1 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-  gconftool-2 --makefile-uninstall-rule \
-	%{_sysconfdir}/gconf/schemas/*.schemas >& /dev/null || :
+  for f in %{core_plugins} %{gnome_plugins}; do
+    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
+  done
 fi
+
 
 %preun gnome
 if [ "$1" -eq 0 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-  gconftool-2 --makefile-uninstall-rule \
-	%{_sysconfdir}/gconf/schemas/*.schemas >& /dev/null || :
+  for f in %{core_plugins} %{gnome_plugins}; do
+    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
+  done
 fi
+
 
 %postun gnome
 touch --no-create %{_datadir}/icons/hicolor
@@ -192,79 +225,24 @@ fi
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files -f all.lang
+
+%files -f core-files.txt
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog COPYING* README TODO
 %{_bindir}/compiz
-%{_libdir}/compiz/libblur.so
-%{_libdir}/compiz/libclone.so
-%{_libdir}/compiz/libcube.so
-%{_libdir}/compiz/libdbus.so
-%{_libdir}/compiz/libdecoration.so
-%{_libdir}/compiz/libfade.so
-%{_libdir}/compiz/libini.so
-%{_libdir}/compiz/libinotify.so
-%{_libdir}/compiz/libminimize.so
-%{_libdir}/compiz/libmove.so
-%{_libdir}/compiz/libplace.so
-%{_libdir}/compiz/libplane.so
-%{_libdir}/compiz/libpng.so
-%{_libdir}/compiz/libregex.so
-%{_libdir}/compiz/libresize.so
-%{_libdir}/compiz/librotate.so
-%{_libdir}/compiz/libscale.so
-%{_libdir}/compiz/libscreenshot.so
-%{_libdir}/compiz/libswitcher.so
-%{_libdir}/compiz/libvideo.so
-%{_libdir}/compiz/libwater.so
-%{_libdir}/compiz/libwobbly.so
-%{_libdir}/compiz/libzoom.so
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
 %dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
-%{_datadir}/compiz/annotate.xml
-%{_datadir}/compiz/blur.xml
-%{_datadir}/compiz/clone.xml
 %{_datadir}/compiz/core.xml
-%{_datadir}/compiz/cube.xml
-%{_datadir}/compiz/dbus.xml
-%{_datadir}/compiz/decoration.xml
-%{_datadir}/compiz/fade.xml
 %{_datadir}/compiz/fs.xml
-%{_datadir}/compiz/ini.xml
-%{_datadir}/compiz/inotify.xml
-%{_datadir}/compiz/minimize.xml
-%{_datadir}/compiz/move.xml
-%{_datadir}/compiz/place.xml
-%{_datadir}/compiz/plane.xml
-%{_datadir}/compiz/png.xml
-%{_datadir}/compiz/regex.xml
-%{_datadir}/compiz/resize.xml
-%{_datadir}/compiz/rotate.xml
-%{_datadir}/compiz/scale.xml
-%{_datadir}/compiz/schemas.xslt
-%{_datadir}/compiz/screenshot.xml
-%{_datadir}/compiz/svg.xml
-%{_datadir}/compiz/switcher.xml
-%{_datadir}/compiz/video.xml
-%{_datadir}/compiz/water.xml
-%{_datadir}/compiz/wobbly.xml
-%{_datadir}/compiz/zoom.xml
 
 
-
-%files gnome
+%files gnome -f gnome-files.txt
 %defattr(-, root, root)
 %{_bindir}/gtk-window-decorator
 %{_bindir}/desktop-effects
 %{_libdir}/window-manager-settings/libcompiz.so
-%{_libdir}/compiz/libannotate.so
-%{_libdir}/compiz/libgconf.so
-%{_libdir}/compiz/libglib.so
-%{_libdir}/compiz/libsvg.so
-%{_datadir}/compiz/gconf.xml
-%{_datadir}/compiz/glib.xml
 %{_datadir}/gnome/wm-properties/compiz.desktop
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
@@ -277,6 +255,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/48x48/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/96x96/apps/desktop-effects.png
 %{_sysconfdir}/gconf/schemas/*.schemas
+
 
 %files kde
 %defattr(-, root, root)
@@ -294,7 +273,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/compiz
 %{_libdir}/libdecoration.so
 
+
 %changelog
+* Wed Aug 22 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-8
+- Bump to desktop-effects 0.7.7 to avoid kill decorator when popping
+  up dialog.
+- Fix broken gconf install and uninstall rules.
+
 * Tue Aug 21 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-7.0ec3ec
 - Add more-sm-junk.patch so we set SM restart style to
   SmRestartIfRunning on exit (#247163, #245971).

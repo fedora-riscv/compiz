@@ -109,7 +109,7 @@ and other kde integration related stuff
 %setup -q  -n compiz-%{snapshot}
 
 %patch103 -p1 -b .composite-cube-logo
-%if 0
+%if 0%{?fedora}
 %patch105 -p1 -b .fedora-logo
 %else
 %patch106 -p1 -b .redhat-logo
@@ -279,6 +279,7 @@ rm -rf $RPM_BUILD_ROOT
 - Bump to desktop-effects 0.7.7 to avoid kill decorator when popping
   up dialog.
 - Fix broken gconf install and uninstall rules.
+- Pick up shadowman logo for RHEL builds (#232398).
 
 * Tue Aug 21 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-7.0ec3ec
 - Add more-sm-junk.patch so we set SM restart style to

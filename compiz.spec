@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        8.%{snapshot}%{?dist}
+Release:        9.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -89,6 +89,8 @@ Requires: %{name} = %{version}
 Requires(pre): GConf2
 Requires(post): GConf2
 Requires(preun): GConf2
+Obsoletes: compiz < 0.5.2-8
+
 
 %description gnome
 The compiz-gnome package contains gtk-window-decorator,
@@ -275,6 +277,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 28 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-9
+- Make compiz-gnome Obsolete the older compiz package so yum/anaconda
+  will pull it in (thans to Adel Gadllah).
+
 * Wed Aug 22 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-8
 - Bump to desktop-effects 0.7.7 to avoid kill decorator when popping
   up dialog.

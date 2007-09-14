@@ -1,7 +1,7 @@
 %define		snapshot	0ec3ec
 %define		dialogversion	0.7.7
 
-%define		core_plugins	blur clone core cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom
+%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom
 
 %define		gnome_plugins	annotate gconf glib svg
 
@@ -161,10 +161,6 @@ popd
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
-for f in %{core_plugins} %{gnome_plugins}; do
-  gconftool-2 --makefile-uninstall-rule $f >& /dev/null || :
-done
-
 %find_lang compiz
 %find_lang desktop-effects
 
@@ -189,7 +185,7 @@ done > gnome-files.txt
 update-desktop-database -q %{_datadir}/applications
 
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
-for f in %{core_plugins} %{gnome_plugins}; do
+for f in %{core_plugins} %{gnome_plugins} core; do
   gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
 done
 
@@ -202,7 +198,7 @@ fi
 %pre gnome
 if [ "$1" -gt 1 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-  for f in %{core_plugins} %{gnome_plugins}; do
+  for f in %{core_plugins} %{gnome_plugins} core; do
     gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
   done
 fi
@@ -211,7 +207,7 @@ fi
 %preun gnome
 if [ "$1" -eq 0 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-  for f in %{core_plugins} %{gnome_plugins}; do
+  for f in %{core_plugins} %{gnome_plugins} core; do
     gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
   done
 fi
@@ -277,8 +273,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Sep 14 2007 Warren Togami <wtogami@redhat.com> - 0.5.2-10
+* Fri Sep 14 2007 Warren Togami <wtogami@redhat.com> - 0.5.2-11
 - compiz-gnome: install core schema so it actually works
+- remove unnecessary gconf stuff from %%install
 
 * Tue Aug 28 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-9
 - Make compiz-gnome Obsolete the older compiz package so yum/anaconda

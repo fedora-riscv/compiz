@@ -1,7 +1,7 @@
 %define		snapshot	0ec3ec
 %define		dialogversion	0.7.7
 
-%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom
+%define		core_plugins	blur clone core cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom
 
 %define		gnome_plugins	annotate gconf glib svg
 
@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        9.%{snapshot}%{?dist}
+Release:        10.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -277,6 +277,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 14 2007 Warren Togami <wtogami@redhat.com> - 0.5.2-10
+- compiz-gnome: install core schema so it actually works
+
 * Tue Aug 28 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-9
 - Make compiz-gnome Obsolete the older compiz package so yum/anaconda
   will pull it in (thans to Adel Gadllah).

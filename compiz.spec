@@ -1,4 +1,4 @@
-%define		snapshot	0ec3ec
+%define		snapshot	6b86f3
 %define		dialogversion	0.7.7
 
 %define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom
@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        11.%{snapshot}%{?dist}
+Release:        12.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -51,8 +51,6 @@ Source1:	desktop-effects-%{dialogversion}.tar.bz2
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
-Patch110: run-command-key.patch
-Patch111: more-sm-junk.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -116,8 +114,7 @@ and other kde integration related stuff
 %else
 %patch106 -p1 -b .redhat-logo
 %endif
-%patch110 -p1 -b .run-command-key
-%patch111 -p1 -b .more-sm-junk
+
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -273,6 +270,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 20 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-12
+- Update to more recent 0.6 branch snapshot (fixes #253575).
+
 * Fri Sep 14 2007 Warren Togami <wtogami@redhat.com> - 0.5.2-11
 - compiz-gnome: install core schema so it actually works
 - remove unnecessary gconf stuff from %%install

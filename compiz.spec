@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        12.%{snapshot}%{?dist}
+Release:        13.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -185,6 +185,7 @@ export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
 for f in %{core_plugins} %{gnome_plugins} core; do
   gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
 done
+gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 
 touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
@@ -198,6 +199,7 @@ if [ "$1" -gt 1 ]; then
   for f in %{core_plugins} %{gnome_plugins} core; do
     gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
   done
+  gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
 
 
@@ -207,6 +209,7 @@ if [ "$1" -eq 0 ]; then
   for f in %{core_plugins} %{gnome_plugins} core; do
     gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
   done
+  gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
 
 
@@ -270,6 +273,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct  5 2007 Matthias Clasen <mclasen@redhat.com> - 0.5.2-13
+- Also install gwd.schemas (#319621)
+
 * Thu Sep 20 2007 Kristian Høgsberg <krh@redhat.com> - 0.5.2-12
 - Update to more recent 0.6 branch snapshot (fixes #253575).
 

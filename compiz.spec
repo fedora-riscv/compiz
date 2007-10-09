@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.5.2
-Release:        13.%{snapshot}%{?dist}
+Release:        14.%{snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -47,6 +47,7 @@ BuildRequires:	dbus-qt-devel
 Source0:        %{name}-%{snapshot}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
 
+Patch0:   compiz-synthetic-configure-notify-events.patch
 # Patches that are not upstream
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
@@ -108,6 +109,7 @@ and other kde integration related stuff
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
 %setup -q  -n compiz-%{snapshot}
 
+%patch0 -p1 -b .synthetic-configure-notify-events
 %patch103 -p1 -b .composite-cube-logo
 %if 0%{?fedora}
 %patch105 -p1 -b .fedora-logo
@@ -273,6 +275,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct  9 2007 Warren Togami <wtogami@redhat.com> - 0.5.2-14
+- Make compiz behave with gnome-terminal (#304051)
+
 * Fri Oct  5 2007 Matthias Clasen <mclasen@redhat.com> - 0.5.2-13
 - Also install gwd.schemas (#319621)
 

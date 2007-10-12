@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.6.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -52,6 +52,7 @@ Patch1:   compiz-always-restack-windows-on-map.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
+Patch110: scale-key.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -117,6 +118,7 @@ and other kde integration related stuff
 %else
 %patch106 -p1 -b .redhat-logo
 %endif
+%patch110 -p1 -b .scale-key
 
 
 %build
@@ -276,6 +278,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 12 2007 Kristian Høgsberg <krh@redhat.com> - 0.6.0-2
+- Disable scale corner initiate and install a GNOME key config entry.
+
 * Wed Oct 10 2007 Warren Togami <wtogami@redhat.com> - 0.6.0-1
 - 0.6.0 final
 - always-restack-windows-on-map 

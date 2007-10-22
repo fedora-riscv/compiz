@@ -1,6 +1,6 @@
 %define		dialogversion	0.7.7
 
-%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom
+%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom fs
 
 %define		gnome_plugins	annotate gconf glib svg
 
@@ -12,8 +12,8 @@ Name:           compiz
 URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
-Version:        0.6.0
-Release:        2%{?dist}
+Version:        0.6.2
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -46,8 +46,6 @@ BuildRequires:	dbus-qt-devel
 Source0:        %{name}-%{version}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
 
-Patch0:   compiz-synthetic-configure-notify-events.patch
-Patch1:   compiz-always-restack-windows-on-map.patch
 # Patches that are not upstream
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
@@ -110,8 +108,6 @@ and other kde integration related stuff
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
 %setup -q 
 
-%patch0 -p1 -b .synthetic-configure-notify-events
-%patch1 -p1 -b .always-restack-windows-on-map
 %patch103 -p1 -b .composite-cube-logo
 %if 0%{?fedora}
 %patch105 -p1 -b .fedora-logo
@@ -278,6 +274,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 22 2007 Warren Togami <wtogami@redhat.com> - 0.6.2-1
+- 0.6.2
+
 * Fri Oct 12 2007 Kristian Høgsberg <krh@redhat.com> - 0.6.0-2
 - Disable scale corner initiate and install a GNOME key config entry.
 

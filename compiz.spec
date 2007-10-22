@@ -42,6 +42,7 @@ BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  kdebase-devel, kdelibs-devel
 BuildRequires:	dbus-qt-devel
+BuildRequires:  fuse-devel
 
 Source0:        %{name}-%{version}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2

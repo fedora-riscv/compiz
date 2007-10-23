@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.6.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -23,8 +23,7 @@ ExcludeArch:   	s390 s390x ppc64
 
 Requires:	xorg-x11-server-Xorg >= 1.3.0.0-19.fc8
 Requires:	mesa-libGL >= 7.0.1-2.fc8
-Requires:       system-logos
-
+Requires:      system-logos
 
 Requires(post): desktop-file-utils
 
@@ -41,11 +40,14 @@ BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  kdebase-devel, kdelibs-devel
-BuildRequires:	dbus-qt-devel
+BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
 
 Source0:        %{name}-%{version}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
+
+# Make sure that former beryl users still have bling
+Obsoletes: berly-core
 
 # Patches that are not upstream
 Patch103: composite-cube-logo.patch
@@ -275,6 +277,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 23 2007 Adel Gadllah <adel.gadllah@gmail.com> - 0.6.2-2
+- Obsolete berly-core
+
 * Mon Oct 22 2007 Warren Togami <wtogami@redhat.com> - 0.6.2-1
 - 0.6.2
 

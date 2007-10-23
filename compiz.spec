@@ -91,7 +91,7 @@ Requires(pre): GConf2
 Requires(post): GConf2
 Requires(preun): GConf2
 Obsoletes: compiz < 0.5.2-8
-
+Obsoletes: beryl-gnome
 
 %description gnome
 The compiz-gnome package contains gtk-window-decorator,
@@ -101,6 +101,7 @@ and other gnome integration related stuff
 Summary: Compiz kde integration bits
 Group: User Interface/Desktops
 Requires: %{name} = %{version}
+Obsoletes: beryl-kde
 
 %description kde
 The compiz-kde package contains kde-window-decorator,

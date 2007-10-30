@@ -1,4 +1,5 @@
 %define		dialogversion	0.7.7
+%define 	kde_dialogversion 0.0.4
 
 %define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom fs
 
@@ -13,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.6.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -45,6 +46,7 @@ BuildRequires:  fuse-devel
 
 Source0:        %{name}-%{version}.tar.gz
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
+Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
 
 # Make sure that former beryl users still have bling
 Obsoletes: berly-core
@@ -101,6 +103,7 @@ and other gnome integration related stuff
 Summary: Compiz kde integration bits
 Group: User Interface/Desktops
 Requires: %{name} = %{version}
+Requires: compiz-manager
 Obsoletes: beryl-kde
 
 %description kde
@@ -110,6 +113,7 @@ and other kde integration related stuff
 
 %prep
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
+%setup -q -T -b2 -n kde-desktop-effects-%{kde_dialogversion}
 %setup -q 
 
 %patch103 -p1 -b .composite-cube-logo
@@ -160,8 +164,28 @@ desktop-file-install --vendor redhat --delete-original      \
   $RPM_BUILD_ROOT%{_datadir}/applications/desktop-effects.desktop
 popd
 
+# kde-desktop-effects
+echo INSTALLING KDE DESKTOP EFFECTS
+pushd ../kde-desktop-effects-%{kde_dialogversion}
+cp -a kde-desktop-effects.sh $RPM_BUILD_ROOT/%{_bindir}/
+mkdir -p $RPM_BUILD_ROOT/%{_docdir}/compiz-kde-%{version}
+cp -a ChangeLog COPYING README $RPM_BUILD_ROOT/%{_docdir}/compiz-kde-%{version}
+
+iconlist="16 24 32 36 48 96"
+for i in $iconlist; do
+ mkdir -p $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/$i\x$i/apps/
+ cp -p ../desktop-effects-%{dialogversion}/desktop-effects$i.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/$i\x$i/apps/kde-desktop-effects.png
+done
+
+desktop-file-install --vendor=""           \
+--dir=%{buildroot}%{_datadir}/applications/kde       \
+kde-desktop-effects.desktop
+popd
+
+
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
+
 
 %find_lang compiz
 %find_lang desktop-effects
@@ -224,6 +248,13 @@ if [ -x /usr/bin/gtk-update-icon-cache ]; then
 	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
 fi
 
+%post kde
+update-desktop-database -q %{_datadir}/applications/kde
+touch --no-create %{_datadir}/icons/hicolor
+
+%postun kde
+touch --no-create %{_datadir}/icons/hicolor
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -263,6 +294,10 @@ rm -rf $RPM_BUILD_ROOT
 %files kde
 %defattr(-, root, root)
 %{_bindir}/kde-window-decorator
+%{_docdir}/compiz-kde-%{version}
+%{_bindir}/kde-desktop-effects.sh
+%{_datadir}/applications/kde/kde-desktop-effects.desktop
+%{_datadir}/icons/hicolor/*/apps/kde-desktop-effects.png
 
 
 %files devel
@@ -278,6 +313,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 25 2007 Sebastian Vahl <fedora@deadbabylon.de> - 0.6.2-3
+- Include kde-desktop-effects in kde subpackage
+
 * Tue Oct 23 2007 Adel Gadllah <adel.gadllah@gmail.com> - 0.6.2-2
 - Obsolete berly-core
 

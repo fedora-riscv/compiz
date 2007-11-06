@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.6.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -62,9 +62,8 @@ Compiz is one of the first OpenGL-accelerated compositing window
 managers for the X Window System. The integration allows it to perform
 compositing effects in window management, such as a minimization
 effect and a cube workspace.  Compiz is an OpenGL compositing manager
-that use Compiz use EXT_texture_from_pixmap OpenGL extension extension
-for binding redirected top-level windows to texture objects
-
+that use Compiz use EXT_texture_from_pixmap OpenGL extension for
+binding redirected top-level windows to texture objects.
 
 %package devel
 Summary: Development packages for compiz
@@ -80,7 +79,7 @@ The compiz-devel package includes the header files,
 and developer docs for the compiz package.
 
 Install compiz-devel if you want to develop plugins for the compiz
-windows and compositing manager
+windows and compositing manager.
 
 %package gnome
 Summary: Compiz gnome integration bits
@@ -97,7 +96,7 @@ Obsoletes: beryl-gnome
 
 %description gnome
 The compiz-gnome package contains gtk-window-decorator,
-and other gnome integration related stuff
+and other gnome integration related stuff.
 
 %package kde
 Summary: Compiz kde integration bits
@@ -108,7 +107,7 @@ Obsoletes: beryl-kde
 
 %description kde
 The compiz-kde package contains kde-window-decorator,
-and other kde integration related stuff
+and other kde integration related stuff.
 
 
 %prep
@@ -313,6 +312,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov  6 2007 Stepan Kasal <skasal@redhat.com> - 0.6.2-4
+- Fix a typo in description of the main package.
+- All descriptions should end with a dot (unlike the summary line)
+
 * Thu Oct 25 2007 Sebastian Vahl <fedora@deadbabylon.de> - 0.6.2-3
 - Include kde-desktop-effects in kde subpackage
 

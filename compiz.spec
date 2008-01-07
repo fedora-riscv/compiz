@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.6.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -40,7 +40,7 @@ BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
-BuildRequires:  kdebase-devel, kdelibs-devel
+BuildRequires:  kdebase3-devel, kdelibs3-devel
 BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
 
@@ -312,6 +312,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 07 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.6.2-5
+- Update buildrequires (kwd uses the kde3 api) 
+
 * Tue Nov  6 2007 Stepan Kasal <skasal@redhat.com> - 0.6.2-4
 - Fix a typo in description of the main package.
 - All descriptions should end with a dot (unlike the summary line)

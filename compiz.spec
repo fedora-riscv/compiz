@@ -1,4 +1,4 @@
-%define		dialogversion	0.7.7
+%define		dialogversion	0.7.17
 %define 	kde_dialogversion 0.0.4
 
 %define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom fs
@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.6.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -49,7 +49,7 @@ Source1:	desktop-effects-%{dialogversion}.tar.bz2
 Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
 
 # Make sure that former beryl users still have bling
-Obsoletes: berly-core
+Obsoletes: beryl-core
 
 # Patches that are not upstream
 Patch103: composite-cube-logo.patch
@@ -189,7 +189,8 @@ find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 %find_lang compiz
 %find_lang desktop-effects
 
-cat compiz.lang desktop-effects.lang > core-files.txt
+cat compiz.lang > core-files.txt
+cat desktop-effects.lang > gnome-files.txt
 
 for f in %{core_plugins}; do
   echo %{_libdir}/compiz/lib$f.so
@@ -199,7 +200,7 @@ done >> core-files.txt
 for f in %{gnome_plugins}; do
   echo %{_libdir}/compiz/lib$f.so
   echo %{_datadir}/compiz/$f.xml
-done > gnome-files.txt
+done >> gnome-files.txt
 
 
 %post -p /sbin/ldconfig
@@ -268,7 +269,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
 %{_datadir}/compiz/core.xml
-%{_datadir}/compiz/fs.xml
 
 
 %files gnome -f gnome-files.txt
@@ -312,6 +312,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 17 2008 Kristian Høgsberg <krh@redhat.com> - 0.6.2-6
+- Update to desktop-effects version 0.7.17 which include more
+  translations and move desktop-effects translations to compiz-gnome.
+- Fix spelling in beryl-core obsoletes.
+
 * Mon Jan 07 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.6.2-5
 - Update buildrequires (kwd uses the kde3 api) 
 

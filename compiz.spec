@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.6.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -312,6 +312,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 19 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 0.6.2-7
+- Autorebuild for GCC 4.3
+
 * Thu Jan 17 2008 Kristian Høgsberg <krh@redhat.com> - 0.6.2-6
 - Update to desktop-effects version 0.7.17 which include more
   translations and move desktop-effects translations to compiz-gnome.

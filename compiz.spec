@@ -13,8 +13,8 @@ Name:           compiz
 URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
-Version:        0.6.2
-Release:        7%{?dist}
+Version:        0.7.2
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -40,11 +40,11 @@ BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
-BuildRequires:  kdebase3-devel, kdelibs3-devel
+BuildRequires:  kdebase-workspace-devel
 BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
 
-Source0:        %{name}-%{version}.tar.gz
+Source0:       http://releases.compiz-fusion.org/compiz/%{version}/%{name}-%{version}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
 Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
 
@@ -55,7 +55,7 @@ Obsoletes: beryl-core
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
-Patch110: scale-key.patch
+#Patch110: scale-key.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -121,7 +121,7 @@ and other kde integration related stuff.
 %else
 %patch106 -p1 -b .redhat-logo
 %endif
-%patch110 -p1 -b .scale-key
+#%patch110 -p1 -b .scale-key
 
 
 %build
@@ -129,6 +129,11 @@ rm -rf $RPM_BUILD_ROOT
 
 CPPFLAGS="$CPPFLAGS -I$RPM_BUILD_ROOT%{_includedir}"
 export CPPFLAGS
+
+#needed to find kde4 libs
+LDFLAGS="$LDFLAGS -L%{_libdir}/kde4/devel"
+export LDFLAGS
+
 
 %configure 					\
 	--enable-gconf 				\
@@ -140,7 +145,7 @@ export CPPFLAGS
 	--enable-gnome				\
 	--with-default-plugins=%{plugins}	\
 	--enable-gnome-keybindings		\
-	--enable-kde
+	--enable-kde4
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 
@@ -292,12 +297,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files kde
 %defattr(-, root, root)
-%{_bindir}/kde-window-decorator
+%{_bindir}/kde4-window-decorator
 %{_docdir}/compiz-kde-%{version}
 %{_bindir}/kde-desktop-effects.sh
 %{_datadir}/applications/kde/kde-desktop-effects.desktop
 %{_datadir}/icons/hicolor/*/apps/kde-desktop-effects.png
-
+%{_datadir}/compiz/kconfig.xml
 
 %files devel
 %defattr(-, root, root)
@@ -312,6 +317,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 24 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.2-1
+- Update to 0.7.2
+
 * Tue Feb 19 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 0.6.2-7
 - Autorebuild for GCC 4.3
 

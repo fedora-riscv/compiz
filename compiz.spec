@@ -1,5 +1,5 @@
 %define		dialogversion	0.7.17
-%define 	kde_dialogversion 0.0.4
+%define 	kde_dialogversion 0.0.5
 
 %define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom fs
 
@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -317,6 +317,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar 26 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.2-2
+- Reword kde-desktop-effects messages to mention Compiz by name (#438883)
+
 * Mon Mar 24 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.2-1
 - Update to 0.7.2
 

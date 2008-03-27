@@ -1,0 +1,61 @@
+diff -upNr compiz-0.7.2.orign/plugins/gconf.c compiz-0.7.2/plugins/gconf.c
+--- compiz-0.7.2.orign/plugins/gconf.c	2008-03-06 18:52:26.000000000 +0100
++++ compiz-0.7.2/plugins/gconf.c	2008-03-27 19:44:11.000000000 +0100
+@@ -443,6 +443,46 @@ gconfReadOptionValue (CompObject      *o
+     return TRUE;
+ }
+ 
++
++static void
++gconfFixupPluginList (CompOptionValue *value)
++{
++    unsigned int i, j, length;
++    CompOptionValue *new;
++
++    for (i = 0; i < value->list.nValue; i++)
++	if (!strcmp (value->list.value[i].s, "core"))
++	    break;
++
++    if (i != value->list.nValue)
++	return;
++
++    puts("fix up list");
++    length = value->list.nValue + 1;
++
++    new = calloc (length, sizeof (CompOptionValue));
++
++    if (!new)
++	return;
++
++    new[0].s = strdup ("core");
++
++    j = 1;
++
++    for (i = 0; i < value->list.nValue; i++)
++    {
++	if (strcmp (value->list.value[i].s, "core"))
++	    new[j++].s = strdup (value->list.value[i].s);
++	free (value->list.value[i].s);
++    }
++
++    free (value->list.value);
++
++    value->list.value = new;
++    value->list.nValue = length;
++}
++
++
+ static void
+ gconfGetOption (CompObject *object,
+ 		CompOption *o,
+@@ -462,6 +502,10 @@ gconfGetOption (CompObject *object,
+ 
+ 	if (gconfReadOptionValue (object, entry, o, &value))
+ 	{
++	    if (strcmp (plugin, "core") == 0) {
++		if (!strcmp (o->name, "active_plugins"))
++		    gconfFixupPluginList (&value);
++	    }
+ 	    (*core.setOptionForPlugin) (object, plugin, o->name, &value);
+ 	    compFiniOptionValue (&value, o->type);
+ 	}

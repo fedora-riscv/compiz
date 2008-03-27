@@ -7,14 +7,14 @@
 
 # List of plugins passed to ./configure.  The order is important
 
-%define		plugins		glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,plane
+%define		plugins		core,glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,plane
 
 Name:           compiz
 URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -56,6 +56,7 @@ Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
+Patch111: gconf-core-plugin-loopfix.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -122,6 +123,7 @@ and other kde integration related stuff.
 %patch106 -p1 -b .redhat-logo
 %endif
 #%patch110 -p1 -b .scale-key
+%patch111 -p1 -b .gconf-core-loop
 
 
 %build
@@ -317,6 +319,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Mar 27 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.2-3
+- Fix gconf plugin loop RH #438794, patch based on 
+  older one from Guillaume Seguin
+- Add core to default plugin list
+
 * Wed Mar 26 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.2-2
 - Reword kde-desktop-effects messages to mention Compiz by name (#438883)
 

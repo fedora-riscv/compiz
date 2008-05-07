@@ -85,7 +85,7 @@ Applied plasma API changes.
 -/*
 - * This code is taken from KDE/kdebase/workspace/libs/plasma/dialog.cpp
 - *
-- *   Copyright (C) 2007 by Alexis MÃ©nard <darktears31@gmail.com>
+- *   Copyright (C) 2007 by Alexis Ménard <darktears31@gmail.com>
 - *   Copyright (C) 2007 Sebastian Kuegler <sebas@kde.org>
 - *   Copyright (C) 2006 Aaron Seigo <aseigo@kde.org>
 - */

@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -50,6 +50,10 @@ Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
 
 # Make sure that former beryl users still have bling
 Obsoletes: beryl-core
+
+# Upstream patch to port kde4-window-decorator to KDE 4.1 libplasma
+# (This has been committed after 0.7.4, will probably be in 0.7.6.)
+Patch0: compiz-0.7.2-kde41-libplasma.patch
 
 # Patches that are not upstream
 Patch103: composite-cube-logo.patch
@@ -115,6 +119,8 @@ and other kde integration related stuff.
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
 %setup -q -T -b2 -n kde-desktop-effects-%{kde_dialogversion}
 %setup -q 
+
+%patch0 -p1 -b .kde41-libplasma
 
 %patch103 -p1 -b .composite-cube-logo
 %if 0%{?fedora}
@@ -319,6 +325,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 07 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.2-4
+- Backport upstream patch to port kde4-window-decorator to KDE 4.1 libplasma
+
 * Thu Mar 27 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.2-3
 - Fix gconf plugin loop RH #438794, patch based on 
   older one from Guillaume Seguin

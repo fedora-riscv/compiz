@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -325,6 +325,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 27 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.2-5
+- Rebuild for KDE 4.0.80
+
 * Wed May 07 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.2-4
 - Backport upstream patch to port kde4-window-decorator to KDE 4.1 libplasma
 

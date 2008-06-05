@@ -25,7 +25,6 @@ ExcludeArch:   s390 s390x ppc64
 Requires:	xorg-x11-server-Xorg >= 1.3.0.0-19.fc8
 Requires:	mesa-libGL >= 7.0.1-2.fc8
 Requires:      system-logos
-Requires: 	compiz-fusion = %{version}
 Requires(post): desktop-file-utils
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
@@ -106,6 +105,7 @@ Summary: Compiz kde integration bits
 Group: User Interface/Desktops
 Requires: %{name} = %{version}
 Requires: compiz-manager
+Requires: compiz-fusion = %{version}
 Obsoletes: beryl-kde
 
 %description kde
@@ -337,6 +337,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 05 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-2
+- Don't require compiz-fusion in the main package
+
 * Thu Jun 05 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-1
 - Update to 0.7.6
 - Install all gconf schemas at once

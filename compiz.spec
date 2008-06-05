@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -325,6 +325,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 05 2008 Caolán McNamara <caolanm@redhat.com> - 0.7.2-6
+- rebuild for dependancies
+
 * Tue May 27 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.2-5
 - Rebuild for KDE 4.0.80
 

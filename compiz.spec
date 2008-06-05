@@ -1,31 +1,31 @@
 %define		dialogversion	0.7.17
 %define 	kde_dialogversion 0.0.5
 
-%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom fs
+%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs
 
 %define		gnome_plugins	annotate gconf glib svg
 
 # List of plugins passed to ./configure.  The order is important
 
-%define		plugins		core,glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,plane
+%define		plugins		core,glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall
 
 Name:           compiz
 URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
-Version:        0.7.2
-Release:        6%{?dist}
+Version:        0.7.6
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # libdrm is not available on these arches
-ExcludeArch:   	s390 s390x ppc64
+ExcludeArch:   s390 s390x ppc64
 
 Requires:	xorg-x11-server-Xorg >= 1.3.0.0-19.fc8
 Requires:	mesa-libGL >= 7.0.1-2.fc8
 Requires:      system-logos
-
+Requires: 	compiz-fusion = %{version}
 Requires(post): desktop-file-utils
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
@@ -51,16 +51,13 @@ Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
 # Make sure that former beryl users still have bling
 Obsoletes: beryl-core
 
-# Upstream patch to port kde4-window-decorator to KDE 4.1 libplasma
-# (This has been committed after 0.7.4, will probably be in 0.7.6.)
-Patch0: compiz-0.7.2-kde41-libplasma.patch
 
 # Patches that are not upstream
+Patch102: desktop-effects-0.7.17-wall-plugin.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
-Patch111: gconf-core-plugin-loopfix.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -93,6 +90,7 @@ Requires: gnome-session >= 2.19.6-5
 Requires: metacity >= 2.18
 Requires: libwnck >= 2.15.4
 Requires: %{name} = %{version}
+Requires: compiz-fusion-gnome = %{version}
 Requires(pre): GConf2
 Requires(post): GConf2
 Requires(preun): GConf2
@@ -120,7 +118,9 @@ and other kde integration related stuff.
 %setup -q -T -b2 -n kde-desktop-effects-%{kde_dialogversion}
 %setup -q 
 
-%patch0 -p1 -b .kde41-libplasma
+pushd ../desktop-effects-%{dialogversion}
+%patch102 -p1 -b .wall-plugin
+popd
 
 %patch103 -p1 -b .composite-cube-logo
 %if 0%{?fedora}
@@ -129,7 +129,6 @@ and other kde integration related stuff.
 %patch106 -p1 -b .redhat-logo
 %endif
 #%patch110 -p1 -b .scale-key
-%patch111 -p1 -b .gconf-core-loop
 
 
 %build
@@ -144,9 +143,9 @@ export LDFLAGS
 
 
 %configure 					\
-	--enable-gconf 				\
+	--enable-gconf 			\
 	--enable-dbus 				\
-	--enable-place 				\
+	--enable-place 			\
 	--enable-librsvg 			\
 	--enable-gtk 				\
 	--enable-metacity 			\
@@ -160,6 +159,7 @@ make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 # desktop-effects
 cd ../desktop-effects-%{dialogversion}
 %configure 
+make %{?_smp_mflags}
 
 
 %install
@@ -171,7 +171,7 @@ unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 echo INSTALLING DESKTOP EFFECTS
 pushd ../desktop-effects-%{dialogversion}
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
-desktop-file-install --vendor redhat --delete-original      \
+desktop-file-install --vendor redhat --delete-original    \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
   $RPM_BUILD_ROOT%{_datadir}/applications/desktop-effects.desktop
 popd
@@ -189,8 +189,8 @@ for i in $iconlist; do
  cp -p ../desktop-effects-%{dialogversion}/desktop-effects$i.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/$i\x$i/apps/kde-desktop-effects.png
 done
 
-desktop-file-install --vendor=""           \
---dir=%{buildroot}%{_datadir}/applications/kde       \
+desktop-file-install --vendor=""              \
+--dir=%{buildroot}%{_datadir}/applications/kde \
 kde-desktop-effects.desktop
 popd
 
@@ -224,10 +224,14 @@ done >> gnome-files.txt
 update-desktop-database -q %{_datadir}/applications
 
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
+
+SCHEMA_FILES=""
 for f in %{core_plugins} %{gnome_plugins} core; do
-  gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
+   SCHEMA_FILES+=compiz-$f\,
 done
-gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
+SCHEMA_FILES+=gwd
+
+gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/{$SCHEMA_FILES}.schemas >& /dev/null || :
 
 touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
@@ -237,21 +241,29 @@ fi
 
 %pre gnome
 if [ "$1" -gt 1 ]; then
-  export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-  for f in %{core_plugins} %{gnome_plugins} core; do
-    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
-  done
-  gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
+ export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+
+ SCHEMA_FILES=""
+ for f in %{core_plugins} %{gnome_plugins} core; do
+    SCHEMA_FILES+=compiz-$f\,
+ done
+ SCHEMA_FILES+=gwd
+
+ gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/{$SCHEMA_FILES}.schemas >& /dev/null || :
 fi
 
 
 %preun gnome
 if [ "$1" -eq 0 ]; then
-  export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-  for f in %{core_plugins} %{gnome_plugins} core; do
-    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
-  done
-  gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
+ export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+
+ SCHEMA_FILES=""
+ for f in %{core_plugins} %{gnome_plugins} core; do
+    SCHEMA_FILES+=compiz-$f\,
+ done
+ SCHEMA_FILES+=gwd
+
+ gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/{$SCHEMA_FILES}.schemas >& /dev/null || :
 fi
 
 
@@ -325,6 +337,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 05 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-1
+- Update to 0.7.6
+- Install all gconf schemas at once
+- Drop unneeded patches
+- Use wall instead of plane
+
 * Thu Jun 05 2008 Caolán McNamara <caolanm@redhat.com> - 0.7.2-6
 - rebuild for dependancies
 

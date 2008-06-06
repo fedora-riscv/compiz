@@ -131,7 +131,7 @@ popd
 %patch106 -p1 -b .redhat-logo
 %endif
 #%patch110 -p1 -b .scale-key
-
+%patch111 -p1 -b .decoration-size
 
 %build
 rm -rf $RPM_BUILD_ROOT

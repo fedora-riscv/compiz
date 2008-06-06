@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -57,6 +57,8 @@ Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
+# upstream commit 45caca2220f75bfd20074c217ebee10825413547
+Patch111: compiz-0.7.6-decoration-size.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -337,6 +339,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 05 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-3
+- Only move placed windows on decoration size changes
+
 * Thu Jun 05 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-2
 - Don't require compiz-fusion in the main package
 

@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -154,6 +154,7 @@ export LDFLAGS
 	--enable-gnome				\
 	--with-default-plugins=%{plugins}	\
 	--enable-gnome-keybindings		\
+	--disable-kde				\
 	--enable-kde4
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
@@ -339,6 +340,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 10 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-4
+- Disable kde3 to fix local builds (RH #449123)
+
 * Thu Jun 05 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-3
 - Only move placed windows on decoration size changes
 

@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -227,14 +227,10 @@ done >> gnome-files.txt
 update-desktop-database -q %{_datadir}/applications
 
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
-
-SCHEMA_FILES=""
 for f in %{core_plugins} %{gnome_plugins} core; do
-   SCHEMA_FILES+=compiz-$f\,
+  gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
 done
-SCHEMA_FILES+=gwd
-
-gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/{$SCHEMA_FILES}.schemas >& /dev/null || :
+gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 
 touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
@@ -244,29 +240,21 @@ fi
 
 %pre gnome
 if [ "$1" -gt 1 ]; then
- export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-
- SCHEMA_FILES=""
- for f in %{core_plugins} %{gnome_plugins} core; do
-    SCHEMA_FILES+=compiz-$f\,
- done
- SCHEMA_FILES+=gwd
-
- gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/{$SCHEMA_FILES}.schemas >& /dev/null || :
+  export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+  for f in %{core_plugins} %{gnome_plugins} core; do
+    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
+  done
+  gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
 
 
 %preun gnome
 if [ "$1" -eq 0 ]; then
- export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-
- SCHEMA_FILES=""
- for f in %{core_plugins} %{gnome_plugins} core; do
-    SCHEMA_FILES+=compiz-$f\,
- done
- SCHEMA_FILES+=gwd
-
- gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/{$SCHEMA_FILES}.schemas >& /dev/null || :
+  export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+  for f in %{core_plugins} %{gnome_plugins} core; do
+    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
+  done
+  gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
 
 
@@ -275,6 +263,8 @@ touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
 	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
 fi
+
+
 
 %post kde
 update-desktop-database -q %{_datadir}/applications/kde
@@ -340,6 +330,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 11 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-5
+- Revert to old gconf schmema install script
+
 * Tue Jun 10 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-4
 - Disable kde3 to fix local builds (RH #449123)
 

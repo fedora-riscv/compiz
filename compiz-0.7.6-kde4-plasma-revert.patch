@@ -1,0 +1,277 @@
+diff -upNr compiz-0.7.6.orign/kde/window-decorator-kde4/decorator.cpp compiz-0.7.6/kde/window-decorator-kde4/decorator.cpp
+--- compiz-0.7.6.orign/kde/window-decorator-kde4/decorator.cpp	2008-05-29 13:58:33.000000000 +0200
++++ compiz-0.7.6/kde/window-decorator-kde4/decorator.cpp	2008-06-11 16:59:47.000000000 +0200
+@@ -23,7 +23,6 @@
+ 
+ #include <KDE/KCmdLineArgs>
+ #include <KDE/KConfig>
+-#include <KDE/KConfigGroup>
+ #include <KDE/KGlobal>
+ #include <kwindowsystem.h>
+ #include <KDE/KLocale>
+@@ -107,9 +106,6 @@ KWD::Decorator::Decorator (Display* disp
+ 
+     mActiveId = 0;
+ 
+-    KConfigGroup cfg (KSharedConfig::openConfig("plasmarc"), QString("Theme"));
+-    Plasma::Theme::defaultTheme ()->setThemeName (cfg.readEntry ("name"));
+-
+     Atoms::init ();
+ 
+     (void *) new KWinAdaptor (this);
+@@ -241,7 +237,7 @@ KWD::Decorator::enableDecorations (Time 
+ 
+     connect (&mIdleTimer, SIGNAL (timeout ()), SLOT (processDamage ()));
+ 
+-    connect (Plasma::Theme::defaultTheme (), SIGNAL (themeChanged ()),
++    connect (Plasma::Theme::self (), SIGNAL (changed ()),
+ 	     SLOT (plasmaThemeChanged ()));
+ 
+     // select for client messages
+diff -upNr compiz-0.7.6.orign/kde/window-decorator-kde4/decorator.moc.cpp compiz-0.7.6/kde/window-decorator-kde4/decorator.moc.cpp
+--- compiz-0.7.6.orign/kde/window-decorator-kde4/decorator.moc.cpp	2008-05-29 14:07:48.000000000 +0200
++++ compiz-0.7.6/kde/window-decorator-kde4/decorator.moc.cpp	2008-06-11 17:02:33.000000000 +0200
+@@ -16,7 +16,6 @@
+ #error "(The moc has changed too much.)"
+ #endif
+ 
+-QT_BEGIN_MOC_NAMESPACE
+ static const uint qt_meta_data_KWD__Decorator[] = {
+ 
+  // content:
+@@ -99,4 +98,3 @@ int KWD::Decorator::qt_metacall(QMetaObj
+     }
+     return _id;
+ }
+-QT_END_MOC_NAMESPACE
+diff -upNr compiz-0.7.6.orign/kde/window-decorator-kde4/main.cpp compiz-0.7.6/kde/window-decorator-kde4/main.cpp
+--- compiz-0.7.6.orign/kde/window-decorator-kde4/main.cpp	2008-05-29 13:58:33.000000000 +0200
++++ compiz-0.7.6/kde/window-decorator-kde4/main.cpp	2008-06-11 17:05:26.000000000 +0200
+@@ -126,9 +126,6 @@ main (int argc, char **argv)
+ 	}
+     }
+ 
+-    // Disable window less child widgets
+-    QApplication::setAttribute(Qt::AA_NativeWindows, true);
+-
+     app = new KWD::Decorator (dpy, visual ? Qt::HANDLE(visual) : 0,
+ 			      colormap ? Qt::HANDLE(colormap) : 0);
+ 
+diff -upNr compiz-0.7.6.orign/kde/window-decorator-kde4/switcher.cpp compiz-0.7.6/kde/window-decorator-kde4/switcher.cpp
+--- compiz-0.7.6.orign/kde/window-decorator-kde4/switcher.cpp	2008-05-29 13:58:33.000000000 +0200
++++ compiz-0.7.6/kde/window-decorator-kde4/switcher.cpp	2008-06-11 16:59:47.000000000 +0200
+@@ -30,7 +30,7 @@
+ 
+ #include <fixx11h.h>
+ 
+-#include <KDE/Plasma/PanelSvg>
++#include <KDE/Plasma/Svg>
+ #include <KDE/Plasma/Theme>
+ 
+ #include <kwindowsystem.h>
+@@ -43,18 +43,15 @@ mId (id)
+ {
+     QPalette palette;
+     long     prop[4];
+-    QColor   color;
+-    color = Plasma::Theme::defaultTheme ()->color (Plasma::Theme::TextColor);
++    QColor   color = Plasma::Theme::self ()->textColor ();
+ 
+-    mBackground = new Plasma::PanelSvg();
+-    mBackground->setImagePath ("dialogs/background");
+-    mBackground->setEnabledBorders(Plasma::PanelSvg::AllBorders);
+-
+-    mBorder.left   = mBackground->marginSize(Plasma::LeftMargin);
+-    mBorder.right  = mBackground->marginSize(Plasma::RightMargin);
+-    mBorder.top    = mBackground->marginSize(Plasma::TopMargin);
+-    mBorder.bottom = mBackground->marginSize(Plasma::BottomMargin) +
+-		     Plasma::Theme::defaultTheme ()->fontMetrics ().height () + 10;
++    mBackground = new Plasma::Svg("widgets/background");
++
++    mBorder.left   = mBackground->elementSize ("left").width ();
++    mBorder.right  = mBackground->elementSize ("right").width ();
++    mBorder.top    = mBackground->elementSize ("top").height ();
++    mBorder.bottom = mBackground->elementSize ("bottom").height () +
++		     Plasma::Theme::self ()->fontMetrics ().height () + 10;
+ 
+     mContext.extents.left   = mBorder.left;
+     mContext.extents.right  = mBorder.right;
+@@ -117,6 +114,13 @@ KWD::Switcher::updateGeometry ()
+ 
+     updateWindowProperties ();
+ }
++/*
++ * This code is taken from KDE/kdebase/workspace/libs/plasma/dialog.cpp
++ *
++ *   Copyright (C) 2007 by Alexis MÃ©nard <darktears31@gmail.com>
++ *   Copyright (C) 2007 Sebastian Kuegler <sebas@kde.org>
++ *   Copyright (C) 2006 Aaron Seigo <aseigo@kde.org>
++ */
+ 
+ void
+ KWD::Switcher::redrawPixmap ()
+@@ -126,14 +130,95 @@ KWD::Switcher::redrawPixmap ()
+     const int contentWidth  = mPixmap.width ();
+     const int contentHeight = mPixmap.height ();
+ 
++    const int topHeight    = mBackground->elementSize ("top").height ();
++    const int topWidth     = mBackground->elementSize ("top").width ();
++    const int leftWidth    = mBackground->elementSize ("left").width ();
++    const int leftHeight   = mBackground->elementSize ("left").height ();
++    const int rightHeight  = mBackground->elementSize ("right").height ();
++    const int rightWidth   = mBackground->elementSize ("right").width ();
++    const int bottomHeight = mBackground->elementSize ("bottom").height ();
++    const int bottomWidth  = mBackground->elementSize ("bottom").width ();
++
++    const int topOffset    = 0;
++    const int leftOffset   = 0;
++    const int rightOffset  = contentWidth - rightWidth;
++    const int bottomOffset = contentHeight - bottomHeight;
++    const int contentTop   = topHeight;
++    const int contentLeft  = leftWidth;
++
++
+     mPixmap.fill (Qt::transparent);
+ 
+     p.setCompositionMode (QPainter::CompositionMode_Source);
+     p.setRenderHint (QPainter::SmoothPixmapTransform);
+ 
+-    mBackground->resizePanel (QSizeF (contentWidth, contentHeight));
+-    mBackground->paintPanel (&p, QRect (0, 0, contentWidth,
+-			contentHeight));
++    mBackground->resize (contentWidth, contentHeight);
++
++    mBackground->paint (&p, QRect (contentLeft, contentTop, contentWidth,
++			contentHeight), "center");
++    mBackground->resize ();
++
++    mBackground->paint (&p, QRect (leftOffset, topOffset,
++			leftWidth, topHeight), "topleft");
++    mBackground->paint (&p, QRect (rightOffset, topOffset,
++			rightWidth, topHeight), "topright");
++    mBackground->paint (&p, QRect (leftOffset, bottomOffset,
++			leftWidth, bottomHeight), "bottomleft");
++    mBackground->paint (&p, QRect (rightOffset, bottomOffset,
++			rightWidth, bottomHeight), "bottomright");
++
++    if (mBackground->elementExists ("hint-stretch-borders")) {
++	mBackground->paint (&p, QRect (leftOffset, contentTop,
++			    leftWidth, contentHeight), "left");
++	mBackground->paint (&p, QRect (rightOffset, contentTop,
++			    rightWidth, contentHeight), "right");
++	mBackground->paint (&p, QRect (contentLeft, topOffset,
++			    contentWidth, topHeight), "top");
++	mBackground->paint (&p, QRect (contentLeft, bottomOffset,
++			    contentWidth, bottomHeight), "bottom");
++    } else {
++	QPixmap left (leftWidth, leftHeight);
++	QPixmap right (rightWidth, rightHeight);
++	QPixmap top (topWidth, topHeight);
++	QPixmap bottom (bottomWidth, bottomHeight);
++	
++	left.fill (Qt::transparent);
++	{
++	    QPainter sidePainter (&left);
++	    sidePainter.setCompositionMode (QPainter::CompositionMode_Source);
++	    mBackground->paint (&sidePainter, QPoint (0, 0), "left");
++	}
++	p.drawTiledPixmap (QRect (leftOffset, contentTop, leftWidth,
++			   contentHeight - topHeight - bottomHeight), left);
++
++	right.fill (Qt::transparent);
++	{
++	    QPainter sidePainter (&right);
++	    sidePainter.setCompositionMode (QPainter::CompositionMode_Source);
++	    mBackground->paint (&sidePainter, QPoint (0, 0), "right");
++	}
++	p.drawTiledPixmap (QRect (rightOffset, contentTop, rightWidth,
++			   contentHeight - topHeight - bottomHeight), right);
++
++	top.fill (Qt::transparent);
++	{
++	    QPainter sidePainter (&top);
++	    sidePainter.setCompositionMode (QPainter::CompositionMode_Source);
++	    mBackground->paint (&sidePainter, QPoint (0, 0), "top");
++	}
++	p.drawTiledPixmap (QRect (contentLeft, topOffset, contentWidth -
++			   rightWidth - leftWidth, topHeight), top);
++
++	bottom.fill (Qt::transparent);
++	{
++	    QPainter sidePainter (&bottom);
++	    sidePainter.setCompositionMode (QPainter::CompositionMode_Source);
++	    mBackground->paint (&sidePainter, QPoint (0, 0), "bottom");
++	}
++	p.drawTiledPixmap (QRect (contentLeft, bottomOffset, contentWidth -
++			   rightWidth - leftWidth, bottomHeight), bottom);
++    }
++
+ 
+     mBackgroundPixmap = mPixmap.copy (mBorder.left, mBorder.top,
+ 				      mGeometry.width (),
+@@ -147,9 +232,8 @@ KWD::Switcher::redrawPixmap ()
+ void
+ KWD::Switcher::update ()
+ {
+-    QFontMetrics fm = Plasma::Theme::defaultTheme ()->fontMetrics ();
+-    QFont font (Plasma::Theme::defaultTheme ()->
+-		font (Plasma::Theme::DefaultFont));
++    QFontMetrics fm = Plasma::Theme::self ()->fontMetrics ();
++    QFont font (Plasma::Theme::self ()->font ());
+     QString name;
+     QPainter p (&mPixmap);
+ 
+@@ -166,13 +250,14 @@ KWD::Switcher::update ()
+     }
+ 
+     p.setCompositionMode (QPainter::CompositionMode_Source);
+-
++    mBackground->resize (mPixmap.width (), mPixmap.height ());
+     mBackground->paint (&p, QRect (mBorder.left, mBorder.top +
+ 			mGeometry.height () + 5, mGeometry.width (),
+ 			fm.height ()), "center");
++    mBackground->resize ();
+ 
+     p.setFont (font);
+-    p.setPen (Plasma::Theme::defaultTheme ()->color(Plasma::Theme::TextColor));
++    p.setBrush (QBrush (Plasma::Theme::self()->backgroundColor()));
+ 
+     p.drawText ((mPixmap.width () - fm.width (name)) / 2,
+                 mBorder.top + mGeometry.height () + 5 + fm.ascent (), name);
+diff -upNr compiz-0.7.6.orign/kde/window-decorator-kde4/switcher.h compiz-0.7.6/kde/window-decorator-kde4/switcher.h
+--- compiz-0.7.6.orign/kde/window-decorator-kde4/switcher.h	2008-05-29 13:58:33.000000000 +0200
++++ compiz-0.7.6/kde/window-decorator-kde4/switcher.h	2008-06-11 16:59:47.000000000 +0200
+@@ -30,7 +30,7 @@
+ 
+ namespace Plasma
+ {
+-class PanelSvg;
++class Svg;
+ }
+ 
+ class QSpacerItem;
+@@ -70,7 +70,7 @@ class Switcher
+ 
+ 	QRect mGeometry;
+ 
+-	Plasma::PanelSvg *mBackground;
++	Plasma::Svg *mBackground;
+ 	QPixmap mPixmap;
+ 	QPixmap mBackgroundPixmap;
+ 
+diff -upNr compiz-0.7.6.orign/kde/window-decorator-kde4/window.moc.cpp compiz-0.7.6/kde/window-decorator-kde4/window.moc.cpp
+--- compiz-0.7.6.orign/kde/window-decorator-kde4/window.moc.cpp	2008-05-29 14:07:48.000000000 +0200
++++ compiz-0.7.6/kde/window-decorator-kde4/window.moc.cpp	2008-06-11 16:58:27.000000000 +0200
+@@ -16,7 +16,6 @@
+ #error "(The moc has changed too much.)"
+ #endif
+ 
+-QT_BEGIN_MOC_NAMESPACE
+ static const uint qt_meta_data_KWD__Window[] = {
+ 
+  // content:
+@@ -82,4 +81,3 @@ int KWD::Window::qt_metacall(QMetaObject
+     }
+     return _id;
+ }
+-QT_END_MOC_NAMESPACE

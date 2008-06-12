@@ -1,31 +1,30 @@
 %define		dialogversion	0.7.17
 %define 	kde_dialogversion 0.0.5
 
-%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place plane png regex resize rotate scale screenshot switcher video water wobbly zoom fs
+%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs
 
 %define		gnome_plugins	annotate gconf glib svg
 
 # List of plugins passed to ./configure.  The order is important
 
-%define		plugins		core,glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,plane
+%define		plugins		core,glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall
 
 Name:           compiz
 URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
-Version:        0.7.2
-Release:        3%{?dist}
+Version:        0.7.6
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # libdrm is not available on these arches
-ExcludeArch:   	s390 s390x ppc64
+ExcludeArch:   s390 s390x ppc64
 
 Requires:	xorg-x11-server-Xorg >= 1.3.0.0-19.fc8
 Requires:	mesa-libGL >= 7.0.1-2.fc8
 Requires:      system-logos
-
 Requires(post): desktop-file-utils
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
@@ -51,12 +50,17 @@ Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
 # Make sure that former beryl users still have bling
 Obsoletes: beryl-core
 
+
 # Patches that are not upstream
+Patch102: desktop-effects-0.7.17-wall-plugin.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
-Patch111: gconf-core-plugin-loopfix.patch
+# upstream commit 45caca2220f75bfd20074c217ebee10825413547
+Patch111: compiz-0.7.6-decoration-size.patch
+# revert kde4 plasma changes to build agains kde4 < 4.0.80
+Patch112: compiz-0.7.6-kde4-plasma-revert.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -89,6 +93,7 @@ Requires: gnome-session >= 2.19.6-5
 Requires: metacity >= 2.18
 Requires: libwnck >= 2.15.4
 Requires: %{name} = %{version}
+Requires: compiz-fusion-gnome = %{version}
 Requires(pre): GConf2
 Requires(post): GConf2
 Requires(preun): GConf2
@@ -104,6 +109,7 @@ Summary: Compiz kde integration bits
 Group: User Interface/Desktops
 Requires: %{name} = %{version}
 Requires: compiz-manager
+Requires: compiz-fusion = %{version}
 Obsoletes: beryl-kde
 
 %description kde
@@ -116,6 +122,10 @@ and other kde integration related stuff.
 %setup -q -T -b2 -n kde-desktop-effects-%{kde_dialogversion}
 %setup -q 
 
+pushd ../desktop-effects-%{dialogversion}
+%patch102 -p1 -b .wall-plugin
+popd
+
 %patch103 -p1 -b .composite-cube-logo
 %if 0%{?fedora}
 %patch105 -p1 -b .fedora-logo
@@ -123,9 +133,8 @@ and other kde integration related stuff.
 %patch106 -p1 -b .redhat-logo
 %endif
 #%patch110 -p1 -b .scale-key
-%patch111 -p1 -b .gconf-core-loop
-
-
+%patch111 -p1 -b .decoration-size
+%patch112 -p1 -b .plasma
 %build
 rm -rf $RPM_BUILD_ROOT
 
@@ -138,15 +147,16 @@ export LDFLAGS
 
 
 %configure 					\
-	--enable-gconf 				\
+	--enable-gconf 			\
 	--enable-dbus 				\
-	--enable-place 				\
+	--enable-place 			\
 	--enable-librsvg 			\
 	--enable-gtk 				\
 	--enable-metacity 			\
 	--enable-gnome				\
 	--with-default-plugins=%{plugins}	\
 	--enable-gnome-keybindings		\
+	--disable-kde				\
 	--enable-kde4
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
@@ -154,6 +164,7 @@ make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 # desktop-effects
 cd ../desktop-effects-%{dialogversion}
 %configure 
+make %{?_smp_mflags}
 
 
 %install
@@ -165,7 +176,7 @@ unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 echo INSTALLING DESKTOP EFFECTS
 pushd ../desktop-effects-%{dialogversion}
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
-desktop-file-install --vendor redhat --delete-original      \
+desktop-file-install --vendor redhat --delete-original    \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
   $RPM_BUILD_ROOT%{_datadir}/applications/desktop-effects.desktop
 popd
@@ -183,8 +194,8 @@ for i in $iconlist; do
  cp -p ../desktop-effects-%{dialogversion}/desktop-effects$i.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/$i\x$i/apps/kde-desktop-effects.png
 done
 
-desktop-file-install --vendor=""           \
---dir=%{buildroot}%{_datadir}/applications/kde       \
+desktop-file-install --vendor=""              \
+--dir=%{buildroot}%{_datadir}/applications/kde \
 kde-desktop-effects.desktop
 popd
 
@@ -319,6 +330,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 11 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-1
+- Update to 0.7.6
+- Only move placed windows on decoration size changes
+- Use wall instead of plane
+- Drop unneeded patches
+- Revert plasma API changes
+- Disable kde3 to fix local builds (RH #449123)
+
 * Thu Mar 27 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.2-3
 - Fix gconf plugin loop RH #438794, patch based on 
   older one from Guillaume Seguin

@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -52,6 +52,7 @@ Obsoletes: beryl-core
 
 
 # Patches that are not upstream
+Patch101: desktop-effects-0.7.17-ignore-hints.patch
 Patch102: desktop-effects-0.7.17-wall-plugin.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
@@ -121,6 +122,7 @@ and other kde integration related stuff.
 %setup -q 
 
 pushd ../desktop-effects-%{dialogversion}
+%patch101 -p1 -b .ignore-hints
 %patch102 -p1 -b .wall-plugin
 popd
 
@@ -330,6 +332,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jun 13 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-6
+- Don't use desktops and viewport at the same time
+
 * Wed Jun 11 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-5
 - Revert to old gconf schmema install script
 

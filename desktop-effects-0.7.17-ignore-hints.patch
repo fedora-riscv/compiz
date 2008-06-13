@@ -1,0 +1,12 @@
+diff -upNr desktop-effects-0.7.17.orign/desktop-effects.c desktop-effects-0.7.17/desktop-effects.c
+--- desktop-effects-0.7.17.orign/desktop-effects.c	2008-01-17 19:22:37.000000000 +0100
++++ desktop-effects-0.7.17/desktop-effects.c	2008-06-13 10:49:11.000000000 +0200
+@@ -251,7 +251,7 @@ start_compiz (App *app, GError **err)
+     if (!g_spawn_command_line_async ("gtk-window-decorator", err))
+ 	return FALSE;
+     
+-    if (!g_spawn_command_line_async ("compiz --replace glib gconf", err))
++    if (!g_spawn_command_line_async ("compiz --ignore-desktop-hints --replace glib gconf", err))
+ 	return FALSE;
+     
+     app->compiz_running = TRUE;

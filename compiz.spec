@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -231,9 +231,11 @@ done >> gnome-files.txt
 update-desktop-database -q %{_datadir}/applications
 
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
-for f in %{core_plugins} %{gnome_plugins} core; do
-  gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
-done
+
+for p in %{core_plugins} %{gnome_plugins} core; 
+	do echo %{_sysconfdir}/gconf/schemas/compiz-${p}.schemas ; done \
+	| xargs %{_bindir}/gconftool-2 --makefile-install-rule >& /dev/null || : 
+
 gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 
 touch --no-create %{_datadir}/icons/hicolor
@@ -245,9 +247,11 @@ fi
 %pre gnome
 if [ "$1" -gt 1 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-  for f in %{core_plugins} %{gnome_plugins} core; do
-    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
-  done
+
+  for p in %{core_plugins} %{gnome_plugins} core; 
+	do echo %{_sysconfdir}/gconf/schemas/compiz-${p}.schemas ; done \
+	| xargs %{_bindir}/gconftool-2 --makefile-uninstall-rule >& /dev/null || :
+
   gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
 
@@ -255,9 +259,11 @@ fi
 %preun gnome
 if [ "$1" -eq 0 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-  for f in %{core_plugins} %{gnome_plugins} core; do
-    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/compiz-$f.schemas >& /dev/null || :
-  done
+
+  for p in %{core_plugins} %{gnome_plugins} core; 
+	do echo %{_sysconfdir}/gconf/schemas/compiz-${p}.schemas ; done \
+	| xargs %{_bindir}/gconftool-2 --makefile-uninstall-rule >& /dev/null || :
+
   gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
 
@@ -332,6 +338,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 23 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-3
+- Speed up gconf schema installation
+
 * Fri Jun 13 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-2
 - Don't use desktops and viewport at the same time
 

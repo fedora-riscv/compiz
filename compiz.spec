@@ -11,10 +11,10 @@
 
 Name:           compiz
 URL:            http://www.go-compiz.org
-License:        X11/MIT/GPL
+License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        8%{?dist}
+Release:        9%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -337,6 +337,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 15 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0.7.6-9
+- fix license tag
+
 * Tue Jul 15 2008 Nikolay Vladimirov <nikolay@vladimiroff.com> - 0.7.6-8
 - Rebuild for ppc64
 

@@ -14,13 +14,13 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        7%{?dist}
+Release:        8%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # libdrm is not available on these arches
-ExcludeArch:   s390 s390x ppc64
+ExcludeArch:   s390 s390x
 
 Requires:	xorg-x11-server-Xorg >= 1.3.0.0-19.fc8
 Requires:	mesa-libGL >= 7.0.1-2.fc8
@@ -337,6 +337,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 15 2008 Nikolay Vladimirov <nikolay@vladimiroff.com> - 0.7.6-8
+- Rebuild for ppc64
+
 * Mon Jun 23 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-7
 - Speed up gconf schema installation
 

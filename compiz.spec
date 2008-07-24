@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        3%{?dist}
+Release:        3%{?dist}.1
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -39,7 +39,7 @@ BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
-BuildRequires:  kdebase-workspace-devel
+BuildRequires:  kdebase-workspace-devel >= 4.0.80
 BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
 
@@ -136,7 +136,7 @@ popd
 %endif
 #%patch110 -p1 -b .scale-key
 %patch111 -p1 -b .decoration-size
-%patch112 -p1 -b .plasma
+#patch112 -p1 -b .plasma
 %build
 rm -rf $RPM_BUILD_ROOT
 
@@ -338,6 +338,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 24 2008 Rex Dieter <rdieter@fedoraproject.org> - 0.7.6-3.1
+- (re)build for kde-4.1
+
 * Mon Jun 23 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-3
 - Speed up gconf schema installation
 

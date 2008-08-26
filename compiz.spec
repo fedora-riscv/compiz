@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        9%{?dist}
+Release:        10%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -22,9 +22,9 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # libdrm is not available on these arches
 ExcludeArch:   s390 s390x
 
-Requires:	xorg-x11-server-Xorg >= 1.3.0.0-19.fc8
+Conflicts:	xorg-x11-server-Xorg < 1.3.0.0-19.fc8
 Requires:	mesa-libGL >= 7.0.1-2.fc8
-Requires:      system-logos
+Requires:       system-logos
 Requires(post): desktop-file-utils
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
@@ -337,6 +337,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 26 2008 Adam Jackson <ajax@redhat.com> 0.7.6-10
+- Fixed Requires: Xorg >= foo to Conflicts: Xorg < foo.
+
 * Tue Jul 15 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0.7.6-9
 - fix license tag
 

@@ -1,4 +1,4 @@
-%define		dialogversion	0.7.17
+%define		dialogversion	0.7.18
 %define 	kde_dialogversion 0.0.5
 
 %define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs
@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        10%{?dist}
+Release:        11%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -46,13 +46,14 @@ BuildRequires:  fuse-devel
 Source0:       http://releases.compiz-fusion.org/compiz/%{version}/%{name}-%{version}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
 Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
+Source3:        compiz-gtk
+Source4:        compiz-gtk.desktop
 
 # Make sure that former beryl users still have bling
 Obsoletes: beryl-core
 
 
 # Patches that are not upstream
-Patch101: desktop-effects-0.7.17-ignore-hints.patch
 Patch102: desktop-effects-0.7.17-wall-plugin.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
@@ -119,10 +120,9 @@ and other kde integration related stuff.
 %prep
 %setup -q -T -b1 -n desktop-effects-%{dialogversion}
 %setup -q -T -b2 -n kde-desktop-effects-%{kde_dialogversion}
-%setup -q 
+%setup -q
 
 pushd ../desktop-effects-%{dialogversion}
-%patch101 -p1 -b .ignore-hints
 %patch102 -p1 -b .wall-plugin
 popd
 
@@ -163,7 +163,7 @@ make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 
 # desktop-effects
 cd ../desktop-effects-%{dialogversion}
-%configure 
+%configure
 make %{?_smp_mflags}
 
 
@@ -180,6 +180,12 @@ desktop-file-install --vendor redhat --delete-original    \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
   $RPM_BUILD_ROOT%{_datadir}/applications/desktop-effects.desktop
 popd
+
+install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
+
+desktop-file-install --vendor="" \
+  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+  %SOURCE4
 
 # kde-desktop-effects
 echo INSTALLING KDE DESKTOP EFFECTS
@@ -230,9 +236,9 @@ update-desktop-database -q %{_datadir}/applications
 
 export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
 
-for p in %{core_plugins} %{gnome_plugins} core; 
+for p in %{core_plugins} %{gnome_plugins} core;
 	do echo %{_sysconfdir}/gconf/schemas/compiz-${p}.schemas ; done \
-	| xargs %{_bindir}/gconftool-2 --makefile-install-rule >& /dev/null || : 
+	| xargs %{_bindir}/gconftool-2 --makefile-install-rule >& /dev/null || :
 
 gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 
@@ -246,7 +252,7 @@ fi
 if [ "$1" -gt 1 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
 
-  for p in %{core_plugins} %{gnome_plugins} core; 
+  for p in %{core_plugins} %{gnome_plugins} core;
 	do echo %{_sysconfdir}/gconf/schemas/compiz-${p}.schemas ; done \
 	| xargs %{_bindir}/gconftool-2 --makefile-uninstall-rule >& /dev/null || :
 
@@ -258,7 +264,7 @@ fi
 if [ "$1" -eq 0 ]; then
   export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
 
-  for p in %{core_plugins} %{gnome_plugins} core; 
+  for p in %{core_plugins} %{gnome_plugins} core;
 	do echo %{_sysconfdir}/gconf/schemas/compiz-${p}.schemas ; done \
 	| xargs %{_bindir}/gconftool-2 --makefile-uninstall-rule >& /dev/null || :
 
@@ -298,6 +304,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files gnome -f gnome-files.txt
 %defattr(-, root, root)
+%{_bindir}/compiz-gtk
 %{_bindir}/gtk-window-decorator
 %{_bindir}/desktop-effects
 %{_libdir}/window-manager-settings/libcompiz.so
@@ -305,6 +312,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
 %{_datadir}/compiz/desktop-effects.glade
+%{_datadir}/applications/compiz-gtk.desktop
 %{_datadir}/applications/redhat-desktop-effects.desktop
 %{_datadir}/icons/hicolor/16x16/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/24x24/apps/desktop-effects.png
@@ -337,6 +345,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 25 2008 Jon McCann <jmccann@redhat.com> - 0.7.6-11
+- Add compiz-gtk driver script and desktop file
+- New desktop effects release
+
 * Tue Aug 26 2008 Adam Jackson <ajax@redhat.com> 0.7.6-10
 - Fixed Requires: Xorg >= foo to Conflicts: Xorg < foo.
 

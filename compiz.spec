@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        14%{?dist}
+Release:        15%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -62,6 +62,8 @@ Patch106: redhat-logo.patch
 # upstream commit 45caca2220f75bfd20074c217ebee10825413547
 Patch111: compiz-0.7.6-decoration-size.patch
 Patch112: compiz-0.7.6-metacity-spacer.patch
+Patch113: compiz-0.7.6-utility-windows.patch
+Patch114: compiz-0.7.6-multi-screen-fix.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -136,6 +138,8 @@ popd
 #%patch110 -p1 -b .scale-key
 %patch111 -p1 -b .decoration-size
 %patch112 -p1 -b .metacity-spacer
+%patch113 -p1 -b .utility-windows
+%patch114 -p1 -b .multi-screen
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -347,6 +351,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 22 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-15
+- Fix handling of utility windows (RH #466622)
+- Handle sync alarm events on all screens
+
 * Wed Oct 22 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-14
 - Add missing bits to the patch (RH #446457)
 

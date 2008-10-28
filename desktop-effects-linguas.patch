@@ -1,0 +1,320 @@
+diff -up desktop-effects-0.7.18/configure.linguas desktop-effects-0.7.18/configure
+--- desktop-effects-0.7.18/configure.linguas	2008-10-27 22:23:53.000000000 -0400
++++ desktop-effects-0.7.18/configure	2008-10-27 22:24:36.000000000 -0400
+@@ -4143,7 +4143,7 @@ cat >>confdefs.h <<_ACEOF
+ _ACEOF
+ 
+ 
+-ALL_LINGUAS="as bg bn_IN bs ca cs da de el es fi fr gu hi hr hu id is it ja ka kn ko mk ml mr ms nb nl or pa pl pt_BR pt ro ru si sk sl sr@Latn sr sv ta te uk ur zh_CN zh_TW"
++ALL_LINGUAS="as bg bn_IN bs ca cs da de el es fi fr gu he hi hr hu id is it ja ka kn ko mk ml mr ms nb nl or pa pl pt_BR pt ro ru si sk sl sr@latin sr sv ta te uk ur zh_CN zh_TW"
+ ac_ext=c
+ ac_cpp='$CPP $CPPFLAGS'
+ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+diff -up desktop-effects-0.7.18/po/sr@latin.po.linguas desktop-effects-0.7.18/po/sr@latin.po
+--- desktop-effects-0.7.18/po/sr@latin.po.linguas	2008-10-27 22:25:42.000000000 -0400
++++ desktop-effects-0.7.18/po/sr@latin.po	2008-10-27 22:26:10.000000000 -0400
+@@ -0,0 +1,77 @@
++# Serbian(Latin) translations for desktop-effects
++# Copyright (C) 2006 Red Hat, Inc.
++# This file is distributed under the same license as the desktop-effects package.
++#
++# Igor Miletic <grejigl-gnomeprevod@yahoo.ca>, 2006.
++# Milos Mijatovic <mijatix@gmail.com>, 2008.
++msgid ""
++msgstr ""
++"Project-Id-Version: desktop-effects\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2006-11-29 08:58-0500\n"
++"PO-Revision-Date: 2008-02-19 10:30+0100\n"
++"Last-Translator: Milos Mijatovic <mijatix@gmail.com>\n"
++"Language-Team: Serbian (sr) <fedora-trans-sr@redhat.com>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=UTF-8\n"
++"Content-Transfer-Encoding: 8bit\n"
++"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
++"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
++
++#: ../desktop-effects.c:140
++#, c-format
++msgid ""
++"Testing the new settings. If you don't respond in %d second the previous "
++"settings will be restored."
++msgid_plural ""
++"Testing the new settings. If you don't respond in %d seconds the previous "
++"settings will be restored."
++msgstr[0] ""
++"Isprobavam nove postavke. Ako se ne odazovete za %d sekundu prethodne "
++"postavke će biti vraćene."
++msgstr[1] ""
++"Isprobavam nove postavke. Ako se ne odazovete za %d sekunde prethodne "
++"postavke će biti vraćene."
++msgstr[2] ""
++"Isprobavam nove postavke. Ako se ne odazovete za %d sekundi prethodne "
++"postavke će biti vraćene."
++
++#: ../desktop-effects.c:184
++msgid "Keep Settings"
++msgstr "Zadrži postavke"
++
++#: ../desktop-effects.c:190
++msgid "Do you want to keep these settings?"
++msgstr "Da li želite da zadržite ove postavke?"
++
++#: ../desktop-effects.c:212
++msgid "Use _previous settings"
++msgstr "Koristi _prethodne postavke"
++
++#: ../desktop-effects.c:213
++msgid "_Keep settings"
++msgstr "Zadrži postav_ke"
++
++#: ../desktop-effects.desktop.in.h:1 ../desktop-effects.glade.h:2
++msgid "Desktop Effects"
++msgstr "Efekti radnog okruženja"
++
++#: ../desktop-effects.desktop.in.h:2
++msgid "Select desktop effects"
++msgstr "Izaberite efekte radnog okruženja"
++
++#: ../desktop-effects.glade.h:1
++msgid "<b>Desktop Effects</b>"
++msgstr "<b>Efekti radnog okruženja</b>"
++
++#: ../desktop-effects.glade.h:3
++msgid "Enable Desktop _Effects"
++msgstr "Uključi _efekte radnog okruženja"
++
++#: ../desktop-effects.glade.h:4
++msgid "Windows _Wobble when Moved"
++msgstr "Prozori se _talasaju pri pomeranju"
++
++#: ../desktop-effects.glade.h:5
++msgid "Workspaces on a C_ube"
++msgstr "Radne površine na _kocki"
+diff -up desktop-effects-0.7.18/po/sr.po.linguas desktop-effects-0.7.18/po/sr.po
+--- desktop-effects-0.7.18/po/sr.po.linguas	2008-10-27 22:25:30.000000000 -0400
++++ desktop-effects-0.7.18/po/sr.po	2008-10-27 22:26:10.000000000 -0400
+@@ -1,21 +1,22 @@
+ # Serbian translations for desktop-effects
+ # Copyright (C) 2006 Red Hat, Inc.
+ # This file is distributed under the same license as the desktop-effects package.
+-# Igor Miletic <grejigl-gnomeprevod@yahoo.ca>, 2006.
+ #
++# Igor Miletic <grejigl-gnomeprevod@yahoo.ca>, 2006.
++# Milos Mijatovic <mijatix@gmail.com>, 2008.
+ msgid ""
+ msgstr ""
+ "Project-Id-Version: desktop-effects\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2006-11-29 08:58-0500\n"
+-"PO-Revision-Date: 2006-12-15 18:29-0500\n"
+-"Last-Translator: Igor Miletic <grejigl-gnomeprevod@yahoo.ca>\n"
+-"Language-Team: Serbian (sr) <fedora@prevod.org>\n"
++"PO-Revision-Date: 2008-02-19 10:30+0100\n"
++"Last-Translator: Milos Mijatovic <mijatix@gmail.com>\n"
++"Language-Team: Serbian (sr) <fedora-trans-sr@redhat.com>\n"
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=UTF-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+-"X-Generator: Pootle 0.10.1\n"
++"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
++"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+ 
+ #: ../desktop-effects.c:140
+ #, c-format
+@@ -26,14 +27,14 @@ msgid_plural ""
+ "Testing the new settings. If you don't respond in %d seconds the previous "
+ "settings will be restored."
+ msgstr[0] ""
+-"Испробавам нове поставке. Ако се не одазовете за %d секунду претходне поставке "
+-"ће бити повраћене."
++"Испробавам нове поставке. Ако се не одазовете за %d секунду претходне "
++"поставке ће бити враћене."
+ msgstr[1] ""
+-"Испробавам нове поставке. Ако се не одазовете за %d секунде претходне поставке "
+-"ће бити повраћене."
++"Испробавам нове поставке. Ако се не одазовете за %d секунде претходне "
++"поставке ће бити враћене."
+ msgstr[2] ""
+-"Испробавам нове поставке. Ако се не одазовете за %d секунди претходне поставке "
+-"ће бити повраћене."
++"Испробавам нове поставке. Ако се не одазовете за %d секунди претходне "
++"поставке ће бити враћене."
+ 
+ #: ../desktop-effects.c:184
+ msgid "Keep Settings"
+@@ -73,4 +74,4 @@ msgstr "Прозори се _талас�
+ 
+ #: ../desktop-effects.glade.h:5
+ msgid "Workspaces on a C_ube"
+-msgstr "Радне површи на _коцки"
++msgstr "Радне површине на _коцки"
+diff -up desktop-effects-0.7.18/po/zh_CN.po.linguas desktop-effects-0.7.18/po/zh_CN.po
+--- desktop-effects-0.7.18/po/zh_CN.po.linguas	2008-10-27 22:25:14.000000000 -0400
++++ desktop-effects-0.7.18/po/zh_CN.po	2008-10-27 22:26:10.000000000 -0400
+@@ -1,53 +1,55 @@
+-# translation of zh_CN.po to 
++# translation of desktop-effects.master.po to Simplified Chinese
++# translation of zh_CN.po to
+ # translation of zh_CN.po to
+ # translation of zh_CN.po to
+ # translation of zh_CN.po to
+ # Chinese translations for PACKAGE package.
+ # Copyright (C) 2006 THE PACKAGE'S COPYRIGHT HOLDER
+ # This file is distributed under the same license as the PACKAGE package.
++#
+ # Automatically generated, 2006.
+ # Xi Huang <xhuang@redhat.com>, 2006.
+ # Tony Fu <tfu@redhat.com>, 2006.
+-#
++# Leah Liu <lliu@redhat.com>, 2008.
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: zh_CN\n"
++"Project-Id-Version: desktop-effects.master\n"
+ "Report-Msgid-Bugs-To: \n"
+-"POT-Creation-Date: 2006-11-29 08:58-0500\n"
+-"PO-Revision-Date: 2006-12-15 10:06+1000\n"
+-"Last-Translator: Tony Fu <tfu@redhat.com>\n"
+-"Language-Team:  <zh@li.org>\n"
++"POT-Creation-Date: 2008-08-26 03:13+0000\n"
++"PO-Revision-Date: 2008-09-11 16:15+1000\n"
++"Last-Translator: Leah Liu <lliu@redhat.com>\n"
++"Language-Team: Simplified Chinese <zh@li.org>\n"
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=UTF-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Generator: KBabel 1.9.1\n"
++"X-Generator: KBabel 1.11.4\n"
+ 
+ # Remove this line or KBabel regards it as an invalid header
+ # "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+-#: ../desktop-effects.c:140
+-#, fuzzy, c-format
++#: ../desktop-effects.c:153
++#, c-format
+ msgid ""
+ "Testing the new settings. If you don't respond in %d second the previous "
+ "settings will be restored."
+ msgid_plural ""
+ "Testing the new settings. If you don't respond in %d seconds the previous "
+ "settings will be restored."
+-msgstr[0] "测试新设置。如果你在 %d 秒之内没有响应，之前的设置将恢复。"
+-msgstr[1] "测试新设置。如果你在 %d 秒之内没有响应，之前的设置将恢复。"
++msgstr[0] "测试新设置。如果你在 %d 秒之内没有响应，之前的设置将恢复."
++msgstr[1] "测试新设置。如果你在 %d 秒之内没有响应，之前的设置将恢复"
+ 
+-#: ../desktop-effects.c:184
++#: ../desktop-effects.c:197
+ msgid "Keep Settings"
+ msgstr "保留设置"
+ 
+-#: ../desktop-effects.c:190
++#: ../desktop-effects.c:203
+ msgid "Do you want to keep these settings?"
+ msgstr "你要保留这些设置吗？"
+ 
+-#: ../desktop-effects.c:212
++#: ../desktop-effects.c:225
+ msgid "Use _previous settings"
+ msgstr "使用之前的设置 (_p)"
+ 
+-#: ../desktop-effects.c:213
++#: ../desktop-effects.c:226
+ msgid "_Keep settings"
+ msgstr "保留设置 (_K)"
+ 
+@@ -74,3 +76,4 @@ msgstr "移动时窗口摇晃 (_W)"
+ #: ../desktop-effects.glade.h:5
+ msgid "Workspaces on a C_ube"
+ msgstr "立方体上的工作区 (_u)"
++
+diff -up desktop-effects-0.7.18/po/zh_TW.po.linguas desktop-effects-0.7.18/po/zh_TW.po
+--- desktop-effects-0.7.18/po/zh_TW.po.linguas	2008-10-27 22:25:24.000000000 -0400
++++ desktop-effects-0.7.18/po/zh_TW.po	2008-10-27 22:26:10.000000000 -0400
+@@ -1,4 +1,4 @@
+-# translation of zh_TW.po to Chinese (Traditional)
++# translation of desktop-effects.master.po to Traditional Chinese
+ # translation of zh_TW.po to
+ # Twi translations for PACKAGE package.
+ # Copyright (C) 2006 THE PACKAGE'S COPYRIGHT HOLDER
+@@ -7,45 +7,46 @@
+ # Automatically generated, 2006.
+ # Chester Cheng <ccheng@brisbane.redhat.com>, 2006.
+ # Chester Cheng <ccheng@redhat.com>, 2006.
++# Terry Chuang <tchuang@redhat.com>, 2008.
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: zh_TW\n"
++"Project-Id-Version: desktop-effects.master\n"
+ "Report-Msgid-Bugs-To: \n"
+-"POT-Creation-Date: 2006-11-29 08:58-0500\n"
+-"PO-Revision-Date: 2006-11-30 00:32+1000\n"
+-"Last-Translator: Chester Cheng <ccheng@redhat.com>\n"
+-"Language-Team: Chinese (Traditional) <zh_TW@li.org>\n"
++"POT-Creation-Date: 2008-08-26 03:13+0000\n"
++"PO-Revision-Date: 2008-09-24 14:12+1000\n"
++"Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
++"Language-Team: Traditional Chinese <zh@li.org>\n"
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=UTF-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+ "X-Generator: KBabel 1.11.4\n"
+ 
+-#: ../desktop-effects.c:140
+-#, fuzzy, c-format
++#: ../desktop-effects.c:153
++#, c-format
+ msgid ""
+ "Testing the new settings. If you don't respond in %d second the previous "
+ "settings will be restored."
+ msgid_plural ""
+ "Testing the new settings. If you don't respond in %d seconds the previous "
+ "settings will be restored."
+-msgstr[0] "測試新設定。如果您不在 %d 秒內回應，系統會回復到先前的設定。"
+-msgstr[1] "測試新設定。如果您不在 %d 秒內回應，系統會回復到先前的設定。"
++msgstr[0] "測試新設定。如果您不在 %d 秒內回應，系統就會回復到先前的設定。"
++msgstr[1] "測試新設定。如果您不在 %d 秒內回應，系統就會回復到先前的設定。"
+ 
+-#: ../desktop-effects.c:184
++#: ../desktop-effects.c:197
+ msgid "Keep Settings"
+ msgstr "保留設定"
+ 
+-#: ../desktop-effects.c:190
++#: ../desktop-effects.c:203
+ msgid "Do you want to keep these settings?"
+ msgstr "您是否要保留這些設定？"
+ 
+-#: ../desktop-effects.c:212
++#: ../desktop-effects.c:225
+ msgid "Use _previous settings"
+-msgstr "使用先前的設定 (_p)"
++msgstr "使用先前的設定（_p）"
+ 
+-#: ../desktop-effects.c:213
++#: ../desktop-effects.c:226
+ msgid "_Keep settings"
+-msgstr "保留設定 (_K)"
++msgstr "保留設定（_K）"
+ 
+ #: ../desktop-effects.desktop.in.h:1 ../desktop-effects.glade.h:2
+ msgid "Desktop Effects"
+@@ -61,12 +62,13 @@ msgstr "<b>桌面特效</b>"
+ 
+ #: ../desktop-effects.glade.h:3
+ msgid "Enable Desktop _Effects"
+-msgstr "啟用桌面的特殊效果 (_E)"
++msgstr "啟用桌面的特殊效果（_E）"
+ 
+ #: ../desktop-effects.glade.h:4
+ msgid "Windows _Wobble when Moved"
+-msgstr "視窗移動時會搖搖晃晃 (_W)"
++msgstr "視窗移動時會產生搖晃效果（_W）"
+ 
+ #: ../desktop-effects.glade.h:5
+ msgid "Workspaces on a C_ube"
+-msgstr "工作區位於方形體上 (_u)"
++msgstr "工作區位於方形體上（_u）"
++

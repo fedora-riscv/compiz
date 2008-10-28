@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        15%{?dist}
+Release:        16%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -64,6 +64,8 @@ Patch111: compiz-0.7.6-decoration-size.patch
 Patch112: compiz-0.7.6-metacity-spacer.patch
 Patch113: compiz-0.7.6-utility-windows.patch
 Patch114: compiz-0.7.6-multi-screen-fix.patch
+# update translations in desktop-effects
+Patch115: desktop-effects-linguas.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -127,6 +129,7 @@ and other kde integration related stuff.
 
 pushd ../desktop-effects-%{dialogversion}
 %patch102 -p1 -b .wall-plugin
+%patch115 -p1 -b .linguas
 popd
 
 %patch103 -p1 -b .composite-cube-logo
@@ -351,6 +354,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 27 2008 Matthias Clasen <mclasen@redhat.com> - 0.7.6-16
+- Update some translations for the desktop-effects capplet
+
 * Wed Oct 22 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.6-15
 - Fix handling of utility windows (RH #466622)
 - Handle sync alarm events on all screens

@@ -13,8 +13,8 @@ Name:           compiz
 URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.7.6
-Release:        17%{?dist}
+Version:        0.7.8
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -59,11 +59,6 @@ Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
-# upstream commit 45caca2220f75bfd20074c217ebee10825413547
-Patch111: compiz-0.7.6-decoration-size.patch
-Patch112: compiz-0.7.6-metacity-spacer.patch
-Patch113: compiz-0.7.6-utility-windows.patch
-Patch114: compiz-0.7.6-multi-screen-fix.patch
 # update translations in desktop-effects
 Patch115: desktop-effects-linguas.patch
 
@@ -139,10 +134,6 @@ popd
 %patch106 -p1 -b .redhat-logo
 %endif
 #%patch110 -p1 -b .scale-key
-%patch111 -p1 -b .decoration-size
-%patch112 -p1 -b .metacity-spacer
-%patch113 -p1 -b .utility-windows
-%patch114 -p1 -b .multi-screen
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -354,6 +345,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 08 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-1
+- Update to 0.7.8
+- Dropped patches:
+	compiz-0.7.6-decoration-size.patch
+	compiz-0.7.6-metacity-spacer.patch
+	compiz-0.7.6-utility-windows.patch
+	compiz-0.7.6-multi-screen-fix.patch
+
 * Mon Oct 27 2008 Matthias Clasen <mclasen@redhat.com> - 0.7.6-17
 - Update some translations for the desktop-effects capplet
 

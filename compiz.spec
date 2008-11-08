@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -345,6 +345,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 08 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-2
+- Fix sources file
+
 * Sat Nov 08 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-1
 - Update to 0.7.8
 - Dropped patches:

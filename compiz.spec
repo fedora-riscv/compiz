@@ -1,7 +1,7 @@
 %define		dialogversion	0.7.18
 %define 	kde_dialogversion 0.0.5
 
-%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs
+%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs
 
 %define		gnome_plugins	annotate gconf glib svg
 
@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -345,6 +345,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 08 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-3
+- Add obs plugin
+
 * Sat Nov 08 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-2
 - Fix sources file
 

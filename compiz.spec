@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -39,7 +39,7 @@ BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
-BuildRequires:  kdebase-workspace-devel
+BuildRequires:  kdebase-workspace-devel plasma-devel
 BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
 
@@ -345,6 +345,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 01 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.8-5
+- Rebuild for new libplasma, BR plasma-devel
+
 * Wed Nov 26 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-4
 - Rebuild against new gnome-desktop
 

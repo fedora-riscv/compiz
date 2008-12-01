@@ -61,6 +61,8 @@ Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
 # update translations in desktop-effects
 Patch115: desktop-effects-linguas.patch
+# make kde4-window-decorator build against KDE 4.2's libplasma
+Patch120: compiz-0.7.8-kde42.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -134,6 +136,10 @@ popd
 %patch106 -p1 -b .redhat-logo
 %endif
 #%patch110 -p1 -b .scale-key
+
+%patch120 -p1 -b .kde42
+sleep 1
+touch configure
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -346,7 +352,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Dec 01 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.8-5
-- Rebuild for new libplasma, BR plasma-devel
+- Patch and rebuild for new libplasma, BR plasma-devel
 
 * Wed Nov 26 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-4
 - Rebuild against new gnome-desktop

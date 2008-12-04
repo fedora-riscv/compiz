@@ -1,0 +1,94 @@
+diff --git a/include/compiz-core.h b/include/compiz-core.h
+index 5aeb04c..97279ab 100644
+--- a/include/compiz-core.h
++++ b/include/compiz-core.h
+@@ -220,6 +220,9 @@ extern Bool       noDetection;
+ extern Bool	  useDesktopHints;
+ extern Bool       onlyCurrentScreen;
+ 
++extern char	**initialPlugins;
++extern int 	nInitialPlugins;
++
+ extern int  defaultRefreshRate;
+ extern char *defaultTextureFilter;
+ 
+diff --git a/src/display.c b/src/display.c
+index dd4676e..fc3e117 100644
+--- a/src/display.c
++++ b/src/display.c
+@@ -846,7 +846,7 @@ updatePlugins (CompDisplay *d)
+ {
+     CompOption *o;
+     CompPlugin *p, **pop = 0;
+-    int	       nPop, i, j;
++    int	       nPop, i, j, k;
+ 
+     d->dirtyPluginList = FALSE;
+ 
+@@ -886,6 +886,30 @@ updatePlugins (CompDisplay *d)
+ 	free (d->plugin.list.value[d->plugin.list.nValue].s);
+     }
+ 
++    for ( k = 0; k < nInitialPlugins; k++) 
++    {
++    	for ( j = 0; j < nPop; j++)
++	{
++	     if (pop[j] && strcmp (pop[j]->vTable->name,
++				   initialPlugins[k]) == 0)
++		break;
++	}
++	
++	if ( j == (nPop - 1))
++	{
++	    p = loadPlugin (initialPlugins[k]);
++	    if (p)
++	    {
++		if (!pushPlugin (p))
++		{
++		    unloadPlugin (p);
++		    p = 0;
++		}
++	    }
++	}
++    }
++
++
+     for (; i < o->value.list.nValue; i++)
+     {
+ 	p = 0;
+diff --git a/src/main.c b/src/main.c
+index 3784afe..ff982fe 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -40,6 +40,9 @@ char *programName;
+ char **programArgv;
+ int  programArgc;
+ 
++char **initialPlugins = NULL;
++int nInitialPlugins = 0;
++
+ char *backgroundImage = NULL;
+ 
+ REGION   emptyRegion;
+@@ -406,6 +409,11 @@ main (int argc, char **argv)
+ 
+ 	    ptr += sprintf (ptr, "</default>");
+ 	}
++
++	initialPlugins = malloc (nPlugin * sizeof (char *));
++	memcpy (initialPlugins, plugin, nPlugin * sizeof (char *));
++	nInitialPlugins = nPlugin;
++
+     }
+ 
+     xmlInitParser ();
+@@ -455,6 +463,9 @@ main (int argc, char **argv)
+ 
+     xmlCleanupParser ();
+ 
++    if (initialPlugins != NULL)
++        free (initialPlugins);
++
+     if (restartSignal)
+     {
+ 	execvp (programName, programArgv);

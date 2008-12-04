@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -48,6 +48,7 @@ Source1:	desktop-effects-%{dialogversion}.tar.bz2
 Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
 Source3:        compiz-gtk
 Source4:        compiz-gtk.desktop
+Source5:	glx_tfp_test.c
 
 # Make sure that former beryl users still have bling
 Obsoletes: beryl-core
@@ -63,6 +64,13 @@ Patch106: redhat-logo.patch
 Patch115: desktop-effects-linguas.patch
 # make kde4-window-decorator build against KDE 4.2's libplasma
 Patch120: compiz-0.7.8-kde42.patch
+
+# backports from git
+Patch121: compiz-0.7.8-decoration-placement.patch
+Patch122: compiz-0.7.8-fullscreen-top.patch
+
+# Make sure configuration plugins never get unloaded
+Patch123: compiz-0.7.8-pin-initial-plugins.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -141,6 +149,10 @@ popd
 sleep 1
 touch configure
 
+%patch121 -p1 -b .decoration-placement
+%patch122 -p1 -b .fullscreen-top
+%patch123 -p1 -b .initial-plugins
+
 %build
 rm -rf $RPM_BUILD_ROOT
 
@@ -167,6 +179,9 @@ export LDFLAGS
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 
+# glx_tfp_test
+gcc %{SOURCE5} -lX11 -lGLU $RPM_OPT_FLAGS -o glx_tfp_test
+
 # desktop-effects
 cd ../desktop-effects-%{dialogversion}
 %configure
@@ -188,6 +203,7 @@ desktop-file-install --vendor redhat --delete-original    \
 popd
 
 install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
+install glx_tfp_test $RPM_BUILD_ROOT%{_bindir}
 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
@@ -311,6 +327,7 @@ rm -rf $RPM_BUILD_ROOT
 %files gnome -f gnome-files.txt
 %defattr(-, root, root)
 %{_bindir}/compiz-gtk
+%{_bindir}/glx_tfp_test
 %{_bindir}/gtk-window-decorator
 %{_bindir}/desktop-effects
 %{_libdir}/window-manager-settings/libcompiz.so
@@ -351,6 +368,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 04 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-6
+- Bugfixes from git head:
+	compiz-0.7.8-decoration-placement.patch (RH #218561)
+	compiz-0.7.8-fullscreen-top.patch
+- Fall back to metacity if GLX_tfp is not present (RH #457816)
+- Don't allow command line passed (config) plugins to be unloaded
+- Don't use --ignore-desktop-hints (upstream default now)
+
 * Mon Dec 01 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.8-5
 - Patch and rebuild for new libplasma, BR plasma-devel
 

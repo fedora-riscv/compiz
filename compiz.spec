@@ -374,7 +374,6 @@ rm -rf $RPM_BUILD_ROOT
 	compiz-0.7.8-fullscreen-top.patch
 - Fall back to metacity if GLX_tfp is not present (RH #457816)
 - Don't allow command line passed (config) plugins to be unloaded
-- Don't use --ignore-desktop-hints (upstream default now)
 
 * Mon Dec 01 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.8-5
 - Patch and rebuild for new libplasma, BR plasma-devel

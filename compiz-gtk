@@ -5,7 +5,7 @@ export LIBGL_ALWAYS_INDIRECT=1
 
 if [ $? -eq 0 ]; then
 	gtk-window-decorator &
-	exec compiz glib gconf $@
+	exec compiz --ignore-desktop-hints glib gconf $@
 else
 	exec metacity $@
 fi

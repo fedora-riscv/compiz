@@ -62,6 +62,8 @@ Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
 # update translations in desktop-effects
 Patch115: desktop-effects-linguas.patch
+Patch116: compiz-0.7.6-utility-windows.patch
+
 # make kde4-window-decorator build against KDE 4.2's libplasma
 Patch120: compiz-0.7.8-kde42.patch
 
@@ -71,6 +73,9 @@ Patch122: compiz-0.7.8-fullscreen-top.patch
 
 # Make sure configuration plugins never get unloaded
 Patch123: compiz-0.7.8-pin-initial-plugins.patch
+
+# Memory leak fixes from upstream
+Patch124: compiz-0.7.8-mem-leak-fixes.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -145,6 +150,8 @@ popd
 %endif
 #%patch110 -p1 -b .scale-key
 
+%patch116 -p1 -b .utility
+
 %patch120 -p1 -b .kde42
 sleep 1
 touch configure
@@ -152,6 +159,7 @@ touch configure
 %patch121 -p1 -b .decoration-placement
 %patch122 -p1 -b .fullscreen-top
 %patch123 -p1 -b .initial-plugins
+%patch124 -p1 -b .mem-leaks
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -368,6 +376,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 08 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-7
+- Readd compiz-0.7.6-utility-windows.patch
+- Fix memory leaks
+
 * Thu Dec 04 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-6
 - Bugfixes from git head:
 	compiz-0.7.8-decoration-placement.patch (RH #218561)

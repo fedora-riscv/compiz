@@ -376,7 +376,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat Nov 08 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-7
+* Fri Dec 05 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-7
 - Readd compiz-0.7.6-utility-windows.patch
 - Fix memory leaks
 

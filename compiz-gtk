@@ -1,5 +1,11 @@
 #!/bin/sh
-
 export LIBGL_ALWAYS_INDIRECT=1
-gtk-window-decorator &
-exec compiz --ignore-desktop-hints glib gconf $@
+
+/usr/bin/glx_tfp_test
+
+if [ $? -eq 0 ]; then
+	gtk-window-decorator &
+	exec compiz --ignore-desktop-hints glib gconf $@
+else
+	exec metacity $@
+fi

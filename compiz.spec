@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -62,6 +62,7 @@ Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
 # update translations in desktop-effects
 Patch115: desktop-effects-linguas.patch
+Patch116: compiz-0.7.6-utility-windows.patch
 
 # backports from git
 Patch121: compiz-0.7.8-decoration-placement.patch
@@ -69,6 +70,7 @@ Patch122: compiz-0.7.8-fullscreen-top.patch
 
 # Make sure configuration plugins never get unloaded
 Patch123: compiz-0.7.8-pin-initial-plugins.patch
+Patch124: compiz-0.7.8-mem-leak-fixes.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -143,9 +145,11 @@ popd
 %endif
 #%patch110 -p1 -b .scale-key
 
+%patch116 -p1 -b .utility
 %patch121 -p1 -b .decoration-placement
 %patch122 -p1 -b .fullscreen-top
 %patch123 -p1 -b .initial-plugins
+%patch124 -p1 -b .mem-leaks
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -362,7 +366,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Dec 04 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-6
+* Fri Dec 05 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-2
+- Readd compiz-0.7.6-utility-windows.patch
+- Fix memory leaks
+
+* Thu Dec 04 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-1
 - Update to 0.7.8
 - Dropped patches:
 	compiz-0.7.6-decoration-size.patch

@@ -7,14 +7,14 @@
 
 # List of plugins passed to ./configure.  The order is important
 
-%define		plugins		core,glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall
+%define		plugins		core,glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall,obs
 
 Name:           compiz
 URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        7%{?dist}
+Release:        8%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -376,6 +376,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec 07 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-8
+- Add 'obs' to default plugin list 
+- Improve glx_tfp check
+
 * Fri Dec 05 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-7
 - Readd compiz-0.7.6-utility-windows.patch
 - Fix memory leaks

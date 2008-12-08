@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        8%{?dist}
+Release:        9%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -376,6 +376,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 08 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-9
+- Remove direct rendering check for now
+
 * Sun Dec 07 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-8
 - Add 'obs' to default plugin list 
 - Improve glx_tfp check

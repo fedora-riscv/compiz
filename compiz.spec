@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        9%{?dist}
+Release:        10%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -376,6 +376,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 18 2008 Matthias Clasen <mclasen@redhat.com> - 0.7.8-10
+- Rebuild against new gnome-desktop
+
 * Mon Dec 08 2008 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-9
 - Remove direct rendering check for now
 

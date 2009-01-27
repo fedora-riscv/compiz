@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        10%{?dist}
+Release:        11%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -76,6 +76,9 @@ Patch123: compiz-0.7.8-pin-initial-plugins.patch
 
 # Memory leak fixes from upstream
 Patch124: compiz-0.7.8-mem-leak-fixes.patch
+
+# Make the terminal keybinding work (RH #439665)
+Patch125: compiz-0.7.8-gnome-terminal.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -160,6 +163,7 @@ touch configure
 %patch122 -p1 -b .fullscreen-top
 %patch123 -p1 -b .initial-plugins
 %patch124 -p1 -b .mem-leaks
+%patch125 -p1 -b .terminal
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -376,6 +380,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan 27 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-11
+- Make the terminal keybinding work (RH #439665)
+
 * Thu Dec 18 2008 Matthias Clasen <mclasen@redhat.com> - 0.7.8-10
 - Rebuild against new gnome-desktop
 

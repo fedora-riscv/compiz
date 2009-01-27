@@ -1,0 +1,12 @@
+diff -upNr compiz-0.7.8.orign/metadata/core.xml.in compiz-0.7.8/metadata/core.xml.in
+--- compiz-0.7.8.orign/metadata/core.xml.in	2008-08-28 13:34:41.000000000 +0200
++++ compiz-0.7.8/metadata/core.xml.in	2009-01-27 22:11:55.000000000 +0100
+@@ -315,7 +315,7 @@
+ 	    <option name="command_terminal" type="string">
+ 		<_short>Terminal command line</_short>
+ 		<_long>Terminal command line</_long>
+-		<default></default>
++		<default>gnome-terminal</default>
+ 	    </option>
+ 	    <option name="run_command_terminal_key" type="key">
+ 		<_short>Open a terminal</_short>

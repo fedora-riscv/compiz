@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -63,6 +63,9 @@ Patch106: redhat-logo.patch
 # update translations in desktop-effects
 Patch115: desktop-effects-linguas.patch
 Patch116: compiz-0.7.6-utility-windows.patch
+
+# make kde4-window-decorator build against KDE 4.2's libplasma
+Patch120: compiz-0.7.8-kde42.patch
 
 # backports from git
 Patch121: compiz-0.7.8-decoration-placement.patch
@@ -149,6 +152,10 @@ popd
 %patch106 -p1 -b .redhat-logo
 %endif
 #%patch110 -p1 -b .scale-key
+
+%patch120 -p1 -b .kde42
+sleep 1
+touch configure
 
 %patch116 -p1 -b .utility
 %patch121 -p1 -b .decoration-placement
@@ -372,6 +379,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan 27 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-6
+- Fix build against KDE-4.2
+
 * Tue Jan 27 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-5
 - Make the terminal keybinding work (RH #439665)
 

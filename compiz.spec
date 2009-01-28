@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        11%{?dist}
+Release:        12%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -79,6 +79,12 @@ Patch124: compiz-0.7.8-mem-leak-fixes.patch
 
 # Make the terminal keybinding work (RH #439665)
 Patch125: compiz-0.7.8-gnome-terminal.patch
+
+# KDE-4.2 fixes from upstream:
+# 814809ffffe47f829b784f7bd246026bfcdecf0f
+Patch126: compiz-0.7.8-kde42-crash.patch
+# 4cc1d813a9748c3740662233a2add3fe65a4c533
+Patch127: compiz-0.7.8-kde42-krunner.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -164,6 +170,8 @@ touch configure
 %patch123 -p1 -b .initial-plugins
 %patch124 -p1 -b .mem-leaks
 %patch125 -p1 -b .terminal
+%patch126 -p1 -b .kde-crash
+%patch127 -p1 -b .krunner
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -380,6 +388,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 28 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-12
+- Backport some KDE-4.2 fixes from upstream
+
 * Tue Jan 27 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-11
 - Make the terminal keybinding work (RH #439665)
 

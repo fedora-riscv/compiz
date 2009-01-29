@@ -347,7 +347,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Jan 29 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.6-4
+* Thu Jan 29 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.6-4
 - patch and rebuild for KDE 4.2
 
 * Thu Jul 24 2008 Rex Dieter <rdieter@fedoraproject.org> - 0.7.6-3.1

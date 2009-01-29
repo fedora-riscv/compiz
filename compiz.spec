@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        X11/MIT/GPL
 Group:          User Interface/Desktops
 Version:        0.7.6
-Release:        3%{?dist}.1
+Release:        4%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -39,7 +39,7 @@ BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel >= 2.18
 BuildRequires:  mesa-libGLU-devel
-BuildRequires:  kdebase-workspace-devel >= 4.0.80
+BuildRequires:  kdebase-workspace-devel >= 4.2
 BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
 
@@ -60,8 +60,13 @@ Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
 # upstream commit 45caca2220f75bfd20074c217ebee10825413547
 Patch111: compiz-0.7.6-decoration-size.patch
-# revert kde4 plasma changes to build agains kde4 < 4.0.80
-Patch112: compiz-0.7.6-kde4-plasma-revert.patch
+# make kde4-window-decorator build against KDE 4.2's libplasma
+Patch120: compiz-0.7.6-kde42.patch
+# KDE-4.2 fixes from upstream:
+# 814809ffffe47f829b784f7bd246026bfcdecf0f
+Patch126: compiz-0.7.8-kde42-crash.patch
+# 4cc1d813a9748c3740662233a2add3fe65a4c533
+Patch127: compiz-0.7.8-kde42-krunner.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -136,7 +141,11 @@ popd
 %endif
 #%patch110 -p1 -b .scale-key
 %patch111 -p1 -b .decoration-size
-#patch112 -p1 -b .plasma
+%patch120 -p1 -b .kde42
+sleep 1
+touch configure
+%patch126 -p1 -b .kde-crash
+%patch127 -p1 -b .krunner
 %build
 rm -rf $RPM_BUILD_ROOT
 
@@ -338,6 +347,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 29 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.6-4
+- patch and rebuild for KDE 4.2
+
 * Thu Jul 24 2008 Rex Dieter <rdieter@fedoraproject.org> - 0.7.6-3.1
 - (re)build for kde-4.1
 

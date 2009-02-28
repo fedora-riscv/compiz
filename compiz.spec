@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        13%{?dist}
+Release:        14%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -85,6 +85,9 @@ Patch125: compiz-0.7.8-gnome-terminal.patch
 Patch126: compiz-0.7.8-kde42-crash.patch
 # 4cc1d813a9748c3740662233a2add3fe65a4c533
 Patch127: compiz-0.7.8-kde42-krunner.patch
+
+# backport to fix RH #484056
+Patch128: compiz-0.7.8-gwd-pixmap-fix.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -172,6 +175,8 @@ touch configure
 %patch125 -p1 -b .terminal
 %patch126 -p1 -b .kde-crash
 %patch127 -p1 -b .krunner
+%define _default_patch_fuzz 2
+%patch128 -p1 -b .gwd-pixmap
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -388,6 +393,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 28 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-14
+- Backport gwd fix from upstream, should fix RH #484056
+
 * Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.7.8-13
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 

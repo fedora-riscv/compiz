@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        14%{?dist}
+Release:        15%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -24,7 +24,8 @@ ExcludeArch:   s390 s390x
 
 Conflicts:	xorg-x11-server-Xorg < 1.3.0.0-19.fc8
 Requires:	mesa-libGL >= 7.0.1-2.fc8
-Requires:       system-logos
+Requires:	system-logos
+Requires: 	glx-utils
 Requires(post): desktop-file-utils
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
@@ -48,7 +49,6 @@ Source1:	desktop-effects-%{dialogversion}.tar.bz2
 Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
 Source3:        compiz-gtk
 Source4:        compiz-gtk.desktop
-Source5:	glx_tfp_test.c
 
 # Make sure that former beryl users still have bling
 Obsoletes: beryl-core
@@ -204,9 +204,6 @@ export LDFLAGS
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 
-# glx_tfp_test
-gcc %{SOURCE5} -lX11 -lGLU $RPM_OPT_FLAGS -o glx_tfp_test
-
 # desktop-effects
 cd ../desktop-effects-%{dialogversion}
 %configure
@@ -352,7 +349,6 @@ rm -rf $RPM_BUILD_ROOT
 %files gnome -f gnome-files.txt
 %defattr(-, root, root)
 %{_bindir}/compiz-gtk
-%{_bindir}/glx_tfp_test
 %{_bindir}/gtk-window-decorator
 %{_bindir}/desktop-effects
 %{_libdir}/window-manager-settings/libcompiz.so
@@ -393,6 +389,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 15 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-15
+- Improved tfp check, fixes "white screen of death"
+- Use direct rendering if the driver supports it (DRI2)
+
 * Sat Feb 28 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-14
 - Backport gwd fix from upstream, should fix RH #484056
 

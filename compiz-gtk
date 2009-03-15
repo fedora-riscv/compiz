@@ -1,11 +1,25 @@
-#!/bin/sh
-export LIBGL_ALWAYS_INDIRECT=1
+#!/bin/bash
 
-/usr/bin/glx_tfp_test
-
-if [ $? -eq 0 ]; then
+function runCompiz() {
 	gtk-window-decorator &
 	exec compiz --ignore-desktop-hints glib gconf $@
-else
-	exec metacity $@
+}
+
+HAVE3D=`glxinfo | grep "direct rendering: " | head -n 1 | cut -d " " -f 3`
+HAVETFP=`glxinfo | grep texture_from_pixmap -c`
+
+if ( [ $HAVE3D == "Yes" ] && [ $HAVETFP -gt 2 ] ); then 
+	runCompiz
 fi
+
+# Try again with indirect rendering
+export LIBGL_ALWAYS_INDIRECT=1
+
+HAVETFP=`glxinfo | grep texture_from_pixmap -c`
+
+if ( [ $HAVE3D == "Yes" ] && [ $HAVETFP -gt 2 ] ); then 
+	runCompiz
+fi
+
+# Fall back to metacity
+exec metacity $@

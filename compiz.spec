@@ -225,7 +225,6 @@ desktop-file-install --vendor redhat --delete-original    \
 popd
 
 install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
-install glx_tfp_test $RPM_BUILD_ROOT%{_bindir}
 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \

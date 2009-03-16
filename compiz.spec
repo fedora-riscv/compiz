@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        16%{?dist}
+Release:        17%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -388,6 +388,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 16 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-17
+- Fix compiz-gtk script RH #490383
+
 * Sun Mar 15 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-16
 - Revert to always using indirect rendering
 

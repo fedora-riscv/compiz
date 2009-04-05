@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        17%{?dist}
+Release:        18%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -388,6 +388,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Apr 05 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-18
+- Direct rendering does not mean that we have hw 3D
+
 * Mon Mar 16 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-17
 - Fix compiz-gtk script RH #490383
 

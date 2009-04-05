@@ -5,7 +5,8 @@ function runCompiz() {
 	exec compiz --ignore-desktop-hints glib gconf $@
 }
 
-HAVE3D=`glxinfo | grep "direct rendering: " | head -n 1 | cut -d " " -f 3`
+DIRECT=`glxinfo | grep "direct rendering: " | head -n 1 | cut -d " " -f 3`
+ISSW=`glxinfo | grep "Software Rasterizer" -c`
 
 # Disabled for now, does not work as expected
 #HAVETFP=`glxinfo | grep texture_from_pixmap -c`
@@ -19,7 +20,7 @@ export LIBGL_ALWAYS_INDIRECT=1
 
 HAVETFP=`glxinfo | grep texture_from_pixmap -c`
 
-if ( [ $HAVE3D == "Yes" ] && [ $HAVETFP -gt 2 ] ); then 
+if ( [ $DIRECT == "Yes" ] && [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then 
 	runCompiz $@
 fi
 

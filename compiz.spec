@@ -174,7 +174,7 @@ touch configure
 %patch125 -p1 -b .terminal
 %patch126 -p1 -b .kde-crash
 %patch127 -p1 -b .krunner
-%define %_default_patch_fuzz 2
+%define _default_patch_fuzz 2
 %patch128 -p1 -b .qt45
 
 %build

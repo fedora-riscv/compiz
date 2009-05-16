@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        8%{?dist}
+Release:        9%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -27,7 +27,7 @@ Requires:	mesa-libGL >= 7.0.1-2.fc8
 Requires:       system-logos
 Requires(post): desktop-file-utils
 
-BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
+BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel, libXres-devel
 BuildRequires:  libXfixes-devel, libXrandr-devel, libXrender-devel
 BuildRequires:  libXcomposite-devel, libXdamage-devel, libXext-devel
 BuildRequires:  libXt-devel, libXmu-devel, libICE-devel, libSM-devel
@@ -392,6 +392,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat May 16 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-9
+- BR libXres-devel
+
 * Sat May 16 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-8
 - Make compiz-kde work with qt-4.5 (RH #500769)
 

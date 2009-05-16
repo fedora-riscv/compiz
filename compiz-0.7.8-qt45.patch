@@ -1,0 +1,297 @@
+From: Dennis Kasprzyk <onestone@compiz-fusion.org>
+Date: Tue, 10 Mar 2009 01:58:52 +0000 (+0100)
+Subject: Added support for QT 4.5 raster graphicssystem.
+X-Git-Url: http://gitweb.opencompositing.org/?p=compiz%2Fcore;a=commitdiff_plain;h=fb509e611feaf775144d03055f2e0314c58f16ca;hp=6a300bb76ce1d5cce5ed9937e720cae37ba32270
+
+Added support for QT 4.5 raster graphicssystem.
+---
+
+diff --git a/kde/window-decorator-kde4/decorator.cpp b/kde/window-decorator-kde4/decorator.cpp
+index 17f71ae..93be78d 100644
+--- a/kde/window-decorator-kde4/decorator.cpp
++++ b/kde/window-decorator-kde4/decorator.cpp
+@@ -91,10 +91,8 @@ KWD::PluginManager::PluginManager (KSharedConfigPtr config):
+ }
+ 
+ 
+-KWD::Decorator::Decorator (Display* display,
+-			   Qt::HANDLE visual,
+-			   Qt::HANDLE colormap) :
+-    KApplication (display, visual, colormap),
++KWD::Decorator::Decorator () :
++    KApplication (),
+     mConfig (0),
+     mCompositeWindow (0),
+     mSwitcher (0)
+diff --git a/kde/window-decorator-kde4/decorator.h b/kde/window-decorator-kde4/decorator.h
+index 65802c4..e3c6d75 100644
+--- a/kde/window-decorator-kde4/decorator.h
++++ b/kde/window-decorator-kde4/decorator.h
+@@ -84,7 +84,7 @@ class PluginManager:public KDecorationPlugins {
+ 
+ class Decorator:public KApplication {
+     Q_OBJECT public:
+-	Decorator (Display* display, Qt::HANDLE visual, Qt::HANDLE colormap);
++	Decorator ();
+ 	~Decorator (void);
+ 
+ 	static NETRootInfo *rootInfo (void)
+diff --git a/kde/window-decorator-kde4/main.cpp b/kde/window-decorator-kde4/main.cpp
+index 781edbe..c171c94 100644
+--- a/kde/window-decorator-kde4/main.cpp
++++ b/kde/window-decorator-kde4/main.cpp
+@@ -46,11 +46,6 @@ main (int argc, char **argv)
+     int		    status;
+     int		    event, error;
+     Time	    timestamp;
+-    Colormap        colormap = 0;
+-    Visual          *visual = 0;
+-    int             event_base, error_base;
+-    Display         *dpy;
+-    int             screen;
+     QString         appname;
+ 
+     options.add ("replace", ki18n ("Replace existing window decorator"));
+@@ -94,43 +89,10 @@ main (int argc, char **argv)
+ 	    blurType = BLUR_TYPE_ALL;
+     }
+ 
+-    dpy = XOpenDisplay(0); // open default display
+-    screen = DefaultScreen (dpy);
+-    if (!dpy) {
+-        kError() << "Cannot connect to the X server" << endl;
+-        return 0;
+-    }
+-
+-    if (XRenderQueryExtension (dpy, &event_base, &error_base))
+-    {
+-	int nvi;
+-	XVisualInfo templ;
+-	templ.screen = screen;
+-	templ.depth = 32;
+-	templ.c_class = TrueColor;
+-        XVisualInfo *xvi = XGetVisualInfo (dpy, VisualScreenMask |
+-					   VisualDepthMask |
+-					   VisualClassMask, &templ, &nvi);
+-
+-	for (int i = 0; i < nvi; i++)
+-	{
+-	    XRenderPictFormat *format =
+-		XRenderFindVisualFormat (dpy, xvi[i].visual);
+-	    if (format->type == PictTypeDirect && format->direct.alphaMask)
+-	    {
+-		visual = xvi[i].visual;
+-		colormap = XCreateColormap (dpy, RootWindow (dpy, screen),
+-					    visual, AllocNone);
+-	        break;
+-	    }
+-	}
+-    }
+-
+     // Disable window less child widgets
+     QApplication::setAttribute(Qt::AA_NativeWindows, true);
+ 
+-    app = new KWD::Decorator (dpy, visual ? Qt::HANDLE(visual) : 0,
+-			      colormap ? Qt::HANDLE(colormap) : 0);
++    app = new KWD::Decorator ();
+ 
+     if (args->isSet ("sm-disable"))
+ 	app->disableSessionManagement ();
+diff --git a/kde/window-decorator-kde4/switcher.cpp b/kde/window-decorator-kde4/switcher.cpp
+index 83e5c40..20b5fc6 100644
+--- a/kde/window-decorator-kde4/switcher.cpp
++++ b/kde/window-decorator-kde4/switcher.cpp
+@@ -39,7 +39,9 @@
+ #include <QPainter>
+ 
+ KWD::Switcher::Switcher (WId parentId, WId id):
+-mId (id)
++    mId (id),
++    mX11Pixmap (0),
++    mX11BackgroundPixmap (0)
+ {
+     QPalette palette;
+     long     prop[4];
+@@ -86,6 +88,10 @@ mId (id)
+ 
+ KWD::Switcher::~Switcher ()
+ {
++    if (mX11Pixmap)
++	XFreePixmap (QX11Info::display (), mX11Pixmap);
++    if (mX11BackgroundPixmap)
++	XFreePixmap (QX11Info::display (), mX11BackgroundPixmap);
+     delete mBackground;
+ }
+ 
+@@ -104,8 +110,23 @@ KWD::Switcher::updateGeometry ()
+     KWD::readWindowProperty (mId, Atoms::switchSelectWindow,
+ 			     (long *)&mSelected);
+ 
+-    mPixmap = QPixmap (width + mBorder.left + mBorder.right,
+-		       height + mBorder.top + mBorder.bottom);
++    if (mX11Pixmap)
++	XFreePixmap (QX11Info::display (), mX11Pixmap);
++    if (mX11BackgroundPixmap)
++	XFreePixmap (QX11Info::display (), mX11BackgroundPixmap);
++
++    mX11Pixmap = XCreatePixmap (QX11Info::display (),
++				QX11Info::appRootWindow (),
++				width + mBorder.left + mBorder.right,
++				height + mBorder.top + mBorder.bottom, 32);
++
++    mX11BackgroundPixmap = XCreatePixmap (QX11Info::display (),
++					  QX11Info::appRootWindow (),
++					  width, height, 32);
++    
++    mPixmap = QPixmap::fromX11Pixmap (mX11Pixmap, QPixmap::ExplicitlyShared);
++    mBackgroundPixmap = QPixmap::fromX11Pixmap (mX11BackgroundPixmap,
++	    					QPixmap::ExplicitlyShared);
+ 
+     redrawPixmap ();
+     update ();
+@@ -122,6 +143,7 @@ void
+ KWD::Switcher::redrawPixmap ()
+ {
+     QPainter p (&mPixmap);
++    QPainter bp (&mBackgroundPixmap);
+ 
+     const int contentWidth  = mPixmap.width ();
+     const int contentHeight = mPixmap.height ();
+@@ -134,12 +156,12 @@ KWD::Switcher::redrawPixmap ()
+     mBackground->resizeFrame (QSizeF (contentWidth, contentHeight));
+     mBackground->paintFrame (&p, QRect (0, 0, contentWidth, contentHeight));
+ 
+-    mBackgroundPixmap = mPixmap.copy (mBorder.left, mBorder.top,
+-				      mGeometry.width (),
+-				      mGeometry.height ());
++    bp.drawPixmap (0, 0, mPixmap, mBorder.left, mBorder.top,
++		   mGeometry.width (), mGeometry.height ());
+ 
+     XSetWindowBackgroundPixmap (QX11Info::display (), mId,
+-				mBackgroundPixmap.handle ());
++				mX11BackgroundPixmap);
++
+     XClearWindow (QX11Info::display (), mId);
+ }
+ 
+@@ -197,7 +219,7 @@ KWD::Switcher::updateWindowProperties ()
+     nQuad = decor_set_lXrXtXbX_window_quads (quads, &mContext, &mDecorLayout,
+ 					     lh / 2, rh / 2, w, w / 2);
+ 
+-    decor_quads_to_property (data, mPixmap.handle (),
++    decor_quads_to_property (data, mX11Pixmap,
+ 			     &mBorder, &mBorder,
+ 			     0, 0,
+ 			     quads, nQuad);
+diff --git a/kde/window-decorator-kde4/switcher.h b/kde/window-decorator-kde4/switcher.h
+index bc969d7..f6305a0 100644
+--- a/kde/window-decorator-kde4/switcher.h
++++ b/kde/window-decorator-kde4/switcher.h
+@@ -72,7 +72,9 @@ class Switcher
+ 
+ 	Plasma::FrameSvg *mBackground;
+ 	QPixmap mPixmap;
++	Pixmap mX11Pixmap;
+ 	QPixmap mBackgroundPixmap;
++	Pixmap mX11BackgroundPixmap;
+ 
+ 	decor_layout_t mDecorLayout;
+ 	decor_context_t mContext;
+diff --git a/kde/window-decorator-kde4/window.cpp b/kde/window-decorator-kde4/window.cpp
+index 68c856b..e058979 100644
+--- a/kde/window-decorator-kde4/window.cpp
++++ b/kde/window-decorator-kde4/window.cpp
+@@ -70,6 +70,8 @@ KWD::Window::Window (WId  parentId,
+     mClientId (clientId),
+     mSelectedId (0),
+     mDecor (0),
++    mTexturePixmap (0),
++    mTexturePixmapBuffer (0),
+     mPixmap (0),
+     mDamageId (0),
+     mShadow (0),
+@@ -177,6 +179,12 @@ KWD::Window::~Window (void)
+     if (mDecorationPicture)
+ 	XRenderFreePicture (QX11Info::display(), mDecorationPicture);
+ 
++    if (mTexturePixmap)
++	XFreePixmap (QX11Info::display(), mTexturePixmap);
++
++    if (mTexturePixmapBuffer)
++	XFreePixmap (QX11Info::display(), mTexturePixmapBuffer);
++
+     if (mDecor)
+ 	delete mDecor;
+ 
+@@ -1117,19 +1125,30 @@ KWD::Window::updateShadow (void)
+     if (mTexturePicture)
+ 	XRenderFreePicture (QX11Info::display(), mTexturePicture);
+ 
+-    mTexturePixmap       = QPixmap (mLayout.width, mLayout.height);
+-    mTexturePixmapBuffer = QPixmap (mLayout.width, mLayout.height);
++    if (mTexturePixmap)
++	XFreePixmap (QX11Info::display(), mTexturePixmap);
++
++    if (mTexturePixmapBuffer)
++	XFreePixmap (QX11Info::display(), mTexturePixmapBuffer);
++
++    mTexturePixmap       = XCreatePixmap (QX11Info::display(),
++					  QX11Info::appRootWindow (),
++					  mLayout.width, mLayout.height, 32);
++    mTexturePixmapBuffer = XCreatePixmap (QX11Info::display(),
++					  QX11Info::appRootWindow (),
++					  mLayout.width, mLayout.height, 32);
++    mTexturePixmapSize = QSize (mLayout.width, mLayout.height);
+ 
+     xformat = XRenderFindStandardFormat (QX11Info::display(),
+ 					 PictStandardARGB32);
+ 
+     mDecorationPicture =
+ 	XRenderCreatePicture (QX11Info::display(),
+-			      mTexturePixmap.handle (),
++			      mTexturePixmap,
+ 			      xformat, 0, NULL);
+     mTexturePicture =
+ 	XRenderCreatePicture (QX11Info::display(),
+-			      mTexturePixmapBuffer.handle (),
++			      mTexturePixmapBuffer,
+ 			      xformat, 0, NULL);
+ 
+     decor_fill_picture_extents_with_shadow (QX11Info::display(),
+@@ -1560,7 +1579,7 @@ KWD::Window::updateProperty (void)
+ 	minWidth = 1;
+     }
+ 
+-    decor_quads_to_property (data, mTexturePixmap.handle (),
++    decor_quads_to_property (data, mTexturePixmap,
+ 			     &mBorder, &maxExtents,
+ 			     minWidth, 0,
+ 			     quads, nQuad);
+@@ -2173,8 +2192,8 @@ KWD::Window::processDamage (void)
+ 		      0, 0,
+ 		      0, 0,
+ 		      0, 0,
+-		      mTexturePixmap.width (),
+-		      mTexturePixmap.height ());
++		      mTexturePixmapSize.width (),
++		      mTexturePixmapSize.height ());
+ 
+     if (mUpdateProperty)
+ 	updateProperty ();
+diff --git a/kde/window-decorator-kde4/window.h b/kde/window-decorator-kde4/window.h
+index 034e6fe..5636c6a 100644
+--- a/kde/window-decorator-kde4/window.h
++++ b/kde/window-decorator-kde4/window.h
+@@ -228,8 +228,9 @@ class Window:public QWidget, public KDecorationBridgeUnstable {
+ 	decor_extents_t mBorder;
+ 	unsigned short mOpacity;
+ 	KDecoration *mDecor;
+-	QPixmap mTexturePixmap;
+-	QPixmap mTexturePixmapBuffer;
++	Pixmap mTexturePixmap;
++	Pixmap mTexturePixmapBuffer;
++	QSize mTexturePixmapSize;
+ 	Pixmap mPixmap;
+ 	QRegion mDamage;
+ 	WId mDamageId;
+

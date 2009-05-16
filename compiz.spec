@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        7%{?dist}
+Release:        8%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -85,6 +85,9 @@ Patch125: compiz-0.7.8-gnome-terminal.patch
 Patch126: compiz-0.7.8-kde42-crash.patch
 # 4cc1d813a9748c3740662233a2add3fe65a4c533
 Patch127: compiz-0.7.8-kde42-krunner.patch
+# Make compiz-kde work with qt-4.5
+# fb509e611feaf775144d03055f2e0314c58f16ca
+Patch128: compiz-0.7.8-qt45.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -171,6 +174,8 @@ touch configure
 %patch125 -p1 -b .terminal
 %patch126 -p1 -b .kde-crash
 %patch127 -p1 -b .krunner
+%define %_default_patch_fuzz 2
+%patch128 -p1 -b .qt45
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -387,6 +392,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat May 16 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-8
+- Make compiz-kde work with qt-4.5 (RH #500769)
+
 * Wed Jan 28 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-7
 - Backport some KDE-4.2 fixes from upstream
 

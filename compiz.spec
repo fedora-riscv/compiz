@@ -3,7 +3,7 @@
 
 %define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs
 
-%define		gnome_plugins	annotate gconf glib svg
+%define		gnome_plugins	annotate gconf glib svg gnomecompat
 
 # List of plugins passed to ./configure.  The order is important
 
@@ -13,8 +13,8 @@ Name:           compiz
 URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.7.8
-Release:        18%{?dist}
+Version:        0.8.2
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -62,32 +62,12 @@ Patch106: redhat-logo.patch
 #Patch110: scale-key.patch
 # update translations in desktop-effects
 Patch115: desktop-effects-linguas.patch
-Patch116: compiz-0.7.6-utility-windows.patch
-
-# make kde4-window-decorator build against KDE 4.2's libplasma
-Patch120: compiz-0.7.8-kde42.patch
-
-# backports from git
-Patch121: compiz-0.7.8-decoration-placement.patch
-Patch122: compiz-0.7.8-fullscreen-top.patch
 
 # Make sure configuration plugins never get unloaded
-Patch123: compiz-0.7.8-pin-initial-plugins.patch
-
-# Memory leak fixes from upstream
-Patch124: compiz-0.7.8-mem-leak-fixes.patch
+Patch123: compiz-0.8.2-pin-initial-plugins.patch
 
 # Make the terminal keybinding work (RH #439665)
-Patch125: compiz-0.7.8-gnome-terminal.patch
-
-# KDE-4.2 fixes from upstream:
-# 814809ffffe47f829b784f7bd246026bfcdecf0f
-Patch126: compiz-0.7.8-kde42-crash.patch
-# 4cc1d813a9748c3740662233a2add3fe65a4c533
-Patch127: compiz-0.7.8-kde42-krunner.patch
-
-# backport to fix RH #484056
-Patch128: compiz-0.7.8-gwd-pixmap-fix.patch
+Patch125: compiz-0.8.2-gnome-terminal.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -162,21 +142,8 @@ popd
 %endif
 #%patch110 -p1 -b .scale-key
 
-%patch116 -p1 -b .utility
-
-%patch120 -p1 -b .kde42
-sleep 1
-touch configure
-
-%patch121 -p1 -b .decoration-placement
-%patch122 -p1 -b .fullscreen-top
 %patch123 -p1 -b .initial-plugins
-%patch124 -p1 -b .mem-leaks
-%patch125 -p1 -b .terminal
-%patch126 -p1 -b .kde-crash
-%patch127 -p1 -b .krunner
-%define _default_patch_fuzz 2
-%patch128 -p1 -b .gwd-pixmap
+%patch125 -p1 -b .gnome-terminal
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -388,6 +355,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 25 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-1
+- Update to 0.8.2
+- Drop upstreamed patches
+
 * Sun Apr 05 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-18
 - Direct rendering does not mean that we have hw 3D
 

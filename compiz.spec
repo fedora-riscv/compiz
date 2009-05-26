@@ -323,7 +323,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
 %{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/applications/compiz-gtk.desktop
-%{_datadir}/applications/compiz.desktop
+%exclude %{_datadir}/applications/compiz.desktop
 %{_datadir}/applications/redhat-desktop-effects.desktop
 %{_datadir}/icons/hicolor/16x16/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/24x24/apps/desktop-effects.png

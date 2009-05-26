@@ -1,7 +1,7 @@
 %define		dialogversion	0.7.18
 %define 	kde_dialogversion 0.0.5
 
-%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs
+%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands
 
 %define		gnome_plugins	annotate gconf glib svg gnomecompat
 
@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -318,10 +318,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/gtk-window-decorator
 %{_bindir}/desktop-effects
 %{_libdir}/window-manager-settings/libcompiz.so
+%{_datadir}/gnome/wm-properties/compiz.desktop
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
 %{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/applications/compiz-gtk.desktop
+%{_datadir}/applications/compiz.desktop
 %{_datadir}/applications/redhat-desktop-effects.desktop
 %{_datadir}/icons/hicolor/16x16/apps/desktop-effects.png
 %{_datadir}/icons/hicolor/24x24/apps/desktop-effects.png
@@ -354,6 +356,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 26 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-2
+- Add commands plugin
+- Fix build
+
 * Mon May 25 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-1
 - Update to 0.8.2
 - Drop upstreamed patches

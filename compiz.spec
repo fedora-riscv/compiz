@@ -318,7 +318,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/gtk-window-decorator
 %{_bindir}/desktop-effects
 %{_libdir}/window-manager-settings/libcompiz.so
-%{_datadir}/gnome/wm-properties/compiz.desktop
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
 %{_datadir}/compiz/desktop-effects.glade

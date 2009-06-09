@@ -2,7 +2,7 @@
 
 function runCompiz() {
 	gtk-window-decorator &
-	exec compiz --ignore-desktop-hints glib gconf gnomecompat$@
+	exec compiz --ignore-desktop-hints glib gconf gnomecompat $@
 }
 
 DIRECT=`glxinfo | grep "direct rendering: " | head -n 1 | cut -d " " -f 3`

@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -356,6 +356,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun  8 2009 Matthias Clasen <mclasen@redhat.com> - 0.8.2-3
+- Fix handling of --replace in compiz-gtk, _again_
+
 * Tue May 26 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-2
 - Add commands plugin
 - Fix build

@@ -1,7 +1,7 @@
 %define		dialogversion	0.7.18
 %define 	kde_dialogversion 0.0.5
 
-%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands
+%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall
 
 %define		gnome_plugins	annotate gconf glib svg gnomecompat
 

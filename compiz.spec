@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        9%{?dist}
+Release:        10%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -392,6 +392,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 10 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-10
+- Replace compiz-0.7.8-pin-initial-plugins with a fixed up one
+  by Philippe Troin <phil@fifi.org> (RH #473896)
+
 * Sat May 16 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-9
 - BR libXres-devel
 

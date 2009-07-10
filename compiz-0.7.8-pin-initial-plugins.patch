@@ -1,8 +1,7 @@
-diff --git a/include/compiz-core.h b/include/compiz-core.h
-index 5aeb04c..97279ab 100644
---- a/include/compiz-core.h
-+++ b/include/compiz-core.h
-@@ -220,6 +220,9 @@ extern Bool       noDetection;
+diff -ruN compiz-0.7.8.orig/include/compiz-core.h compiz-0.7.8/include/compiz-core.h
+--- compiz-0.7.8.orig/include/compiz-core.h	2008-09-08 02:24:58.000000000 -0700
++++ compiz-0.7.8/include/compiz-core.h	2009-07-09 16:16:29.000000000 -0700
+@@ -220,6 +220,9 @@
  extern Bool	  useDesktopHints;
  extern Bool       onlyCurrentScreen;
  
@@ -12,55 +11,126 @@ index 5aeb04c..97279ab 100644
  extern int  defaultRefreshRate;
  extern char *defaultTextureFilter;
  
-diff --git a/src/display.c b/src/display.c
-index dd4676e..fc3e117 100644
---- a/src/display.c
-+++ b/src/display.c
-@@ -846,7 +846,7 @@ updatePlugins (CompDisplay *d)
+diff -ruN compiz-0.7.8.orig/src/display.c compiz-0.7.8/src/display.c
+--- compiz-0.7.8.orig/src/display.c	2009-07-09 16:15:48.000000000 -0700
++++ compiz-0.7.8/src/display.c	2009-07-09 16:17:04.000000000 -0700
+@@ -846,24 +846,59 @@
  {
      CompOption *o;
      CompPlugin *p, **pop = 0;
 -    int	       nPop, i, j;
-+    int	       nPop, i, j, k;
++    int	       nPop, i, j, k, dupPluginCount;
++    CompOptionValue *pList;
++    int pList_count;
  
      d->dirtyPluginList = FALSE;
  
-@@ -886,6 +886,30 @@ updatePlugins (CompDisplay *d)
+     o = &d->opt[COMP_DISPLAY_OPTION_ACTIVE_PLUGINS];
+ 
+-    /* The old plugin list always begins with the core plugin. To make sure
+-       we don't unnecessarily unload plugins if the new plugin list does not
+-       contain the core plugin, we have to use an offset */
+-    if (o->value.list.nValue > 0 && strcmp (o->value.list.value[0].s, "core"))
+-	i = 0;
+-    else
+-	i = 1;
++    /* Make sure the new plugin list always list core first, then the
++       initial plugins... */
++    dupPluginCount = 0;
++    for (i=0; i < o->value.list.nValue; ++i)  {
++	if (strcmp(o->value.list.value[i].s, "core") == 0)
++	    ++dupPluginCount;
++	else
++	    for (j=0; j < nInitialPlugins; ++j)
++		if (strcmp(o->value.list.value[i].s, initialPlugins[j]) == 0) {
++		    ++dupPluginCount;
++		    break;
++		}
++    }
++
++    pList_count = 1+nInitialPlugins+o->value.list.nValue-dupPluginCount;
++
++    pList = malloc(sizeof(CompOptionValue) * pList_count);
++    if (!pList) {
++	(*core.setOptionForPlugin) (&d->base, "core", o->name, &d->plugin);
++	return;
++    }
++
++    pList[0].s = "core";
++    for (j=0; j < nInitialPlugins; ++j)
++	pList[j+1].s = initialPlugins[j];
++    ++j;
++
++    for (i=0; i < o->value.list.nValue; ++i)  {
++	if (strcmp(o->value.list.value[i].s, "core") == 0)
++	    goto L_nextPlugin;
++	else
++	    for (k=0; k < nInitialPlugins; ++k)
++		if (strcmp(o->value.list.value[i].s, initialPlugins[k]) == 0) 
++		    goto L_nextPlugin;
++	pList[j++].s = o->value.list.value[i].s;
++    L_nextPlugin:
++	(void)0;
++    }
++
++    assert(j == pList_count);
+ 
+     /* j is initialized to 1 to make sure we never pop the core plugin */
+-    for (j = 1; j < d->plugin.list.nValue && i < o->value.list.nValue; i++, j++)
++    for (i = j = 1; j < d->plugin.list.nValue && i < pList_count; i++, j++)
+     {
+-	if (strcmp (d->plugin.list.value[j].s, o->value.list.value[i].s))
++	if (strcmp (d->plugin.list.value[j].s, pList[i].s))
+ 	    break;
+     }
+ 
+@@ -875,6 +913,7 @@
+ 	if (!pop)
+ 	{
+ 	    (*core.setOptionForPlugin) (&d->base, "core", o->name, &d->plugin);
++	    free(pList);
+ 	    return;
+ 	}
+     }
+@@ -886,13 +925,13 @@
  	free (d->plugin.list.value[d->plugin.list.nValue].s);
      }
  
-+    for ( k = 0; k < nInitialPlugins; k++) 
-+    {
-+    	for ( j = 0; j < nPop; j++)
-+	{
-+	     if (pop[j] && strcmp (pop[j]->vTable->name,
-+				   initialPlugins[k]) == 0)
-+		break;
-+	}
-+	
-+	if ( j == (nPop - 1))
-+	{
-+	    p = loadPlugin (initialPlugins[k]);
-+	    if (p)
-+	    {
-+		if (!pushPlugin (p))
-+		{
-+		    unloadPlugin (p);
-+		    p = 0;
-+		}
-+	    }
-+	}
-+    }
-+
-+
-     for (; i < o->value.list.nValue; i++)
+-    for (; i < o->value.list.nValue; i++)
++    for (; i < pList_count; i++)
      {
  	p = 0;
-diff --git a/src/main.c b/src/main.c
-index 3784afe..ff982fe 100644
---- a/src/main.c
-+++ b/src/main.c
-@@ -40,6 +40,9 @@ char *programName;
+ 	for (j = 0; j < nPop; j++)
+ 	{
+ 	    if (pop[j] && strcmp (pop[j]->vTable->name,
+-				  o->value.list.value[i].s) == 0)
++				  pList[i].s) == 0)
+ 	    {
+ 		if (pushPlugin (pop[j]))
+ 		{
+@@ -905,7 +944,7 @@
+ 
+ 	if (p == 0)
+ 	{
+-	    p = loadPlugin (o->value.list.value[i].s);
++	    p = loadPlugin (pList[i].s);
+ 	    if (p)
+ 	    {
+ 		if (!pushPlugin (p))
+@@ -946,7 +985,9 @@
+     if (nPop)
+ 	free (pop);
+ 
++    free(pList);
+     (*core.setOptionForPlugin) (&d->base, "core", o->name, &d->plugin);
++
+ }
+ 
+ static void
+diff -ruN compiz-0.7.8.orig/src/main.c compiz-0.7.8/src/main.c
+--- compiz-0.7.8.orig/src/main.c	2008-08-28 05:01:49.000000000 -0700
++++ compiz-0.7.8/src/main.c	2009-07-09 16:16:29.000000000 -0700
+@@ -40,6 +40,9 @@
  char **programArgv;
  int  programArgc;
  
@@ -70,7 +140,7 @@ index 3784afe..ff982fe 100644
  char *backgroundImage = NULL;
  
  REGION   emptyRegion;
-@@ -406,6 +409,11 @@ main (int argc, char **argv)
+@@ -398,6 +401,11 @@
  
  	    ptr += sprintf (ptr, "</default>");
  	}
@@ -82,7 +152,7 @@ index 3784afe..ff982fe 100644
      }
  
      xmlInitParser ();
-@@ -455,6 +463,9 @@ main (int argc, char **argv)
+@@ -447,6 +455,9 @@
  
      xmlCleanupParser ();
  
@@ -92,3 +162,4 @@ index 3784afe..ff982fe 100644
      if (restartSignal)
      {
  	execvp (programName, programArgv);
+

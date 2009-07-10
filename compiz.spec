@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -43,6 +43,7 @@ BuildRequires:  mesa-libGLU-devel
 BuildRequires:  kdebase-workspace-devel plasma-devel
 BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
+BuildRequires:	cairo-devel
 
 Source0:       http://releases.compiz-fusion.org/compiz/%{version}/%{name}-%{version}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
@@ -59,6 +60,7 @@ Patch102: desktop-effects-0.7.17-wall-plugin.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
+Patch107: compiz-0.8.2-wall.patch
 #Patch110: scale-key.patch
 # update translations in desktop-effects
 Patch115: desktop-effects-linguas.patch
@@ -100,7 +102,6 @@ Requires: gnome-session >= 2.19.6-5
 Requires: metacity >= 2.18
 Requires: libwnck >= 2.15.4
 Requires: %{name} = %{version}
-Requires: compiz-fusion-gnome = %{version}
 Requires(pre): GConf2
 Requires(post): GConf2
 Requires(preun): GConf2
@@ -140,6 +141,7 @@ popd
 %else
 %patch106 -p1 -b .redhat-logo
 %endif
+%patch107 -p1 -b .wall
 #%patch110 -p1 -b .scale-key
 
 %patch123 -p1 -b .initial-plugins
@@ -155,7 +157,8 @@ export CPPFLAGS
 LDFLAGS="$LDFLAGS -L%{_libdir}/kde4/devel"
 export LDFLAGS
 
-
+aclocal
+automake
 %configure 					\
 	--enable-gconf 			\
 	--enable-dbus 				\
@@ -356,6 +359,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 10 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-5
+- Move wall plugin from fusion to the main compiz package
+- Drop requires on compiz-fusion-gnome
+
 * Fri Jul 10 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-4
 - Replace compiz-0.8.2-pin-initial-plugins with a fixed up one
   by Philippe Troin <phil@fifi.org> (RH #473896)

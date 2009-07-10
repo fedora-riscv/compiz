@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -356,6 +356,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 10 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-4
+- Replace compiz-0.8.2-pin-initial-plugins with a fixed up one
+  by Philippe Troin <phil@fifi.org> (RH #473896)
+
 * Mon Jun  8 2009 Matthias Clasen <mclasen@redhat.com> - 0.8.2-3
 - Fix handling of --replace in compiz-gtk, _again_
 

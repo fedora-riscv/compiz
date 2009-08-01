@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -61,6 +61,7 @@ Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
 Patch107: compiz-0.8.2-wall.patch
+Patch108: compiz-pageflip.patch
 #Patch110: scale-key.patch
 # update translations in desktop-effects
 Patch115: desktop-effects-linguas.patch
@@ -146,6 +147,7 @@ popd
 
 %patch123 -p1 -b .initial-plugins
 %patch125 -p1 -b .gnome-terminal
+%patch108 -p1 -b .pageflip
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -359,6 +361,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 31 2009 Kristian Høgsberg <krh@redhat.com> - 0.8.2-8
+- Add patch to add option to always use glXSwapBuffers.
+
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.8.2-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 

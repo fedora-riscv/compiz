@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        8%{?dist}
+Release:        9%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -44,6 +44,7 @@ BuildRequires:  kdebase-workspace-devel plasma-devel
 BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
 BuildRequires:	cairo-devel
+BuildRequires:	libtool
 
 Source0:       http://releases.compiz-fusion.org/compiz/%{version}/%{name}-%{version}.tar.bz2
 Source1:	desktop-effects-%{dialogversion}.tar.bz2
@@ -159,7 +160,9 @@ export CPPFLAGS
 LDFLAGS="$LDFLAGS -L%{_libdir}/kde4/devel"
 export LDFLAGS
 
+libtoolize
 aclocal
+autoconf
 automake
 %configure 					\
 	--enable-gconf 			\
@@ -361,6 +364,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 01 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-9
+- Fix build
+
 * Fri Jul 31 2009 Kristian Høgsberg <krh@redhat.com> - 0.8.2-8
 - Add patch to add option to always use glXSwapBuffers.
 

@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        11%{?dist}
+Release:        12%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -72,6 +72,9 @@ Patch123: compiz-0.8.2-pin-initial-plugins.patch
 
 # Make the terminal keybinding work (RH #439665)
 Patch125: compiz-0.8.2-gnome-terminal.patch
+
+#Fix build
+Patch126: compiz-0.8.2-gconf-buildfix.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -149,6 +152,7 @@ popd
 %patch123 -p1 -b .initial-plugins
 %patch125 -p1 -b .gnome-terminal
 %patch108 -p1 -b .pageflip
+%patch126 -p1 -b .gconf
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -364,6 +368,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 22 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-12
+- Fix build
+
 * Sat Aug 22 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-11
 - Fix up the compiz-gtk script
 

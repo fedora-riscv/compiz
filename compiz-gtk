@@ -5,13 +5,12 @@ function runCompiz() {
 	exec compiz --ignore-desktop-hints --always-swap glib gconf gnomecompat $@
 }
 
-DIRECT=`glxinfo | grep "direct rendering: " | head -n 1 | cut -d " " -f 3`
 ISSW=`glxinfo | grep "Software Rasterizer" -c`
 
 # Try with direct rendering
 HAVETFP=`glxinfo | grep texture_from_pixmap -c`
 
-if ( [ $HAVE3D == "Yes" ]  && [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then 
+if ( [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then 
 	runCompiz $@
 fi
 
@@ -20,7 +19,7 @@ export LIBGL_ALWAYS_INDIRECT=1
 
 HAVETFP=`glxinfo | grep texture_from_pixmap -c`
 
-if ( [ $DIRECT == "Yes" ] && [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then 
+if ( [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then 
 	runCompiz $@
 fi
 

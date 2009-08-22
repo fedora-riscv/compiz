@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        10%{?dist}
+Release:        11%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -364,6 +364,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 22 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-11
+- Fix up the compiz-gtk script
+
 * Fri Aug 07 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-10
 - Enable direct rendering and always-swap by default
 - Tearing free compiz for INTEL cards ;)

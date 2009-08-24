@@ -291,7 +291,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gnome/wm-properties/compiz-wm.desktop
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
-%{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/applications/compiz-gtk.desktop
 %exclude %{_datadir}/applications/compiz.desktop
 %{_sysconfdir}/gconf/schemas/*.schemas

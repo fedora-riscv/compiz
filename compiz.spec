@@ -1,5 +1,4 @@
-%define		dialogversion	0.7.18
-%define 	kde_dialogversion 0.0.5
+%define 	kde_dialogversion 0.0.6
 
 %define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall
 
@@ -46,26 +45,21 @@ BuildRequires:  fuse-devel
 BuildRequires:	cairo-devel
 BuildRequires:	libtool
 
-Source0:       http://releases.compiz-fusion.org/compiz/%{version}/%{name}-%{version}.tar.bz2
-Source1:	desktop-effects-%{dialogversion}.tar.bz2
-Source2:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
-Source3:        compiz-gtk
-Source4:        compiz-gtk.desktop
+Source0:	http://releases.compiz-fusion.org/compiz/%{version}/%{name}-%{version}.tar.bz2
+Source1:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
+Source2:        compiz-gtk
+Source3:        compiz-gtk.desktop
 
 # Make sure that former beryl users still have bling
 Obsoletes: beryl-core
 
-
 # Patches that are not upstream
-Patch102: desktop-effects-0.7.17-wall-plugin.patch
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
 Patch107: compiz-0.8.2-wall.patch
 Patch108: compiz-pageflip.patch
 #Patch110: scale-key.patch
-# update translations in desktop-effects
-Patch115: desktop-effects-linguas.patch
 
 # Make sure configuration plugins never get unloaded
 Patch123: compiz-0.8.2-pin-initial-plugins.patch
@@ -103,9 +97,7 @@ windows and compositing manager.
 %package gnome
 Summary: Compiz gnome integration bits
 Group: User Interface/Desktops
-Requires: gnome-session >= 2.19.6-5
-Requires: metacity >= 2.18
-Requires: libwnck >= 2.15.4
+Requires: desktop-effects
 Requires: %{name} = %{version}
 Requires(pre): GConf2
 Requires(post): GConf2
@@ -131,14 +123,8 @@ and other kde integration related stuff.
 
 
 %prep
-%setup -q -T -b1 -n desktop-effects-%{dialogversion}
-%setup -q -T -b2 -n kde-desktop-effects-%{kde_dialogversion}
+%setup -q -T -b1 -n kde-desktop-effects-%{kde_dialogversion}
 %setup -q
-
-pushd ../desktop-effects-%{dialogversion}
-%patch102 -p1 -b .wall-plugin
-%patch115 -p1 -b .linguas
-popd
 
 %patch103 -p1 -b .composite-cube-logo
 %if 0%{?fedora}
@@ -183,11 +169,6 @@ automake
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 
-# desktop-effects
-cd ../desktop-effects-%{dialogversion}
-%configure
-make %{?_smp_mflags}
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -195,19 +176,11 @@ export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 
-echo INSTALLING DESKTOP EFFECTS
-pushd ../desktop-effects-%{dialogversion}
-make DESTDIR=$RPM_BUILD_ROOT install || exit 1
-desktop-file-install --vendor redhat --delete-original    \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications             \
-  $RPM_BUILD_ROOT%{_datadir}/applications/desktop-effects.desktop
-popd
-
-install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE2 $RPM_BUILD_ROOT%{_bindir}
 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE4
+  %SOURCE3
 
 # kde-desktop-effects
 echo INSTALLING KDE DESKTOP EFFECTS
@@ -219,7 +192,7 @@ cp -a ChangeLog COPYING README $RPM_BUILD_ROOT/%{_docdir}/compiz-kde-%{version}
 iconlist="16 24 32 36 48 96"
 for i in $iconlist; do
  mkdir -p $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/$i\x$i/apps/
- cp -p ../desktop-effects-%{dialogversion}/desktop-effects$i.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/$i\x$i/apps/kde-desktop-effects.png
+ cp -p desktop-effects$i.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/$i\x$i/apps/kde-desktop-effects.png
 done
 
 desktop-file-install --vendor=""              \
@@ -264,11 +237,6 @@ for p in %{core_plugins} %{gnome_plugins} core;
 
 gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 
-touch --no-create %{_datadir}/icons/hicolor
-if [ -x /usr/bin/gtk-update-icon-cache ]; then
-	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
-fi
-
 
 %pre gnome
 if [ "$1" -gt 1 ]; then
@@ -292,13 +260,6 @@ if [ "$1" -eq 0 ]; then
 
   gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
 fi
-
-%postun gnome
-touch --no-create %{_datadir}/icons/hicolor
-if [ -x /usr/bin/gtk-update-icon-cache ]; then
-	/usr/bin/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
-fi
-
 
 
 %post kde
@@ -328,7 +289,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_bindir}/compiz-gtk
 %{_bindir}/gtk-window-decorator
-%{_bindir}/desktop-effects
 %{_libdir}/window-manager-settings/libcompiz.so
 %{_datadir}/gnome/wm-properties/compiz-wm.desktop
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
@@ -336,13 +296,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/compiz/desktop-effects.glade
 %{_datadir}/applications/compiz-gtk.desktop
 %exclude %{_datadir}/applications/compiz.desktop
-%{_datadir}/applications/redhat-desktop-effects.desktop
-%{_datadir}/icons/hicolor/16x16/apps/desktop-effects.png
-%{_datadir}/icons/hicolor/24x24/apps/desktop-effects.png
-%{_datadir}/icons/hicolor/32x32/apps/desktop-effects.png
-%{_datadir}/icons/hicolor/36x36/apps/desktop-effects.png
-%{_datadir}/icons/hicolor/48x48/apps/desktop-effects.png
-%{_datadir}/icons/hicolor/96x96/apps/desktop-effects.png
 %{_sysconfdir}/gconf/schemas/*.schemas
 
 
@@ -368,6 +321,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 24 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-13
+- Drop desktop-effects
+- Make compiz-gnome require desktop-effects
+- Drop now redundant requires
+- Update kde desktop effects to 0.0.6 (includes its own icon)
+
 * Sat Aug 22 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-12
 - Fix build
 

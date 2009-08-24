@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        13%{?dist}
+Release:        14%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -206,10 +206,8 @@ find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
 
 %find_lang compiz
-%find_lang desktop-effects
 
 cat compiz.lang > core-files.txt
-cat desktop-effects.lang > gnome-files.txt
 
 for f in %{core_plugins}; do
   echo %{_libdir}/compiz/lib$f.so
@@ -321,6 +319,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 24 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-14
+- Fix build
+
 * Mon Aug 24 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-13
 - Drop desktop-effects
 - Make compiz-gnome require desktop-effects

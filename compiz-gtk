@@ -2,7 +2,7 @@
 
 function runCompiz() {
 	gtk-window-decorator &
-	exec compiz --ignore-desktop-hints --always-swap glib gconf gnomecompat $@
+	exec compiz --ignore-desktop-hints glib gconf gnomecompat $@
 }
 
 ISSW=`glxinfo | grep "Software Rasterizer" -c`

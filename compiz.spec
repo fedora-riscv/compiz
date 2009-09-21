@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        14%{?dist}
+Release:        15%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -58,7 +58,6 @@ Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
 Patch107: compiz-0.8.2-wall.patch
-Patch108: compiz-pageflip.patch
 #Patch110: scale-key.patch
 
 # Make sure configuration plugins never get unloaded
@@ -137,7 +136,6 @@ and other kde integration related stuff.
 
 %patch123 -p1 -b .initial-plugins
 %patch125 -p1 -b .gnome-terminal
-%patch108 -p1 -b .pageflip
 %patch126 -p1 -b .gconf
 
 %build
@@ -318,6 +316,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 21 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-15
+- Revert pageflip patch
+
 * Mon Aug 24 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-14
 - Fix build
 

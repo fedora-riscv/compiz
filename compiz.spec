@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        15%{?dist}
+Release:        16%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -217,6 +217,9 @@ for f in %{gnome_plugins}; do
   echo %{_datadir}/compiz/$f.xml
 done >> gnome-files.txt
 
+# delete useless keybinding files
+# RH #530603
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gnome-control-center/
 
 %post -p /sbin/ldconfig
 
@@ -287,8 +290,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/gtk-window-decorator
 %{_libdir}/window-manager-settings/libcompiz.so
 %{_datadir}/gnome/wm-properties/compiz-wm.desktop
-%{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
-%{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
 %{_datadir}/applications/compiz-gtk.desktop
 %exclude %{_datadir}/applications/compiz.desktop
 %{_sysconfdir}/gconf/schemas/*.schemas
@@ -316,6 +317,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 26 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-16
+- Don't ship broken keybindings files RH #530603
+
 * Mon Sep 21 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-15
 - Revert pageflip patch
 

@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        17%{?dist}
+Release:        18%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -68,6 +68,8 @@ Patch125: compiz-0.8.2-gnome-terminal.patch
 
 #Fix build
 Patch126: compiz-0.8.2-gconf-buildfix.patch
+
+Patch127: unknown-key.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -137,6 +139,7 @@ and other kde integration related stuff.
 %patch123 -p1 -b .initial-plugins
 %patch125 -p1 -b .gnome-terminal
 %patch126 -p1 -b .gconf
+%patch127 -p1 -b .unknown-key
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -315,6 +318,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 26 2009 Matthias Clasen <mclasen@redhat.com> - 0.8.2-18
+- Better fix for keybindings
+
 * Mon Oct 26 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-17
 - Fix was wrong - revert it
 

@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        19%{?dist}
+Release:        20%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -21,7 +21,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # libdrm is not available on these arches
 ExcludeArch:   s390 s390x
 
-Requires:	mesa-libGL
 Requires:	system-logos
 Requires: 	glx-utils
 Requires(post): desktop-file-utils
@@ -32,11 +31,11 @@ BuildRequires:  libXcomposite-devel, libXdamage-devel, libXext-devel
 BuildRequires:  libXt-devel, libXmu-devel, libICE-devel, libSM-devel
 BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
 BuildRequires:  desktop-file-utils
-BuildRequires:  intltool >= 0.35
+BuildRequires:  intltool
 BuildRequires:  gettext
 BuildRequires:  dbus-devel
 BuildRequires:  librsvg2-devel
-BuildRequires:  metacity-devel >= 2.18
+BuildRequires:  metacity-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  kdebase-workspace-devel plasma-devel
 BuildRequires:  dbus-qt-devel
@@ -317,6 +316,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 08 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-20
+- Remove some other unneeded provides / requires
+
 * Sun Nov 08 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-19
 - Remove outdated Conflicts/Requires, RH #528267
 

@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        18%{?dist}
+Release:        19%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -21,8 +21,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # libdrm is not available on these arches
 ExcludeArch:   s390 s390x
 
-Conflicts:	xorg-x11-server-Xorg < 1.3.0.0-19.fc8
-Requires:	mesa-libGL >= 7.0.1-2.fc8
+Requires:	mesa-libGL
 Requires:	system-logos
 Requires: 	glx-utils
 Requires(post): desktop-file-utils
@@ -318,6 +317,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 08 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-19
+- Remove outdated Conflicts/Requires, RH #528267
+
 * Mon Oct 26 2009 Matthias Clasen <mclasen@redhat.com> - 0.8.2-18
 - Better fix for keybindings
 

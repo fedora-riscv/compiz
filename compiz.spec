@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        20%{?dist}
+Release:        21%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -316,6 +316,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 24 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.8.2-21
+- Rebuild for Qt 4.6.0 RC1 in F13 (was built against Beta 1 with unstable ABI)
+
 * Sun Nov 08 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-20
 - Remove some other unneeded provides / requires
 

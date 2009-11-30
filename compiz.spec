@@ -44,6 +44,7 @@ BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
 BuildRequires:	cairo-devel
 BuildRequires:	libtool
+BuildRequires:	sed
 
 Source0:	http://releases.compiz-fusion.org/compiz/%{version}/%{name}-%{version}.tar.bz2
 Source1:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
@@ -147,6 +148,10 @@ and other kde integration related stuff.
 %patch128 -p1 -b .keybinding-lables
 %patch129 -p1 -b .unload-plugin
 
+#WTF?!
+cat plugins/wall.c | sed '$a/}' > plugins/wall.c
+
+
 %build
 rm -rf $RPM_BUILD_ROOT
 
@@ -175,7 +180,6 @@ automake
 	--enable-kde4
 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
-
 
 %install
 rm -rf $RPM_BUILD_ROOT

@@ -149,7 +149,7 @@ and other kde integration related stuff.
 %patch129 -p1 -b .unload-plugin
 
 #WTF?!
-cat plugins/wall.c | sed '$a/}' > plugins/wall.c
+cat plugins/wall.c | sed '$a\}' > plugins/wall.c
 
 
 %build

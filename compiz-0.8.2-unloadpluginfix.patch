@@ -1,3 +1,14 @@
+diff -upNr compiz-0.8.2.orign/include/compiz-core.h compiz-0.8.2/include/compiz-core.h
+--- compiz-0.8.2.orign/include/compiz-core.h	2009-02-15 10:10:23.000000000 +0100
++++ compiz-0.8.2/include/compiz-core.h	2009-11-30 17:11:03.591253419 +0100
+@@ -27,6 +27,7 @@
+ #define _COMPIZ_CORE_H
+ 
+ #include <compiz-plugin.h>
++#include <dlfcn.h>
+ 
+ #define CORE_ABIVERSION 20090207
+ 
 diff -upNr compiz-0.8.2.orign/plugins/gconf.c compiz-0.8.2/plugins/gconf.c
 --- compiz-0.8.2.orign/plugins/gconf.c	2009-02-15 10:10:23.000000000 +0100
 +++ compiz-0.8.2/plugins/gconf.c	2009-11-30 16:48:44.694223679 +0100

@@ -2591,6 +2591,7 @@ diff -upNr compiz-0.8.2.orign/plugins/wall.c compiz-0.8.2/plugins/wall.c
 +static Bool
 +wallInit (CompPlugin *p)
 +{
++   dlopen ("libcairo.so.2", RTLD_LAZY);
 +    WallCorePrivateIndex = allocateCorePrivateIndex ();
 +    if (WallCorePrivateIndex < 0)
 +	return FALSE;

@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.2
-Release:        22%{?dist}
+Release:        23%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -79,8 +79,6 @@ Patch129: compiz-0.8.2-unloadpluginfix.patch
 Patch130: compiz-0.8.2-multiscreen-decorator.patch
 
 Patch131: compiz-0.8.2-icon-fix.patch
-
-Patch132: compiz-0.8.2-cairo-crash.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -155,7 +153,6 @@ and other kde integration related stuff.
 %patch129 -p1 -b .unload-plugin
 %patch130 -p1 -b .multi-screen
 %patch131 -p1 -b .icon-fix
-%patch132 -p1 -b .cairo-crash
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -333,6 +330,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Dec 26 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-23
+- Revert patch; wrong package...
+
 * Sat Dec 26 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.2-22
 - Fix crash (RH #542804)
 

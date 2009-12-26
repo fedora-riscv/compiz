@@ -1,0 +1,22 @@
+From 4c7ffc4f1d82414a466fa0768d16fa96f30e3f7a Mon Sep 17 00:00:00 2001
+From: Danny Baumann <dannybaumann@web.de>
+Date: Tue, 08 Dec 2009 10:28:30 +0000
+Subject: Fix icon property reading if the icon pixmap has a depth of 1 bit.
+
+---
+diff --git a/src/window.c b/src/window.c
+index 6e54470..90922d1 100644
+--- a/src/window.c
++++ b/src/window.c
+@@ -5298,6 +5298,8 @@ readWindowIconHint (CompWindow *w)
+ 	{
+ 	    if (maskImage && !XGetPixel (maskImage, i, j))
+ 		*p++ = 0;
++	    else if (image->depth == 1)
++		*p++ = colors[k].pixel ? 0xffffffff : 0xff000000;
+ 	    else
+ 		*p++ = 0xff000000                             | /* alpha */
+ 		       (((colors[k].red >> 8) & 0xff) << 16)  | /* red */
+--
+cgit v0.8.2
+

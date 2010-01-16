@@ -1,0 +1,33 @@
+From: Danny Baumann <dannybaumann@web.de>
+Date: Wed, 9 Dec 2009 15:33:14 +0000 (+0100)
+Subject: Don't pull in unstable API, it's not needed any longer.
+X-Git-Url: http://gitweb.compiz.org/?p=compiz%2Fcore;a=commitdiff_plain;h=9cb2dffa18f711a8515e65612721900ba5cd22e3
+
+Don't pull in unstable API, it's not needed any longer.
+---
+
+diff --git a/kde/window-decorator-kde4/window.h b/kde/window-decorator-kde4/window.h
+index 40a5076..4422a15 100644
+--- a/kde/window-decorator-kde4/window.h
++++ b/kde/window-decorator-kde4/window.h
+@@ -50,7 +50,7 @@ namespace KWin
+ 
+ namespace KWD
+ {
+-class Window: public QObject, public KDecorationBridgeUnstable {
++class Window: public QObject, public KDecorationBridge {
+     Q_OBJECT public:
+ 
+ 	enum Type
+@@ -108,10 +108,8 @@ class Window: public QObject, public KDecorationBridgeUnstable {
+ 	virtual QWidget *initialParentWidget (void) const;
+ 	virtual Qt::WFlags initialWFlags (void) const;
+ 	virtual void grabXServer (bool grab);
++	virtual bool compositingActive() const;
+ 
+-	/* unstable API */
+-	virtual bool compositingActive () const;
+-	
+ 	virtual bool eventFilter (QObject* o, QEvent* e);
+ 
+ 	void handleActiveChange (void);

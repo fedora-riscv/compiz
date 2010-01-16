@@ -12,8 +12,8 @@ Name:           compiz
 URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.2
-Release:        21%{?dist}
+Version:        0.8.4
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -55,17 +55,9 @@ Obsoletes: beryl-core
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
-Patch107: compiz-0.8.2-wall.patch
+Patch107: compiz-0.8.4-wall.patch
 #Patch110: scale-key.patch
 
-# Make sure configuration plugins never get unloaded
-Patch123: compiz-0.8.2-pin-initial-plugins.patch
-
-# Make the terminal keybinding work (RH #439665)
-Patch125: compiz-0.8.2-gnome-terminal.patch
-
-#Fix build
-Patch126: compiz-0.8.2-gconf-buildfix.patch
 
 Patch127: unknown-key.patch
 
@@ -134,9 +126,6 @@ and other kde integration related stuff.
 %patch107 -p1 -b .wall
 #%patch110 -p1 -b .scale-key
 
-%patch123 -p1 -b .initial-plugins
-%patch125 -p1 -b .gnome-terminal
-%patch126 -p1 -b .gconf
 %patch127 -p1 -b .unknown-key
 
 %build
@@ -316,6 +305,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 16 2010 Leigh Scott <leigh123linux@googlemail.com> - 0.8.4-1
+- update to 0.8.4
+- update compiz-0.8.2-wall patch
+- drop upstream patches
+
 * Tue Nov 24 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.8.2-21
 - Rebuild for Qt 4.6.0 RC1 in F13 (was built against Beta 1 with unstable ABI)
 

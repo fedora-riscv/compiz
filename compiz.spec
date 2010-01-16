@@ -43,7 +43,7 @@ BuildRequires:  fuse-devel
 BuildRequires:	cairo-devel
 BuildRequires:	libtool
 
-Source0:	http://releases.compiz-fusion.org/compiz/%{version}/%{name}-%{version}.tar.bz2
+Source0:	http://releases.compiz-fusion.org/%{version}/%{name}-%{version}.tar.bz2
 Source1:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
 Source2:        compiz-gtk
 Source3:        compiz-gtk.desktop
@@ -309,6 +309,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sat Jan 16 2010 Leigh Scott <leigh123linux@googlemail.com> - 0.8.4-2
 - add patch to fix kde decorator build error
+- fix source url
 
 * Sat Jan 16 2010 Leigh Scott <leigh123linux@googlemail.com> - 0.8.4-1
 - update to 0.8.4

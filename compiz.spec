@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -307,6 +307,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 18 2010 Matthias Clasen <mclasen@redhat.com> - 0.8.4-3
+- Rebuild against new gnome-desktop
+
 * Sat Jan 16 2010 Leigh Scott <leigh123linux@googlemail.com> - 0.8.4-2
 - add patch to fix kde decorator build error
 - fix source url

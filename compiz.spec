@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -60,7 +60,7 @@ Patch107: compiz-0.8.4-wall.patch
 
 
 Patch127: unknown-key.patch
-Patch128: kde4_decorator_build.patch
+Patch128: kde44-api.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -128,7 +128,8 @@ and other kde integration related stuff.
 #%patch110 -p1 -b .scale-key
 
 %patch127 -p1 -b .unknown-key
-%patch128 -p1 -b .kde4_decorator_build
+# http://bugs.opencompositing.org/show_bug.cgi?id=1249
+%patch128 -p1 -b .kde44-api
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -307,6 +308,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Feb 07 2010 Leigh Scott <leigh123linux@googlemail.com> - 0.8.4-4
+- rebuilt for new kde api
+- drop kde4_decorator_build patch
+- add kde44-api patch
+
 * Mon Jan 18 2010 Matthias Clasen <mclasen@redhat.com> - 0.8.4-3
 - Rebuild against new gnome-desktop
 

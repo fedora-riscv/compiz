@@ -38,7 +38,6 @@ BuildRequires:  librsvg2-devel
 BuildRequires:  metacity-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  kdebase-workspace-devel plasma-devel
-BuildRequires:  dbus-qt-devel
 BuildRequires:  fuse-devel
 BuildRequires:	cairo-devel
 BuildRequires:	libtool
@@ -308,10 +307,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sun Feb 07 2010 Leigh Scott <leigh123linux@googlemail.com> - 0.8.4-4
+* Mon Feb 08 2010 Leigh Scott <leigh123linux@googlemail.com> - 0.8.4-4
 - rebuilt for new kde api
 - drop kde4_decorator_build patch
 - add kde44-api patch
+- drop build requires dbus-qt-devel as it is deprecated in F13
 
 * Mon Jan 18 2010 Matthias Clasen <mclasen@redhat.com> - 0.8.4-3
 - Rebuild against new gnome-desktop

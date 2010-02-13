@@ -1,0 +1,2308 @@
+diff -Nur compiz-0.7.8-kde42/kde/window-decorator-kde4/decorator.cpp compiz-0.7.8-kde43/kde/window-decorator-kde4/decorator.cpp
+--- compiz-0.7.8-kde42/kde/window-decorator-kde4/decorator.cpp	2008-08-08 13:20:31.000000000 +0200
++++ compiz-0.7.8-kde43/kde/window-decorator-kde4/decorator.cpp	2010-02-13 18:04:27.000000000 +0100
+@@ -61,16 +61,9 @@
+ #define DBUS_METHOD_GET     "get"
+ #define DBUS_SIGNAL_CHANGED "changed"
+ 
+-double decorationOpacity = 0.75;
+-bool   decorationOpacityShade = false;
+-double activeDecorationOpacity = 1.0;
+-bool   activeDecorationOpacityShade = false;
+ int    blurType = BLUR_TYPE_NONE;
+ 
+-decor_context_t KWD::Decorator::mDefaultContext;
+-decor_extents_t KWD::Decorator::mDefaultBorder;
+ decor_shadow_t *KWD::Decorator::mNoBorderShadow = 0;
+-decor_shadow_t *KWD::Decorator::mDefaultShadow  = 0;
+ KWD::PluginManager *KWD::Decorator::mPlugins = 0;
+ KWD::Options *KWD::Decorator::mOptions = 0;
+ NETRootInfo *KWD::Decorator::mRootInfo;
+@@ -91,10 +84,8 @@
+ }
+ 
+ 
+-KWD::Decorator::Decorator (Display* display,
+-			   Qt::HANDLE visual,
+-			   Qt::HANDLE colormap) :
+-    KApplication (display, visual, colormap),
++KWD::Decorator::Decorator () :
++    KApplication (),
+     mConfig (0),
+     mCompositeWindow (0),
+     mSwitcher (0)
+@@ -200,13 +191,11 @@
+ }
+ 
+ bool
+-KWD::Decorator::enableDecorations (Time timestamp,
+-				   int  damageEvent)
++KWD::Decorator::enableDecorations (Time timestamp)
+ {
+     QList <WId>::ConstIterator it;
+ 
+     mDmSnTimestamp = timestamp;
+-    mDamageEvent   = damageEvent;
+ 
+     if (!pluginManager ()->loadPlugin (""))
+ 	return false;
+@@ -239,8 +228,6 @@
+     foreach (WId id, KWindowSystem::windows ())
+ 	handleWindowAdded (id);
+ 
+-    connect (&mIdleTimer, SIGNAL (timeout ()), SLOT (processDamage ()));
+-
+     connect (Plasma::Theme::defaultTheme (), SIGNAL (themeChanged ()),
+ 	     SLOT (plasmaThemeChanged ()));
+ 
+@@ -252,31 +239,6 @@
+ }
+ 
+ void
+-KWD::Decorator::updateDefaultShadow (KWD::Window *w)
+-{
+-    bool uniqueHorzShape, uniqueVertShape;
+-
+-    if (mDefaultShadow)
+-    {
+-	decor_shadow_destroy (QX11Info::display(), mDefaultShadow);
+-	mDefaultShadow = NULL;
+-    }
+-
+-    w->getShapeInfo (&uniqueHorzShape, &uniqueVertShape);
+-
+-    /* only return shadow if decoration doesn't use a unique shape */
+-    if (uniqueHorzShape || uniqueVertShape)
+-	return;
+-
+-    mDefaultContext = *w->context ();
+-    mDefaultBorder  = *w->border ();
+-    mDefaultShadow  = w->shadow ();
+-
+-    if (mDefaultShadow)
+-	decor_shadow_reference (mDefaultShadow);
+-}
+-
+-void
+ KWD::Decorator::updateAllShadowOptions (void)
+ {
+     QDBusInterface       *compiz;
+@@ -345,12 +307,6 @@
+     mShadowOptions = *opt;
+ 
+     updateShadow ();
+-
+-    mDecorNormal->reloadDecoration ();
+-    mDecorActive->reloadDecoration ();
+-
+-    for (it = mClients.constBegin (); it != mClients.constEnd (); it++)
+-	it.value ()->reloadDecoration ();
+ }
+ 
+ void
+@@ -362,12 +318,6 @@
+ 
+     xscreen = ScreenOfDisplay (xdisplay, QX11Info::appScreen ());
+ 
+-    if (mDefaultShadow)
+-    {
+-	decor_shadow_destroy (xdisplay, mDefaultShadow);
+-	mDefaultShadow = NULL;
+-    }
+-
+     if (mNoBorderShadow)
+ 	decor_shadow_destroy (xdisplay, mNoBorderShadow);
+ 
+@@ -410,18 +360,6 @@
+     }
+ }
+ 
+-void
+-KWD::Decorator::processDamage (void)
+-{
+-    QMap <WId, KWD::Window *>::ConstIterator it;
+-
+-    mDecorNormal->processDamage ();
+-    mDecorActive->processDamage ();
+-
+-    for (it = mClients.constBegin (); it != mClients.constEnd (); it++)
+-	it.value ()->processDamage ();
+-}
+-
+ bool
+ KWD::Decorator::x11EventFilter (XEvent *xevent)
+ {
+@@ -429,50 +367,12 @@
+     int		status;
+ 
+     switch (xevent->type) {
+-    case MapNotify: {
+-	XMapEvent *xme = reinterpret_cast <XMapEvent *> (xevent);
+-
+-	if (mWindows.contains (xme->window))
+-	    client = mWindows[xme->window];
+-	else if (mDecorNormal->winId () == xme->window)
+-	    client = mDecorNormal;
+-	else if (mDecorActive->winId () == xme->window)
+-	    client = mDecorActive;
+-	else
+-	    break;
+-
+-	if (client->handleMap ())
+-	{
+-	    if (!mIdleTimer.isActive ())
+-	    {
+-		mIdleTimer.setSingleShot (true);
+-		mIdleTimer.start (0);
+-	    }
+-	}
+-    } break;
+     case ConfigureNotify: {
+ 	XConfigureEvent *xce = reinterpret_cast <XConfigureEvent *> (xevent);
+ 
+ 	if (mFrames.contains (xce->window))
+ 	    mFrames[xce->window]->updateFrame (xce->window);
+ 
+-	if (mWindows.contains (xce->window))
+-	    client = mWindows[xce->window];
+-	else if (mDecorNormal->winId () == xce->window)
+-	    client = mDecorNormal;
+-	else if (mDecorActive->winId () == xce->window)
+-	    client = mDecorActive;
+-	else
+-	    break;
+-
+-	if (client->handleConfigure (QSize (xce->width, xce->height)))
+-	{
+-	    if (!mIdleTimer.isActive ())
+-	    {
+-		mIdleTimer.setSingleShot (true);
+-		mIdleTimer.start (0);
+-	    }
+-	}
+     } break;
+     case SelectionRequest:
+ 	decor_handle_selection_request (QX11Info::display(), xevent, mDmSnTimestamp);
+@@ -512,6 +412,9 @@
+ 	    break;
+ 
+ 	client = mFrames[xce->window];
++	
++	if (!client->decorWidget ())
++	    break;
+ 
+ 	child = client->childAt (xce->x, xce->y);
+ 	if (child)
+@@ -549,6 +452,9 @@
+ 	    break;
+ 
+ 	client = mFrames[xme->window];
++	
++	if (!client->decorWidget ())
++	    break;
+ 
+ 	child = client->childAt (xme->x, xme->y);
+ 
+@@ -569,8 +475,8 @@
+ 		client->setActiveChild (child);
+ 	    }
+ 
+-	    if (client != child)
+-		qp -= QPoint (child->pos ().x (), child->pos ().y ());
++	    if (client->decorWidget () != child)
++		qp = child->mapFrom (client->decorWidget (), qp);
+ 
+ 	    QMouseEvent qme (QEvent::MouseMove, qp, Qt::NoButton,
+ 			     Qt::NoButton, Qt::NoModifier);
+@@ -590,6 +496,9 @@
+ 	    break;
+ 
+ 	client = mFrames[xbe->window];
++	
++	if (!client->decorWidget ())
++	    break;
+ 
+ 	child = client->childAt (xbe->x, xbe->y);
+ 
+@@ -597,11 +506,11 @@
+ 	{
+ 	    XButtonEvent xbe2 = *xbe;
+ 	    xbe2.window = child->winId ();
+-	    if (client != child)
+-	    {
+-		xbe2.x = xbe->x - child->pos ().x ();
+-		xbe2.y = xbe->y - child->pos ().y ();
+-	    }
++	    QPoint p;
++		
++	    p = client->mapToChildAt (QPoint (xbe->x, xbe->y));
++	    xbe2.x = p.x ();
++	    xbe2.y = p.y ();
+ 
+ 	    client->setFakeRelease (false);
+ 	    QApplication::x11ProcessEvent ((XEvent *) &xbe2);
+@@ -670,36 +579,6 @@
+ 	}
+ 	break;
+     default:
+-	if (xevent->type == mDamageEvent + XDamageNotify)
+-	{
+-	    XDamageNotifyEvent *xde =
+-		reinterpret_cast <XDamageNotifyEvent *>(xevent);
+-
+-	    if (mWindows.contains (xde->drawable))
+-		client = mWindows[xde->drawable];
+-	    else if (mDecorNormal->winId () == xde->drawable)
+-		client = mDecorNormal;
+-	    else if (mDecorActive->winId () == xde->drawable)
+-		client = mDecorActive;
+-	    else
+-		break;
+-
+-	    client->addDamageRect (xde->area.x,
+-				   xde->area.y,
+-				   xde->area.width,
+-				   xde->area.height);
+-
+-	    if (client->pixmapId ())
+-	    {
+-		if (!mIdleTimer.isActive ())
+-		{
+-		    mIdleTimer.setSingleShot (true);
+-		    mIdleTimer.start (0);
+-		}
+-	    }
+-
+-	    return true;
+-	}
+ 	break;
+     }
+ 
+@@ -803,7 +682,6 @@
+ 				      height + border * 2);
+ 
+ 	    mClients.insert (id, client);
+-	    mWindows.insert (client->winId (), client);
+ 	    mFrames.insert (frame, client);
+ 	}
+ 	else
+@@ -823,7 +701,6 @@
+ 	if (client)
+ 	{
+ 	    mClients.remove (client->windowId ());
+-	    mWindows.remove (client->winId ());
+ 	    mFrames.remove (client->frameId ());
+ 
+ 	    delete client;
+@@ -844,7 +721,6 @@
+     if (window)
+     {
+ 	mClients.remove (window->windowId ());
+-	mWindows.remove (window->winId ());
+ 	mFrames.remove (window->frameId ());
+ 	delete window;
+     }
+diff -Nur compiz-0.7.8-kde42/kde/window-decorator-kde4/decorator.h compiz-0.7.8-kde43/kde/window-decorator-kde4/decorator.h
+--- compiz-0.7.8-kde42/kde/window-decorator-kde4/decorator.h	2008-08-08 13:20:31.000000000 +0200
++++ compiz-0.7.8-kde43/kde/window-decorator-kde4/decorator.h	2010-02-13 18:04:27.000000000 +0100
+@@ -54,11 +54,6 @@
+ 
+ extern struct _cursor cursors[3][3];
+ 
+-extern double decorationOpacity;
+-extern bool   decorationOpacityShade;
+-extern double activeDecorationOpacity;
+-extern bool   activeDecorationOpacityShade;
+-
+ #define BLUR_TYPE_NONE     0
+ #define BLUR_TYPE_TITLEBAR 1
+ #define BLUR_TYPE_ALL      2
+@@ -84,7 +79,7 @@
+ 
+ class Decorator:public KApplication {
+     Q_OBJECT public:
+-	Decorator (Display* display, Qt::HANDLE visual, Qt::HANDLE colormap);
++	Decorator ();
+ 	~Decorator (void);
+ 
+ 	static NETRootInfo *rootInfo (void)
+@@ -107,18 +102,7 @@
+ 	{
+ 	    return &mShadowOptions;
+ 	}
+-	static decor_shadow_t *defaultWindowShadow (decor_context_t *context,
+-						    decor_extents_t *border)
+-	{
+-	    if (!mDefaultShadow)
+-		return NULL;
+ 
+-	    if (memcmp (border, &mDefaultBorder, sizeof (decor_extents_t)) != 0)
+-		return NULL;
+-
+-	    *context = mDefaultContext;
+-	    return mDefaultShadow;
+-	}
+ 	static void sendClientMessage (WId  eventWid,
+ 				       WId  wid,
+ 				       Atom atom,
+@@ -126,9 +110,8 @@
+ 				       long data1 = 0,
+ 				       long data2 = 0,
+ 				       long data3 = 0);
+-	static void updateDefaultShadow (KWD::Window *w);
+-
+-	bool enableDecorations (Time timestamp, int  damageEvent);
++	
++	bool enableDecorations (Time timestamp);
+ 	bool x11EventFilter (XEvent *xevent);
+ 	void changeShadowOptions (decor_shadow_options_t *opt);
+ 
+@@ -146,7 +129,7 @@
+ 	void handleActiveWindowChanged (WId id);
+ 	void handleWindowChanged (WId		      id,
+ 				  const unsigned long *properties);
+-	void processDamage (void);
++
+ 	void shadowRadiusChanged (double value);
+ 	void shadowOpacityChanged (double value);
+ 	void shadowXOffsetChanged (int value);
+@@ -158,9 +141,6 @@
+     private:
+ 	static PluginManager *mPlugins;
+ 	static KWD::Options *mOptions;
+-	static decor_extents_t mDefaultBorder;
+-	static decor_context_t mDefaultContext;
+-	static decor_shadow_t *mDefaultShadow;
+ 	static decor_shadow_t *mNoBorderShadow;
+ 	static decor_shadow_options_t mShadowOptions;
+ 	static NETRootInfo *mRootInfo;
+@@ -170,11 +150,8 @@
+ 	KWD::Window *mDecorActive;
+ 	QMap <WId, KWD::Window *>mClients;
+ 	QMap <WId, KWD::Window *>mFrames;
+-	QMap <WId, KWD::Window *>mWindows;
+ 	KConfig *mConfig;
+ 	Time mDmSnTimestamp;
+-	int mDamageEvent;
+-	QTimer mIdleTimer;
+ 
+ 	WId mCompositeWindow;
+ 
+diff -Nur compiz-0.7.8-kde42/kde/window-decorator-kde4/main.cpp compiz-0.7.8-kde43/kde/window-decorator-kde4/main.cpp
+--- compiz-0.7.8-kde42/kde/window-decorator-kde4/main.cpp	2008-08-08 13:20:31.000000000 +0200
++++ compiz-0.7.8-kde43/kde/window-decorator-kde4/main.cpp	2010-02-13 18:04:27.000000000 +0100
+@@ -44,24 +44,12 @@
+     KCmdLineArgs    *args;
+     KCmdLineOptions options;
+     int		    status;
+-    int		    event, error;
+     Time	    timestamp;
+-    Colormap        colormap = 0;
+-    Visual          *visual = 0;
+-    int             event_base, error_base;
+-    Display         *dpy;
+-    int             screen;
+     QString         appname;
+ 
+     options.add ("replace", ki18n ("Replace existing window decorator"));
+     options.add ("sm-disable", ki18n ("Disable connection to session manager"));
+-    options.add ("opacity <value>", ki18n ("Decoration opacity"), "0.75");
+-    options.add ("no-opacity-shade", ki18n ("No decoration opacity shading"));
+-    options.add ("active-opacity <value>",
+-		 ki18n ("Active decoration opacity"), "1.0");
+-    options.add ("no-active-opacity-shade",
+-		 ki18n ("No active decoration opacity shading"));
+-    options.add ("blur <type>", ki18n ("Blur type"), "none");
++    options.add ("blur <type>", ki18n ("Blur type (none,titlebar,all)"), "none");
+ 
+     KCmdLineArgs::init (argc, argv,
+ 			"kde-window-decorator",
+@@ -71,19 +59,6 @@
+     KCmdLineArgs::addCmdLineOptions (options);
+     args = KCmdLineArgs::parsedArgs ();
+ 
+-    if (args->isSet ("opacity"))
+-	decorationOpacity = args->getOption ("opacity").toDouble ();
+-
+-    if (args->isSet ("-opacity-shade"))
+-	decorationOpacityShade = true;
+-
+-    if (args->isSet ("active-opacity"))
+-	activeDecorationOpacity =
+-	    args->getOption ("active-opacity").toDouble ();
+-
+-    if (args->isSet ("-active-opacity-shade"))
+-	activeDecorationOpacityShade = true;
+-
+     if (args->isSet ("blur"))
+     {
+ 	QString blur = args->getOption ("blur");
+@@ -94,56 +69,11 @@
+ 	    blurType = BLUR_TYPE_ALL;
+     }
+ 
+-    dpy = XOpenDisplay(0); // open default display
+-    screen = DefaultScreen (dpy);
+-    if (!dpy) {
+-        kError() << "Cannot connect to the X server" << endl;
+-        return 0;
+-    }
+-
+-    if (XRenderQueryExtension (dpy, &event_base, &error_base))
+-    {
+-	int nvi;
+-	XVisualInfo templ;
+-	templ.screen = screen;
+-	templ.depth = 32;
+-	templ.c_class = TrueColor;
+-        XVisualInfo *xvi = XGetVisualInfo (dpy, VisualScreenMask |
+-					   VisualDepthMask |
+-					   VisualClassMask, &templ, &nvi);
+-
+-	for (int i = 0; i < nvi; i++)
+-	{
+-	    XRenderPictFormat *format =
+-		XRenderFindVisualFormat (dpy, xvi[i].visual);
+-	    if (format->type == PictTypeDirect && format->direct.alphaMask)
+-	    {
+-		visual = xvi[i].visual;
+-		colormap = XCreateColormap (dpy, RootWindow (dpy, screen),
+-					    visual, AllocNone);
+-	        break;
+-	    }
+-	}
+-    }
+-
+-    // Disable window less child widgets
+-    QApplication::setAttribute(Qt::AA_NativeWindows, true);
+-
+-    app = new KWD::Decorator (dpy, visual ? Qt::HANDLE(visual) : 0,
+-			      colormap ? Qt::HANDLE(colormap) : 0);
++    app = new KWD::Decorator ();
+ 
+     if (args->isSet ("sm-disable"))
+ 	app->disableSessionManagement ();
+ 
+-    if (!XDamageQueryExtension (QX11Info::display(), &event, &error))
+-    {
+-	fprintf (stderr,
+-		 "%s: Damage extension is missing on display \"%s\"\n",
+-		 argv[0], DisplayString (QX11Info::display()));
+-
+-	return 1;
+-    }
+-
+     status = decor_acquire_dm_session (QX11Info::display(),
+ 				       QX11Info::appScreen (),
+ 				       "kwd", args->isSet ("replace"),
+@@ -174,7 +104,7 @@
+ 
+     decor_set_dm_check_hint (QX11Info::display(), QX11Info::appScreen ());
+ 
+-    if (!app->enableDecorations (timestamp, event))
++    if (!app->enableDecorations (timestamp))
+     {
+ 	fprintf (stderr,
+ 		 "%s: Could not enable decorations on display \"%s\"\n",
+diff -Nur compiz-0.7.8-kde42/kde/window-decorator-kde4/Makefile.am compiz-0.7.8-kde43/kde/window-decorator-kde4/Makefile.am
+--- compiz-0.7.8-kde42/kde/window-decorator-kde4/Makefile.am	2008-09-17 09:13:42.000000000 +0200
++++ compiz-0.7.8-kde43/kde/window-decorator-kde4/Makefile.am	2010-02-13 18:04:27.000000000 +0100
+@@ -3,6 +3,7 @@
+ BUILDSOURCES =		      \
+ 	decorator.moc.cpp     \
+ 	window.moc.cpp        \
++	paintredirector.moc.cpp \
+ 	kwinadaptor.moc.cpp   \
+ 	kwinadaptor.cpp       \
+ 	kwinadaptor.h
+@@ -30,6 +31,8 @@
+ 	kdecoration_plugins.h   \
+ 	switcher.cpp            \
+ 	switcher.h              \
++	paintredirector.cpp     \
++	paintredirector.h       \
+ 	org.kde.KWin.xml
+ 
+ kde4_window_decorator_program = kde4-window-decorator
+diff -Nur compiz-0.7.8-kde42/kde/window-decorator-kde4/Makefile.in compiz-0.7.8-kde43/kde/window-decorator-kde4/Makefile.in
+--- compiz-0.7.8-kde42/kde/window-decorator-kde4/Makefile.in	2008-09-17 13:34:27.000000000 +0200
++++ compiz-0.7.8-kde43/kde/window-decorator-kde4/Makefile.in	2010-02-13 18:04:27.000000000 +0100
+@@ -49,14 +49,14 @@
+ am__dist_kde4_window_decorator_SOURCES_DIST = main.cpp utils.cpp \
+ 	utils.h decorator.cpp decorator.h window.cpp window.h \
+ 	options.cpp options.h kdecoration_plugins.cpp \
+-	kdecoration_plugins.h switcher.cpp switcher.h org.kde.KWin.xml
++	kdecoration_plugins.h switcher.cpp switcher.h paintredirector.cpp paintredirector.h org.kde.KWin.xml
+ @USE_KDE4_TRUE@dist_kde4_window_decorator_OBJECTS = main.$(OBJEXT) \
+ @USE_KDE4_TRUE@	utils.$(OBJEXT) decorator.$(OBJEXT) \
+ @USE_KDE4_TRUE@	window.$(OBJEXT) options.$(OBJEXT) \
+ @USE_KDE4_TRUE@	kdecoration_plugins.$(OBJEXT) \
+-@USE_KDE4_TRUE@	switcher.$(OBJEXT)
++@USE_KDE4_TRUE@	switcher.$(OBJEXT) paintredirector.$(OBJEXT)
+ @USE_KDE4_TRUE@am__objects_1 = decorator.moc.$(OBJEXT) \
+-@USE_KDE4_TRUE@	window.moc.$(OBJEXT) kwinadaptor.moc.$(OBJEXT) \
++@USE_KDE4_TRUE@	window.moc.$(OBJEXT) paintredirector.moc.$(OBJEXT) kwinadaptor.moc.$(OBJEXT) \
+ @USE_KDE4_TRUE@	kwinadaptor.$(OBJEXT)
+ @USE_KDE4_TRUE@nodist_kde4_window_decorator_OBJECTS =  \
+ @USE_KDE4_TRUE@	$(am__objects_1)
+@@ -307,6 +307,7 @@
+ @USE_KDE4_TRUE@BUILDSOURCES = \
+ @USE_KDE4_TRUE@	decorator.moc.cpp     \
+ @USE_KDE4_TRUE@	window.moc.cpp        \
++@USE_KDE4_TRUE@	paintredirector.moc.cpp \
+ @USE_KDE4_TRUE@	kwinadaptor.moc.cpp   \
+ @USE_KDE4_TRUE@	kwinadaptor.cpp       \
+ @USE_KDE4_TRUE@	kwinadaptor.h
+@@ -335,6 +336,8 @@
+ @USE_KDE4_TRUE@	kdecoration_plugins.h   \
+ @USE_KDE4_TRUE@	switcher.cpp            \
+ @USE_KDE4_TRUE@	switcher.h              \
++@USE_KDE4_TRUE@	paintredirector.cpp     \
++@USE_KDE4_TRUE@	paintredirector.h       \
+ @USE_KDE4_TRUE@	org.kde.KWin.xml
+ 
+ @USE_KDE4_TRUE@kde4_window_decorator_program = kde4-window-decorator
+@@ -420,6 +423,8 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/options.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/switcher.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paintredirector.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paintredirector.moc.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/window.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/window.moc.Po@am__quote@
+diff -Nur compiz-0.7.8-kde42/kde/window-decorator-kde4/paintredirector.cpp compiz-0.7.8-kde43/kde/window-decorator-kde4/paintredirector.cpp
+--- compiz-0.7.8-kde42/kde/window-decorator-kde4/paintredirector.cpp	1970-01-01 01:00:00.000000000 +0100
++++ compiz-0.7.8-kde43/kde/window-decorator-kde4/paintredirector.cpp	2010-02-13 18:04:27.000000000 +0100
+@@ -0,0 +1,125 @@
++/*****************************************************************
++This file is part of the KDE project.
++
++Copyright (C) 2009 Lubos Lunak <l.lunak@kde.org>
++
++Permission is hereby granted, free of charge, to any person obtaining a
++copy of this software and associated documentation files (the "Software"),
++to deal in the Software without restriction, including without limitation
++the rights to use, copy, modify, merge, publish, distribute, sublicense,
++and/or sell copies of the Software, and to permit persons to whom the
++Software is furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in
++all copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++DEALINGS IN THE SOFTWARE.
++******************************************************************/
++
++#include "paintredirector.h"
++
++#include <kdebug.h>
++#include <qevent.h>
++#include <qpainter.h>
++
++namespace KWin
++{
++
++PaintRedirector::PaintRedirector( QWidget* w )
++    : widget( w )
++    , recursionCheck( false )
++    {
++    timer.setSingleShot( true );
++    connect( &timer, SIGNAL( timeout()), SIGNAL( paintPending()));
++    added( w );
++    }
++
++QPixmap PaintRedirector::performPendingPaint()
++    {
++    //qDebug() << "### performing paint, pending:" << pending.boundingRect();
++    QPixmap pixmap( pending.boundingRect().size());
++    pixmap.fill( Qt::transparent );
++    recursionCheck = true;
++    // do not use DrawWindowBackground, it's ok to be transparent
++    widget->render( &pixmap, QPoint(), pending.boundingRect(), QWidget::DrawChildren );
++    recursionCheck = false;
++    pending = QRegion();
++    return pixmap;
++    }
++
++bool PaintRedirector::isToolTip( QWidget *object ) const
++    {
++    // ### We need a more reliable way of doing this
++    return object->metaObject()->className() == QString("QWidget") &&
++           object->objectName() != QString("decoration widget");
++    }
++
++bool PaintRedirector::eventFilter( QObject* o, QEvent* e )
++    {
++    switch( e->type())
++        {
++        case QEvent::ChildAdded:
++            {
++            QChildEvent* c = static_cast< QChildEvent* >( e );
++            if( c->child()->isWidgetType() && !isToolTip( static_cast< QWidget* >( c->child() ) ) )
++                added( static_cast< QWidget* >( c->child()));
++            break;
++            }
++        case QEvent::ChildRemoved:
++            {
++            QChildEvent* c = static_cast< QChildEvent* >( e );
++            if( c->child()->isWidgetType())
++                removed( static_cast< QWidget* >( c->child()));
++            break;
++            }
++        case QEvent::Paint:
++            {
++            if( !recursionCheck )
++                {
++                QPaintEvent* pe = static_cast< QPaintEvent* >( e );
++                QWidget* w = static_cast< QWidget* >( o );
++                pending |= pe->region().translated( w->mapTo( widget, QPoint( 0, 0 )));
++                timer.start( 0 );
++                return true; // filter out
++                }
++            }
++        default:
++            break;
++        }
++    return false;
++    }
++
++QRegion PaintRedirector::pendingRegion() const
++    {
++    return pending;
++    }
++
++void PaintRedirector::added( QWidget* w )
++    {
++    w->installEventFilter( this );
++    foreach( QObject* o, w->children())
++        {
++        if( o->isWidgetType() && !isToolTip( static_cast< QWidget* >( o ) ) )
++            added( static_cast< QWidget* >( o ));
++        }
++    }
++
++void PaintRedirector::removed( QWidget* w )
++    {
++    foreach( QObject* o, w->children())
++        {
++        if( o->isWidgetType())
++            removed( static_cast< QWidget* >( o ));
++        }
++    w->installEventFilter( this );
++    }
++
++} // namespace
++
++//#include "paintredirector.moc"
+diff -Nur compiz-0.7.8-kde42/kde/window-decorator-kde4/paintredirector.h compiz-0.7.8-kde43/kde/window-decorator-kde4/paintredirector.h
+--- compiz-0.7.8-kde42/kde/window-decorator-kde4/paintredirector.h	1970-01-01 01:00:00.000000000 +0100
++++ compiz-0.7.8-kde43/kde/window-decorator-kde4/paintredirector.h	2010-02-13 18:04:27.000000000 +0100
+@@ -0,0 +1,60 @@
++/*****************************************************************
++This file is part of the KDE project.
++
++Copyright (C) 2009 Lubos Lunak <l.lunak@kde.org>
++
++Permission is hereby granted, free of charge, to any person obtaining a
++copy of this software and associated documentation files (the "Software"),
++to deal in the Software without restriction, including without limitation
++the rights to use, copy, modify, merge, publish, distribute, sublicense,
++and/or sell copies of the Software, and to permit persons to whom the
++Software is furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in
++all copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++DEALINGS IN THE SOFTWARE.
++******************************************************************/
++
++#ifndef PAINTREDIRECTOR_H
++#define PAINTREDIRECTOR_H
++
++#include <qregion.h>
++#include <qtimer.h>
++#include <qwidget.h>
++
++namespace KWin
++{
++
++// This class redirects all painting of a given widget (including its children)
++// into a paint device (QPixmap).
++class PaintRedirector
++    : public QObject
++    {
++    Q_OBJECT
++    public:
++        PaintRedirector( QWidget* widget );
++        QPixmap performPendingPaint();
++        virtual bool eventFilter( QObject* o, QEvent* e );
++        QRegion pendingRegion() const;
++    signals:
++        void paintPending();
++    private:
++        void added( QWidget* widget );
++        void removed( QWidget* widget );
++        bool isToolTip( QWidget* widget ) const;
++        QWidget* widget;
++        QRegion pending;
++        bool recursionCheck;
++        QTimer timer;
++    };
++
++} // namespace
++
++#endif
+diff -Nur compiz-0.7.8-kde42/kde/window-decorator-kde4/window.cpp compiz-0.7.8-kde43/kde/window-decorator-kde4/window.cpp
+--- compiz-0.7.8-kde42/kde/window-decorator-kde4/window.cpp	2010-02-13 15:38:05.000000000 +0100
++++ compiz-0.7.8-kde43/kde/window-decorator-kde4/window.cpp	2010-02-13 18:04:27.000000000 +0100
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright © 2008 Dennis Kasprzyk <onestone@opencompositing.org>
++ * Copyright © 2009 Dennis Kasprzyk <onestone@compiz-fusion.org>
+  * Copyright © 2006 Novell, Inc.
+  * Copyright © 2006 Volker Krause <vkrause@kde.org>
+  *
+@@ -26,6 +26,9 @@
+ #include "options.h"
+ #include "utils.h"
+ 
++#include <unistd.h>
++#include <stdio.h>
++
+ #include <X11/Xlib.h>
+ #include <X11/extensions/shape.h>
+ #include <X11/extensions/Xcomposite.h>
+@@ -55,6 +58,9 @@
+ #include <QVector>
+ #include <QProcess>
+ #include <QStyle>
++#include <QPainter>
++
++#include "paintredirector.h"
+ 
+ KWD::Window::Window (WId  parentId,
+ 		     WId  clientId,
+@@ -63,7 +69,7 @@
+ 		     int  x,
+ 		     int  y,
+ 		     int  w,
+-		     int  h): QWidget (0, 0),
++		     int  h):
+     mType (type),
+     mParentId (parentId),
+     mFrame (0),
+@@ -71,22 +77,12 @@
+     mSelectedId (0),
+     mDecor (0),
+     mPixmap (0),
+-    mDamageId (0),
+-    mShadow (0),
+-    mPicture (0),
+-    mTexturePicture (0),
+-    mDecorationPicture (0),
+     mUpdateProperty (false),
+     mShapeSet (false),
+-    mUniqueHorzShape (false),
+-    mUniqueVertShape (false),
+     mPopup (0),
+     mAdvancedMenu (0),
+     mOpacityMenu (0),
+     mDesktopMenu (0),
+-    mMapped (false),
+-    mPendingMap (0),
+-    mPendingConfigure (0),
+     mProcessKiller (this),
+     mKeys (this),
+     mResizeOpAction (0),
+@@ -98,7 +94,8 @@
+     mFullScreenOpAction (0),
+     mMinimizeOpAction (0),
+     mCloseOpAction (0),
+-    mDesktopOpAction (0)
++    mDesktopOpAction (0),
++    mPaintRedirector (0)
+ {
+     memset (&mBorder, 0, sizeof (mBorder));
+ 
+@@ -162,27 +159,18 @@
+ 
+ KWD::Window::~Window (void)
+ {
+-    if (mShadow)
+-	decor_shadow_destroy (QX11Info::display(), mShadow);
+-
+-    if (mPicture)
+-	XRenderFreePicture (QX11Info::display(), mPicture);
+-
+     if (mPixmap)
+ 	XFreePixmap (QX11Info::display(), mPixmap);
+ 
+-    if (mTexturePicture)
+-	XRenderFreePicture (QX11Info::display(), mTexturePicture);
+-
+-    if (mDecorationPicture)
+-	XRenderFreePicture (QX11Info::display(), mDecorationPicture);
+-
+     if (mDecor)
+ 	delete mDecor;
+ 
+     if (mPopup)
+ 	delete mPopup;
+ 
++    if (mPaintRedirector)
++	delete mPaintRedirector;
++
+     if (mProcessKiller.state () == QProcess::Running)
+     {
+ 	mProcessKiller.terminate ();
+@@ -372,8 +360,6 @@
+ void
+ KWD::Window::showWindowMenu (const QPoint &pos)
+ {
+-    QPoint pnt;
+-
+     if (!mPopup)
+     {
+ 	QAction *action;
+@@ -489,10 +475,10 @@
+         mCloseOpAction->setData (KDecorationDefines::CloseOp);
+     }
+ 
+-    pnt = mapFromGlobal (pos);
++    QPoint pnt = mDecor->widget ()->mapFromGlobal (pos);
+ 
+-    pnt += QPoint (mGeometry.x () - mBorder.left,
+-		   mGeometry.y () - mBorder.top);
++    pnt += QPoint (mGeometry.x () - mBorder.left - mPadding.left,
++		   mGeometry.y () - mBorder.top - mPadding.top);
+  
+     mPopup->exec (pnt);
+ }
+@@ -606,7 +592,7 @@
+ QRect
+ KWD::Window::geometry (void) const
+ {
+-    QRect rect = QWidget::geometry ();
++    QRect rect = mGeometry;
+ 
+     return QRect (rect.x () - ROOT_OFF_X,
+ 		  rect.y () - ROOT_OFF_Y,
+@@ -749,7 +735,7 @@
+ QWidget *
+ KWD::Window::initialParentWidget (void) const
+ {
+-    return const_cast <Window *> (this);
++    return 0;
+ }
+ 
+ Qt::WFlags
+@@ -763,31 +749,12 @@
+ {
+ }
+ 
+-void
+-KWD::Window::repaintShadow (void)
+-{
+-}
+-
+ bool
+ KWD::Window::compositingActive (void) const
+ {
+     return true;
+ }
+ 
+-bool
+-KWD::Window::shadowsActive (void) const
+-{
+-    /* we are drawing the shadows ourselves, no need for the
+-       decoration engine to do so */
+-    return false;
+-}
+-
+-double
+-KWD::Window::opacity (void) const
+-{
+-    return 1.0;
+-}
+-
+ void
+ KWD::Window::createDecoration (void)
+ {
+@@ -801,6 +768,17 @@
+ 
+     mDecor = decor;
+ 
++    mPaintRedirector = new KWin::PaintRedirector (mDecor->widget ());
++    connect (mPaintRedirector, SIGNAL (paintPending()),
++             this, SLOT (decorRepaintPending ()));
++
++    mPadding.top = mPadding.bottom = mPadding.left = mPadding.right = 0;
++
++    if (KDecorationUnstable *deco2 = dynamic_cast<KDecorationUnstable*>(decor))
++        deco2->padding (mPadding.left, mPadding.right, mPadding.top, mPadding.bottom);
++
++    XReparentWindow (QX11Info::display(), mDecor->widget ()->winId (), mParentId, 0, 0);
++
+     if (mType == Normal && mFrame)
+     {
+ 	KWD::trapXError ();
+@@ -812,455 +790,81 @@
+ 	    return;
+     }
+ 
+-    KWD::trapXError ();
+-    XSelectInput (QX11Info::display(), this->winId(),
+-		  StructureNotifyMask | PropertyChangeMask);
+-    KWD::popXError ();
+-
+     resizeDecoration (true);
+ }
+ 
+-static void
+-fillQRegion (Display *xdisplay,
+-	     Picture picture,
+-	     int     clipX1,
+-	     int     clipY1,
+-	     int     clipX2,
+-	     int     clipY2,
+-	     int     xOff,
+-	     int     yOff,
+-	     QRegion *region)
+-{
+-    static XRenderColor		   white = { 0xffff, 0xffff, 0xffff, 0xffff };
+-    QVector <QRect>		   rects = region->rects ();
+-    int				   x1, y1, x2, y2;
+-
+-    foreach (QRect rect, rects)
+-    {
+-	x1 = rect.x ();
+-	y1 = rect.y ();
+-	x2 = x1 + rect.width ();
+-	y2 = y1 + rect.height ();
+-
+-	if (x1 < clipX1)
+-	    x1 = clipX1;
+-	if (y1 < clipY1)
+-	    y1 = clipY1;
+-	if (x2 > clipX2)
+-	    x2 = clipX2;
+-	if (y2 > clipY2)
+-	    y2 = clipY2;
+-
+-	if (x1 < x2 && y1 < y2)
+-	    XRenderFillRectangle (xdisplay, PictOpSrc, picture, &white,
+-				  xOff + x1,
+-				  yOff + y1,
+-				  x2 - x1,
+-				  y2 - y1);
+-    }
+-}
+-
+-static void
+-drawBorderShape (Display	 *xdisplay,
+-		 Pixmap		 pixmap,
+-		 Picture	 picture,
+-		 int		 width,
+-		 int		 height,
+-		 decor_context_t *c,
+-		 void		 *closure)
+-{
+-    static XRenderColor clear = { 0x0000, 0x0000, 0x0000, 0x0000 };
+-    static XRenderColor white = { 0xffff, 0xffff, 0xffff, 0xffff };
+-    KWD::Window		*w = (KWD::Window *) closure;
+-    QRegion		*shape;
+-    bool		uniqueHorzShade;
+-    bool		uniqueVertShade;
+-    int			xOffLeft, yOffTop, xOffRight, yOffBottom;
+-    QRect		rect = w->geometry ();
+-    int			x1, y1, x2, y2;
+-
+-    (void) pixmap;
+-
+-    XRenderFillRectangle (xdisplay, PictOpSrc, picture, &clear,
+-			  0, 0, width, height);
+-
+-    shape = w->getShape ();
+-    w->getShapeInfo (&uniqueHorzShade, &uniqueVertShade);
+-
+-    xOffLeft = c->left_space - c->extents.left;
+-    yOffTop  = c->top_space  - c->extents.top;
+-
+-    xOffRight  = c->left_space - c->extents.left;
+-    yOffBottom = c->top_space  - c->extents.top;
+-
+-    x1 = c->left_space;
+-    y1 = c->top_space;
+-    x2 = width - c->right_space;
+-    y2 = height - c->bottom_space;
+-
+-    if (shape)
+-    {
+-	if (uniqueHorzShade && uniqueVertShade)
+-	{
+-	    fillQRegion (xdisplay, picture,
+-			 0, 0,
+-			 rect.width (), rect.height (),
+-			 xOffLeft, yOffTop, shape);
+-	}
+-	else
+-	{
+-	    if (!uniqueHorzShade)
+-		xOffRight = x2 - (rect.width () - c->extents.right);
+-
+-	    if (!uniqueVertShade)
+-		yOffBottom = y2 - (rect.height () - c->extents.bottom);
+-
+-	    if (uniqueHorzShade)
+-	    {
+-		fillQRegion (xdisplay, picture,
+-			     0, 0,
+-			     rect.width (), c->extents.top,
+-			     xOffLeft, yOffTop, shape);
+-		fillQRegion (xdisplay, picture,
+-			     0, rect.height () - c->extents.bottom,
+-			     rect.width (), rect.height (),
+-			     xOffLeft, yOffBottom, shape);
+-	    }
+-	    else
+-	    {
+-		fillQRegion (xdisplay, picture,
+-			     0, 0,
+-			     c->extents.left, c->extents.top,
+-			     xOffLeft, yOffTop, shape);
+-		fillQRegion (xdisplay, picture,
+-			     rect.width () - c->extents.right, 0,
+-			     rect.width (), c->extents.top,
+-			     xOffRight, yOffTop, shape);
+-		fillQRegion (xdisplay, picture,
+-			     0, rect.height () - c->extents.bottom,
+-			     c->extents.left, rect.height (),
+-			     xOffLeft, yOffBottom, shape);
+-		fillQRegion (xdisplay, picture,
+-			     rect.width () - c->extents.right,
+-			     rect.height () - c->extents.bottom,
+-			     rect.width (), rect.height (),
+-			     xOffRight, yOffBottom, shape);
+-
+-		y1 -= c->extents.top;
+-		y2 += c->extents.bottom;
+-	    }
+-
+-	    if (uniqueVertShade)
+-	    {
+-		fillQRegion (xdisplay, picture,
+-			     0, c->extents.top,
+-			     c->extents.left,
+-			     rect.height () - c->extents.bottom,
+-			     xOffLeft, yOffTop, shape);
+-		fillQRegion (xdisplay, picture,
+-			     rect.width () - c->extents.right, c->extents.top,
+-			     rect.width (),
+-			     rect.height () - c->extents.bottom,
+-			     xOffRight, yOffTop, shape);
+-	    }
+-	    else
+-	    {
+-		x1 -= c->extents.left;
+-		x2 += c->extents.right;
+-	    }
+-	}
+-    }
+-    else
+-    {
+-	x1 -= c->extents.left;
+-	x2 += c->extents.right;
+-	y1 -= c->extents.top;
+-	y2 += c->extents.bottom;
+-    }
+-
+-    XRenderFillRectangle (xdisplay, PictOpSrc, picture, &white,
+-			  x1,
+-			  y1,
+-			  x2 - x1,
+-			  y2 - y1);
+-}
+-
+-static void
+-cornersFromQRegion (QRegion *region,
+-		    int     width,
+-		    int     height,
+-		    int     left,
+-		    int     right,
+-		    int     top,
+-		    int     bottom,
+-		    int	    *leftCorner,
+-		    int	    *rightCorner,
+-		    int	    *topCorner,
+-		    int	    *bottomCorner)
+-{
+-    QRegion l, r, t, b;
+-
+-    l = QRegion (0, top, left, height - top - bottom) - *region;
+-    r = QRegion (width - right, top, right, height - top - bottom) - *region;
+-    t = QRegion (0, 0, width, top) - *region;
+-    b = QRegion (0, height - bottom, width, bottom) - *region;
+-
+-    if (l.isEmpty ())
+-	*leftCorner = left;
+-    else
+-	*leftCorner = left -
+-	    (l.boundingRect ().x () + l.boundingRect ().width ());
+-
+-    if (r.isEmpty ())
+-	*rightCorner = right;
+-    else
+-	*rightCorner = r.boundingRect ().x () - width + right;
+-
+-    if (t.isEmpty ())
+-	*topCorner = top;
+-    else
+-	*topCorner = top -
+-	    (t.boundingRect ().y () + t.boundingRect ().height ());
+-
+-    if (b.isEmpty ())
+-	*bottomCorner = bottom;
+-    else
+-	*bottomCorner = b.boundingRect ().y () - height + bottom;
+-}
+-
+ void
+-KWD::Window::updateShadow (void)
++KWD::Window::setMask (const QRegion &region, int)
+ {
+-    Display	      *xdisplay = QX11Info::display();
+-    Screen	      *xscreen;
+-    XRenderPictFormat *xformat;
+-    int		      leftCorner, rightCorner, topCorner, bottomCorner;
+-
+-    xscreen = ScreenOfDisplay (xdisplay, QX11Info::appScreen ());
+-
+-    if (mShadow)
+-    {
+-	decor_shadow_destroy (QX11Info::display(), mShadow);
+-	mShadow = NULL;
+-    }
+-
+-    if (mShapeSet)
++    if (region.isEmpty ())
+     {
+-	cornersFromQRegion (&mShape,
+-			    mGeometry.width () + mBorder.left + mBorder.right,
+-			    mGeometry.height () + mBorder.top + mBorder.bottom,
+-			    mBorder.left,
+-			    mBorder.right,
+-			    mBorder.top,
+-			    mBorder.bottom,
+-			    &leftCorner,
+-			    &rightCorner,
+-			    &topCorner,
+-			    &bottomCorner);
+-    }
+-    else
+-    {
+-	leftCorner   = mBorder.left;
+-	rightCorner  = mBorder.right;
+-	topCorner    = mBorder.top;
+-	bottomCorner = mBorder.bottom;
+-    }
+-
+-    /* use default shadow if such exist */
+-    if (!mUniqueHorzShape && !mUniqueVertShape)
+-    {
+-	mShadow = Decorator::defaultWindowShadow (&mContext, &mBorder);
+-	if (mShadow)
+-	    decor_shadow_reference (mShadow);
+-    }
+-
+-    if (!mShadow)
+-    {
+-	mShadow = decor_shadow_create (xdisplay,
+-				       xscreen,
+-				       mUniqueHorzShape ?
+-				       mGeometry.width () : 1,
+-				       mUniqueVertShape ?
+-				       mGeometry.height () : 1,
+-				       mBorder.left,
+-				       mBorder.right,
+-				       mBorder.top,
+-				       mBorder.bottom,
+-				       leftCorner,
+-				       rightCorner,
+-				       topCorner,
+-				       bottomCorner,
+-				       KWD::Decorator::shadowOptions (),
+-				       &mContext,
+-				       drawBorderShape,
+-				       (void *) this);
+-
+-	if (mType == Default)
+-	    KWD::Decorator::updateDefaultShadow (this);
++      if (mFrame && mShapeSet)
++      {
++	  QRegion r (0, 0, mGeometry.width () + mBorder.left + mBorder.right, 
++		     mGeometry.height () + mBorder.top + mBorder.bottom);
++
++	  r -= QRegion (mBorder.left, mBorder.top,
++			mGeometry.width (), mGeometry.height ());
++	  r = QRegion ();
++	  KWD::trapXError ();
++	  XShapeCombineRegion (QX11Info::display(), mFrame, ShapeInput,
++			       0, 0, r.handle (), ShapeSet);
++	  KWD::popXError ();
++      }
++      
++      mShapeSet = false;
++      return;
+     }
+ 
+-    /* create new layout */
+-    if (mType == Normal)
+-	decor_get_best_layout (&mContext,
+-			       mGeometry.width (),
+-			       mGeometry.height (),
+-			       &mLayout);
+-    else
+-	decor_get_default_layout (&mContext,
+-				  mGeometry.width (),
+-				  mGeometry.height (),
+-				  &mLayout);
+-
+-    if (mDecorationPicture)
+-	XRenderFreePicture (QX11Info::display(), mDecorationPicture);
+-
+-    if (mTexturePicture)
+-	XRenderFreePicture (QX11Info::display(), mTexturePicture);
+-
+-    mTexturePixmap       = QPixmap (mLayout.width, mLayout.height);
+-    mTexturePixmapBuffer = QPixmap (mLayout.width, mLayout.height);
+-
+-    xformat = XRenderFindStandardFormat (QX11Info::display(),
+-					 PictStandardARGB32);
+-
+-    mDecorationPicture =
+-	XRenderCreatePicture (QX11Info::display(),
+-			      mTexturePixmap.handle (),
+-			      xformat, 0, NULL);
+-    mTexturePicture =
+-	XRenderCreatePicture (QX11Info::display(),
+-			      mTexturePixmapBuffer.handle (),
+-			      xformat, 0, NULL);
+-
+-    decor_fill_picture_extents_with_shadow (QX11Info::display(),
+-					    mShadow,
+-					    &mContext,
+-					    mTexturePicture,
+-					    &mLayout);
+-
+-    if (mPixmap)
+-	mDecor->widget ()->repaint ();
+-
+-    mUpdateProperty = true;
+-}
+-
+-void
+-KWD::Window::setMask (const QRegion &reg, int)
+-{
+-    QRegion top, bottom, left, right;
+-    bool    uniqueHorzShape, uniqueVertShape;
+-
+-    if (mShapeSet && reg == mShape)
++    if (mShapeSet && region == mShape)
+ 	return;
+ 
+-    mShape    = reg;
++    mShape    = region;
+     mShapeSet = true;
+ 
+     if (mFrame)
+     {
+-	QRegion r;
++	QRegion r = region.translated (-mPadding.left, -mPadding.top);
+ 
+-	r = reg - QRegion (mBorder.left, mBorder.top,
+-			   mGeometry.width (), mGeometry.height ());
++	r -= QRegion (mBorder.left, mBorder.top,
++		      mGeometry.width (), mGeometry.height ());
+ 
+ 	KWD::trapXError ();
+-	XShapeCombineRegion (QX11Info::display(),
+-			     mFrame,
+-			     ShapeInput,
+-			     0,
+-			     0,
+-			     r.handle (),
+-			     ShapeSet);
++	XShapeCombineRegion (QX11Info::display(), mFrame, ShapeInput,
++			     0, 0, r.handle (), ShapeSet);
+ 	KWD::popXError ();
+     }
+-
+-    top    = QRegion (mBorder.left, 0,
+-		      mGeometry.width (), mBorder.top) - reg;
+-    bottom = QRegion (mBorder.left, mGeometry.height () + mBorder.top,
+-		      mGeometry.width (), mBorder.bottom) - reg;
+-    left   = QRegion (0, mBorder.top, mBorder.left,
+-		      mGeometry.height ()) - reg;
+-    right  = QRegion (mBorder.left + mGeometry.width (), mBorder.top,
+-		      mBorder.right, mGeometry.height ()) - reg;
+-
+-    uniqueHorzShape = !top.isEmpty ()  || !bottom.isEmpty ();
+-    uniqueVertShape = !left.isEmpty () || !right.isEmpty ();
+-
+-    if (uniqueHorzShape || mUniqueHorzShape ||
+-	uniqueVertShape || mUniqueVertShape)
+-    {
+-	mUniqueHorzShape = uniqueHorzShape;
+-	mUniqueVertShape = uniqueVertShape;
+-
+-	if (mPixmap)
+-	    QTimer::singleShot (0, this, SLOT (updateShadow ()));
+-    }
+ }
+ 
+-bool
++void
+ KWD::Window::resizeDecoration (bool force)
+ {
+     int w, h;
+ 
+     mDecor->borders (mBorder.left, mBorder.right, mBorder.top, mBorder.bottom);
++    
++    mExtents.left   = mBorder.left + mPadding.left;
++    mExtents.right  = mBorder.right + mPadding.right;
++    mExtents.top    = mBorder.top + mPadding.top;
++    mExtents.bottom = mBorder.bottom + mPadding.bottom;
+ 
+-    w = mGeometry.width () + mBorder.left + mBorder.right;
+-    h = mGeometry.height () + mBorder.top + mBorder.bottom;
+-
+-    if (!force)
++    if (mType != Normal)
+     {
+-	if (w == width () && h == height ())
+-	    return FALSE;
++	mGeometry = QRect (50, 50, 100, 100);
+     }
+ 
+-    /* reset shape */
+-    mShapeSet        = false;
+-    mUniqueHorzShape = false;
+-    mUniqueVertShape = false;
+-
+-    if (mType != Normal)
++    w = mGeometry.width () + mExtents.left + mExtents.right;
++    h = mGeometry.height () + mExtents.top + mExtents.bottom;
++    
++    if (!force)
+     {
+-	Display		*xdisplay = QX11Info::display();
+-	Screen		*xscreen;
+-	decor_shadow_t  *tmpShadow;
+-	decor_context_t c;
+-
+-	xscreen = ScreenOfDisplay (xdisplay, QX11Info::appScreen ());
+-
+-	/* XXX: we have to create a temporary shadow to get the client
+-	   geometry. libdecoration should be fixed so it's able to just
+-	   fill out a context struct and not necessarily generate a
+-	   shadow for this purpose. */
+-	tmpShadow = decor_shadow_create (xdisplay,
+-					 xscreen,
+-					 1, 1,
+-					 mBorder.left,
+-					 mBorder.right,
+-					 mBorder.top,
+-					 mBorder.bottom,
+-					 mBorder.left,
+-					 mBorder.right,
+-					 mBorder.top,
+-					 mBorder.bottom,
+-					 KWD::Decorator::shadowOptions (),
+-					 &c,
+-					 decor_draw_simple,
+-					 (void *) 0);
+-
+-	decor_shadow_destroy (xdisplay, tmpShadow);
+-
+-	w = c.left_corner_space + 1 + c.right_corner_space;
+-
+-	/* most styles render something useful at least 30 px width */
+-	if (w < 30)
+-	    w = 30;
+-
+-	mGeometry = QRect (50, 50, w,
+-			   c.top_corner_space + 1 + c.bottom_corner_space);
++      if (w == decorWidget ()->width () && h == decorWidget ()->height ())
++        return;
+     }
+-
+-    w = mGeometry.width () + mBorder.left + mBorder.right;
+-    h = mGeometry.height () + mBorder.top + mBorder.bottom;
++    
++    /* reset shape */
++    setMask (QRegion (), 0);
++    
+ 
+     if (mPixmap)
+     {
+@@ -1268,106 +872,24 @@
+ 	mPixmap = None;
+     }
+ 
+-    if (mPicture)
+-    {
+-	XRenderFreePicture (QX11Info::display(), mPicture);
+-	mPicture = 0;
+-    }
+-
+-    if (w != width() || h != height())
+-    {
+-	mPendingConfigure = 1;
+-    }
+-
+-    setGeometry (QRect (mGeometry.x () + ROOT_OFF_X - mBorder.left,
+-			mGeometry.y () + ROOT_OFF_Y - mBorder.top,
+-			w, h));
+-    XMoveResizeWindow (QX11Info::display(), winId(),
+-		       mGeometry.x () + ROOT_OFF_X - mBorder.left,
+-		       mGeometry.y () + ROOT_OFF_Y - mBorder.top,
+-		       w, h);
+-
+-    mSize = QSize (w, h);
+-
+-    if (!mMapped)
+-    {
+-	mPendingMap = 1;
+-
+-	XReparentWindow (QX11Info::display(), winId (), mParentId, 0, 0);
+-
+-	show ();
+-
+-	mMapped = true;
+-
+-	if (mDamageId != winId ())
+-	{
+-	    mDamageId = winId ();
+-	    XDamageCreate (QX11Info::display(), mDamageId,
+-			   XDamageReportRawRectangles);
+-	}
+-    }
+-
+     mDecor->resize (QSize (w, h));
+     mDecor->widget ()->show ();
+     mDecor->widget ()->update ();
+ 
+-    return TRUE;
+-}
+-
+-void
+-KWD::Window::rebindPixmap (void)
+-{
+-    XRenderPictFormat *xformat;
+-
+-    if (mPicture)
+-	XRenderFreePicture (QX11Info::display(), mPicture);
+-
+-    if (mPixmap)
+-	XFreePixmap (QX11Info::display(), mPixmap);
+-
+-    mPixmap = XCompositeNameWindowPixmap (QX11Info::display(), winId ());
+-
+-    xformat = XRenderFindVisualFormat (QX11Info::display(),
+-				       (Visual *) QX11Info::appVisual ());
+-
+-    mPicture = XRenderCreatePicture (QX11Info::display(), mPixmap,
+-				     xformat, 0, NULL);
+-
+-    updateShadow ();
+-}
+-
+-bool
+-KWD::Window::handleMap (void)
+-{
+-    if (!mPendingMap)
+-	return FALSE;
++    mPixmap = XCreatePixmap (QX11Info::display(),
++			     QX11Info::appRootWindow (),
++			     qMax (w, mGeometry.height ()),
++			     mExtents.top + mExtents.bottom + 
++			     mExtents.left + mExtents.right, 32);
+ 
+-    mPendingMap = 0;
++    mPixmapQt = QPixmap::fromX11Pixmap (mPixmap, QPixmap::ExplicitlyShared);
+ 
+-    if (mPendingConfigure)
+-	return FALSE;
++    mPixmapQt.fill (Qt::transparent);
+ 
+-    rebindPixmap ();
+-
+-    return TRUE;
+-}
+-
+-bool
+-KWD::Window::handleConfigure (QSize size)
+-{
+-    if (!mPendingConfigure)
+-	return FALSE;
+-
+-    if (size != mSize)
+-	return FALSE;
+-
+-    mPendingConfigure = 0;
+-    if (mPendingConfigure || mPendingMap)
+-	return FALSE;
+-
+-    rebindPixmap ();
+-
+-    return TRUE;
++    if (mPaintRedirector)
++      mUpdateProperty = true;
++    else
++      updateProperty ();
+ }
+ 
+ void
+@@ -1385,54 +907,54 @@
+     int     size = 0;
+     int     w, h;
+ 
+-    w = mGeometry.width () + mContext.extents.left + mContext.extents.right;
+-    h = mGeometry.height () + mContext.extents.top + mContext.extents.bottom;
++    w = mGeometry.width () + mBorder.left + mBorder.right;
++    h = mGeometry.height () + mBorder.top + mBorder.bottom;
+ 
+     if (blurType != BLUR_TYPE_NONE)
+     {
+ 	QRegion r, shape = QRegion (0, 0, w, h);
+ 
+ 	if (mShapeSet)
+-	    shape = mShape;
++	    shape = mShape.translated (-mPadding.left, -mPadding.top);
+ 
+-	r = QRegion (0, 0, w, mContext.extents.top);
++	r = QRegion (0, 0, w, mBorder.top);
+ 	topQRegion = r.intersect (shape);
+ 	if (!topQRegion.isEmpty ())
+ 	{
+-	    topQRegion.translate (-mContext.extents.left,
+-				  -mContext.extents.top);
++	    topQRegion.translate (-mBorder.left,
++				  -mBorder.top);
+ 	    topRegion = topQRegion.handle ();
+ 	}
+ 
+ 	if (blurType == BLUR_TYPE_ALL)
+ 	{
+-	    r = QRegion (0, h - mContext.extents.bottom,
+-			 w, mContext.extents.bottom);
++	    r = QRegion (0, h - mBorder.bottom,
++			 w, mBorder.bottom);
+ 	    bottomQRegion = r.intersect (shape);
+ 	    if (!bottomQRegion.isEmpty ())
+ 	    {
+-		bottomQRegion.translate (-mContext.extents.left,
+-					 -(h - mContext.extents.bottom));
++		bottomQRegion.translate (-mBorder.left,
++					 -(h - mBorder.bottom));
+ 		bottomRegion = bottomQRegion.handle ();
+ 	    }
+ 
+-	    r = QRegion (0, mContext.extents.top,
+-			 mContext.extents.left, mGeometry.height ());
++	    r = QRegion (0, mBorder.top,
++			 mBorder.left, mGeometry.height ());
+ 	    leftQRegion = r.intersect (shape);
+ 	    if (!leftQRegion.isEmpty ())
+ 	    {
+-		leftQRegion.translate (-mContext.extents.left,
+-				       -mContext.extents.top);
++		leftQRegion.translate (-mBorder.left,
++				       -mBorder.top);
+ 		leftRegion = leftQRegion.handle ();
+ 	    }
+ 
+-	    r = QRegion (w - mContext.extents.right, mContext.extents.top,
+-			 mContext.extents.right, mGeometry.height ());
++	    r = QRegion (w - mBorder.right, mBorder.top,
++			 mBorder.right, mGeometry.height ());
+ 	    rightQRegion = r.intersect (shape);
+ 	    if (!rightQRegion.isEmpty ())
+ 	    {
+-		rightQRegion.translate (-(w - mContext.extents.right),
+-					-mContext.extents.top);
++		rightQRegion.translate (-(w - mBorder.right),
++					-mBorder.top);
+ 		rightRegion = rightQRegion.handle ();
+ 	    }
+ 	}
+@@ -1481,10 +1003,8 @@
+     decor_extents_t maxExtents;
+     long	    data[256];
+     decor_quad_t    quads[N_QUADS_MAX];
+-    int		    nQuad;
+-    int		    lh, rh;
+-    int		    w;
+-    int		    minWidth;
++    int		    nQuad = 0;
++    int             left, right, top, bottom, width, height;
+     unsigned int    saveState;
+ 
+     if (mType == Default)
+@@ -1499,29 +1019,22 @@
+     mState = saveState;
+     mDecor->borders (mBorder.left, mBorder.right, mBorder.top, mBorder.bottom);
+ 
+-    if (mLayout.rotation)
+-	lh = mLayout.left.x2 - mLayout.left.x1;
+-    else
+-	lh = mLayout.left.y2 - mLayout.left.y1;
+-
+-    if (mLayout.rotation)
+-	rh = mLayout.right.x2 - mLayout.right.x1;
+-    else
+-	rh = mLayout.right.y2 - mLayout.right.y1;
+-
+-    w = mLayout.top.x2 - mLayout.top.x1 - mContext.left_space -
+-	mContext.right_space;
++    left = mExtents.left;
++    right = mExtents.right;
++    top = mExtents.top;
++    bottom = mExtents.bottom;
++    width = mGeometry.width ();
++    height = mGeometry.height ();
+ 
+     if (mType == Normal)
+     {
+-	int	topXOffset = w / 2;
++	decor_quad_t *q = quads;
++	int n = 0;
++
++	int	topXOffset = width;
+ 	QWidget *widget = mDecor->widget ();
+ 	int	x;
+ 
+-	x = w - mContext.left_space - mContext.left_corner_space;
+-	if (x > topXOffset)
+-	    topXOffset = x;
+-
+ 	if (widget)
+ 	{
+ 	    const QList<QObject*> children = widget->children ();
+@@ -1535,35 +1048,76 @@
+ 
+ 		child = static_cast <QWidget *> (obj);
+ 
+-		x = child->x () - mBorder.left - 2;
+-		if (x > w / 2 && x < topXOffset)
++		x = child->x () - mExtents.left - 2;
++		if (x > width / 2 && x < topXOffset)
+ 		    topXOffset = x;
+ 	    }
+ 	}
+ 
+-	nQuad = decor_set_lXrXtXbX_window_quads (quads,
+-						 &mContext,
+-						 &mLayout,
+-						 lh / 2,
+-						 rh / 2,
+-						 topXOffset,
+-						 w / 2);
++	// top quads
++	n = decor_set_horz_quad_line (q, left, topXOffset, right, 
++				      width - topXOffset - 1, -top, 0, GRAVITY_NORTH,
++				      left + right + width, -(width - topXOffset - 1),
++				      GRAVITY_EAST, 0, 0);
+ 
+-	updateBlurProperty (topXOffset, w / 2, lh / 2, rh / 2);
++	q += n; nQuad += n;
++	
++	// bottom quads
++	n = decor_set_horz_quad_line (q, left, width / 2, right, (width / 2) - 1, 0,
++				      bottom, GRAVITY_SOUTH, left + right + width,
++				      -((width / 2) - 1), GRAVITY_EAST, 0, top);
+ 
+-	minWidth = mContext.left_corner_space + 1 + mContext.right_corner_space;
++	q += n; nQuad += n;
++
++	// left quads
++	n = decor_set_vert_quad_row (q, 0, height / 2, 0, (height / 2) - 1, -left, 0,
++				     GRAVITY_WEST, height, -((height / 2) - 1),
++				     GRAVITY_SOUTH, 0, top + bottom, 1);
++
++	q += n; nQuad += n;
++
++	// right quads
++	n = decor_set_vert_quad_row (q, 0, height / 2, 0, (height / 2) - 1, 0, right,
++				     GRAVITY_EAST, height, -((height / 2) - 1),
++				     GRAVITY_SOUTH, 0, top + bottom + left, 1);
++
++	q += n; nQuad += n;
++
++	updateBlurProperty (topXOffset, width / 2, height / 2, height / 2);
+     }
+     else
+     {
+-	nQuad = decor_set_lSrStSbS_window_quads (quads, &mContext, &mLayout);
++	decor_quad_t *q = quads;
++	int n = 0;
++	
++	// top
++	n = decor_set_horz_quad_line (q, left, 0, right, 0, -top, 0,
++				      GRAVITY_NORTH, left + right + width,
++				      width / 2, 0, 0, 0);
+ 
+-	minWidth = 1;
+-    }
++	q += n; nQuad += n;
++	
++	// bottom
++	n = decor_set_horz_quad_line (q, left, 0, right, 0, 0, bottom,
++				      GRAVITY_SOUTH, left + right + width,
++				      width / 2, 0, 0, top);
+ 
+-    decor_quads_to_property (data, mTexturePixmap.handle (),
+-			     &mBorder, &maxExtents,
+-			     minWidth, 0,
+-			     quads, nQuad);
++	q += n; nQuad += n;
++	
++	// left
++	n = decor_set_vert_quad_row (q, 0, 0, 0, 0, -left, 0, GRAVITY_WEST,
++				     height, height / 2, 0, 0, top + bottom, 1);
++
++	q += n; nQuad += n;
++
++	// right
++	n = decor_set_vert_quad_row (q, 0, 0, 0, 0, 0, right, GRAVITY_EAST,
++				     height, height / 2, 0, 0, top + bottom + left, 1);
++	
++	q += n; nQuad += n;
++    }
++    decor_quads_to_property (data, mPixmap, &mBorder, &maxExtents,
++			     1, 0, quads, nQuad);
+ 
+     KWD::trapXError ();
+     XChangeProperty (QX11Info::display(), mClientId, atom,
+@@ -1618,17 +1172,13 @@
+     {
+ 	mGeometry = geometry;
+ 
+-	if (resizeDecoration ())
+-	    return;
++	resizeDecoration ();
+     }
+     else if (mGeometry.x ()  != geometry.x () ||
+ 	mGeometry.y () != geometry.y ())
+     {
+ 	mGeometry = geometry;
+     }
+-
+-    move (mGeometry.x () + ROOT_OFF_X - mBorder.left,
+-	  mGeometry.y () + ROOT_OFF_Y - mBorder.top);
+ }
+ 
+ void
+@@ -1637,14 +1187,10 @@
+     delete mDecor;
+     mDecor = 0;
+ 
+-    mMapped   = false;
+-    mShapeSet = false;
++    delete mPaintRedirector;
++    mPaintRedirector = 0;
+ 
+-    if (mShadow)
+-    {
+-	decor_shadow_destroy (QX11Info::display(), mShadow);
+-	mShadow = NULL;
+-    }
++    mShapeSet = false;
+ 
+     createDecoration ();
+ }
+@@ -1652,7 +1198,7 @@
+ Cursor
+ KWD::Window::positionToCursor (QPoint pos)
+ {
+-    switch (mDecor->mousePosition (pos)) {
++    switch (mDecor->mousePosition (pos + QPoint (mPadding.left, mPadding.top))) {
+     case PositionCenter:
+ 	return cursors[1][1].cursor;
+     case PositionLeft:
+@@ -1962,14 +1508,8 @@
+ 	setShade (false);
+ 	break;
+     case Options::MouseOperationsMenu:
+-    {
+-	QPoint mp (0, 0);
+-
+-	if (qme)
+-	    mp = mapToGlobal (qme->pos ());
+-
+-	showWindowMenu (mp);
+-    } break;
++	showWindowMenu (mDecor->widget ()->mapToGlobal (qme->pos ()));
++	break;
+     case Options::MouseMaximize:
+ 	maximize (KDecoration::MaximizeFull);
+ 	break;
+@@ -2042,145 +1582,6 @@
+ }
+ 
+ void
+-KWD::Window::processDamage (void)
+-{
+-    QRegion r1, r2;
+-    int     xOff, yOff, w;
+-    double  alpha;
+-    int     shade_alpha;
+-
+-    if (isActive ())
+-    {
+-	alpha	    = activeDecorationOpacity;
+-	shade_alpha = activeDecorationOpacityShade;
+-    }
+-    else
+-    {
+-	alpha	    = decorationOpacity;
+-	shade_alpha = decorationOpacityShade;
+-    }
+-
+-    if (!mPixmap)
+-	return;
+-
+-    if (mDamage.isEmpty ())
+-	return;
+-
+-    if (mShapeSet)
+-	mDamage = mShape.intersect (mDamage);
+-
+-    w = mGeometry.width () + mContext.extents.left + mContext.extents.right;
+-
+-    xOff = 0;
+-    yOff = 0;
+-
+-    r1 = QRegion (xOff, yOff, w, mContext.extents.top);
+-    r2 = r1.intersect (mDamage);
+-
+-    if (!r2.isEmpty ())
+-    {
+-	r2.translate (-xOff, -yOff);
+-
+-	decor_blend_border_picture (QX11Info::display(),
+-				    &mContext,
+-				    mPicture,
+-				    xOff, xOff,
+-				    mTexturePicture,
+-				    &mLayout,
+-				    BORDER_TOP,
+-				    r2.handle (),
+-				    (unsigned short) (alpha * 0xffff),
+-				    shade_alpha,
+-				    TRUE);
+-    }
+-
+-    xOff = 0;
+-    yOff = mContext.extents.top + mGeometry.height ();
+-
+-    r1 = QRegion (xOff, yOff, w, mContext.extents.bottom);
+-    r2 = r1.intersect (mDamage);
+-
+-    if (!r2.isEmpty ())
+-    {
+-	r2.translate (-xOff, -yOff);
+-
+-	decor_blend_border_picture (QX11Info::display(),
+-				    &mContext,
+-				    mPicture,
+-				    xOff, yOff,
+-				    mTexturePicture,
+-				    &mLayout,
+-				    BORDER_BOTTOM,
+-				    r2.handle (),
+-				    (unsigned short) (alpha * 0xffff),
+-				    shade_alpha,
+-				    TRUE);
+-    }
+-
+-    xOff = 0;
+-    yOff = mContext.extents.top;
+-
+-    r1 = QRegion (xOff, yOff, mContext.extents.left, mGeometry.height ());
+-    r2 = r1.intersect (mDamage);
+-
+-    if (!r2.isEmpty ())
+-    {
+-	r2.translate (-xOff, -yOff);
+-
+-	decor_blend_border_picture (QX11Info::display(),
+-				    &mContext,
+-				    mPicture,
+-				    xOff, yOff,
+-				    mTexturePicture,
+-				    &mLayout,
+-				    BORDER_LEFT,
+-				    r2.handle (),
+-				    (unsigned short) (alpha * 0xffff),
+-				    shade_alpha,
+-				    TRUE);
+-    }
+-
+-    xOff = mContext.extents.left + mGeometry.width ();
+-    yOff = mContext.extents.top;
+-
+-    r1 = QRegion (xOff, yOff, mContext.extents.right, mGeometry.height ());
+-    r2 = r1.intersect (mDamage);
+-
+-    if (!r2.isEmpty ())
+-    {
+-	r2.translate (-xOff, -yOff);
+-
+-	decor_blend_border_picture (QX11Info::display(),
+-				    &mContext,
+-				    mPicture,
+-				    xOff, yOff,
+-				    mTexturePicture,
+-				    &mLayout,
+-				    BORDER_RIGHT,
+-				    r2.handle (),
+-				    (unsigned short) (alpha * 0xffff),
+-				    shade_alpha,
+-				    TRUE);
+-    }
+-
+-    mDamage = QRegion ();
+-
+-    XRenderComposite (QX11Info::display(),
+-		      PictOpSrc,
+-		      mTexturePicture,
+-		      None,
+-		      mDecorationPicture,
+-		      0, 0,
+-		      0, 0,
+-		      0, 0,
+-		      mTexturePixmap.width (),
+-		      mTexturePixmap.height ());
+-
+-    if (mUpdateProperty)
+-	updateProperty ();
+-}
+-
+-void
+ KWD::Window::showKillProcessDialog (Time timestamp)
+ {
+     KWindowInfo kWinInfo =
+@@ -2223,3 +1624,128 @@
+ 	mProcessKiller.terminate ();
+     }
+ }
++
++void
++KWD::Window::decorRepaintPending ()
++{
++    if (!mPaintRedirector || !mPixmap)
++        return;
++
++    QRegion reg = mPaintRedirector->pendingRegion();
++    if (reg.isEmpty())
++        return;
++
++    QRect bBox = reg.boundingRect();
++     
++    if (mShapeSet)
++      reg &= mShape;
++    
++    int l = mExtents.left;
++    int r = mExtents.right;
++    int t = mExtents.top;
++    int b = mExtents.bottom;
++    int w = mGeometry.width ();
++    int h = mGeometry.height ();
++    
++    QRect top = QRect (0, 0, w + l + r, t);
++    QRect bottom = QRect (0, t + h, w + l + r, b);
++    QRect left = QRect (0, t, l, h);
++    QRect right = QRect (l + w, t, r, h);
++        
++    QRegion rtop = reg & top;
++    QRegion rbottom = reg & bottom;
++    QRegion rleft = reg & left;
++    QRegion rright = reg & right;
++
++    QPixmap p = mPaintRedirector->performPendingPaint();
++
++    QPainter pt (&mPixmapQt);
++    pt.setCompositionMode( QPainter::CompositionMode_Source );
++    pt.setClipRegion( reg );
++
++    QRect bb, pb;
++
++    // Top
++    if (!rtop.isEmpty ())
++    {
++	bb = rtop.boundingRect();
++	pb = bb;
++	pb.moveTo (bb.topLeft () - bBox.topLeft ());
++	pt.resetTransform ();
++	pt.setClipRegion( reg );
++	pt.drawPixmap( bb.topLeft(), p, pb );
++    }
++
++    // Bottom
++    if (!rbottom.isEmpty ())
++    {
++	bb = rbottom.boundingRect();
++	pb = bb;
++	pb.moveTo (bb.topLeft () - bBox.topLeft ());
++	pt.resetTransform ();
++	pt.translate(0, -h);
++	pt.setClipRegion( reg );
++	pt.drawPixmap( bb.topLeft(), p, pb );
++    }
++
++    // Left
++    if (!rleft.isEmpty ())
++    {
++	bb = rleft.boundingRect();
++	pb = bb;
++	pb.moveTo (bb.topLeft () - bBox.topLeft ());
++	pt.resetTransform ();
++	pt.translate(0, t + b);
++	pt.rotate (90);
++	pt.scale (1.0, -1.0);
++	pt.translate(0, -t);
++	pt.setClipRegion( reg );
++	pt.drawPixmap( bb.topLeft(), p, pb );
++    }
++
++    // Right
++    if (!rright.isEmpty ())
++    {
++	bb = rright.boundingRect();
++	pb = bb;
++	pb.moveTo (bb.topLeft () - bBox.topLeft ());
++	pt.resetTransform ();
++	pt.translate(0, t + b + l);
++	pt.rotate (90);
++	pt.scale (1.0, -1.0);
++	pt.translate(- (l + w), -t);
++	pt.setClipRegion( reg );
++	pt.drawPixmap( bb.topLeft(), p, pb );
++    }
++
++    if (mUpdateProperty)
++	updateProperty ();
++}
++
++QWidget *
++KWD::Window::decorWidget (void) const
++{
++    if (!mDecor)
++	return 0;
++    return mDecor->widget ();
++}
++
++QWidget *
++KWD::Window::childAt (int x, int y) const
++{
++    if (!mDecor)
++	return 0;
++
++    QWidget *child = mDecor->widget ()->childAt (x + mPadding.left, y + mPadding.top);
++    return (child)? child : decorWidget ();
++}
++
++QPoint 
++KWD::Window::mapToChildAt (QPoint p) const
++{
++    if (!mDecor)
++	return p;
++    if (childAt (p.x (), p.y ()) == decorWidget ())
++	return p + QPoint (mPadding.left, mPadding.right);
++    return childAt (p.x (), p.y ())->mapFrom (decorWidget (), p + QPoint (mPadding.left, mPadding.right));
++}
+diff -Nur compiz-0.7.8-kde42/kde/window-decorator-kde4/window.h compiz-0.7.8-kde43/kde/window-decorator-kde4/window.h
+--- compiz-0.7.8-kde42/kde/window-decorator-kde4/window.h	2010-02-13 15:38:05.000000000 +0100
++++ compiz-0.7.8-kde43/kde/window-decorator-kde4/window.h	2010-02-13 18:04:27.000000000 +0100
+@@ -43,9 +43,14 @@
+ class KActionCollection;
+ class QMenu;
+ 
++namespace KWin
++{
++    class PaintRedirector;
++}
++
+ namespace KWD
+ {
+-class Window:public QWidget, public KDecorationBridgeUnstable {
++class Window: public QObject, public KDecorationBridgeUnstable {
+     Q_OBJECT public:
+ 
+ 	enum Type
+@@ -105,44 +110,38 @@
+ 	virtual void grabXServer (bool grab);
+ 
+ 	/* unstable API */
+-	virtual void repaintShadow ();
+ 	virtual bool compositingActive () const;
+-	virtual bool shadowsActive () const;
+-	virtual double opacity () const;
+ 
+ 	void handleActiveChange (void);
+ 	void updateFrame (WId frame);
+ 	void updateWindowGeometry (void);
+ 	void updateCursor (QPoint pos);
+ 	void updateSelected (WId selected);
++	
+ 	WId frameId (void) const
+ 	{
+ 	    return mFrame;
+ 	}
++	
+ 	KDecoration *decoration (void) const
+ 	{
+ 	    return mDecor;
+ 	}
++	
++	QWidget *decorWidget (void) const;
++	QWidget *childAt (int x, int y) const;
++	QPoint mapToChildAt (QPoint p) const;
++	
+ 	QWidget *activeChild (void) const
+ 	{
+ 	    return mActiveChild;
+ 	}
++	
+ 	void setActiveChild (QWidget * child)
+ 	{
+ 	    mActiveChild = child;
+ 	}
+-	QRegion *getShape (void)
+-	{
+-	    if (mShapeSet)
+-		return &mShape;
+-
+-	    return NULL;
+-	}
+-	void getShapeInfo (bool *horz, bool *vert)
+-	{
+-	    *horz = mUniqueHorzShape;
+-	    *vert = mUniqueVertShape;
+-	}
++	
+ 	void moveWindow (QMouseEvent *qme);
+ 	void reloadDecoration (void);
+ 	void updateState (void);
+@@ -157,21 +156,7 @@
+ 	{
+ 	    return mPixmap;
+ 	}
+-	void addDamageRect (int x, int y, int w, int h)
+-	{
+-	    mDamage += QRegion (x, y, w, h);
+-	}
+-	bool handleMap (void);
+-	bool handleConfigure (QSize size);
+-	void processDamage (void);
+-	decor_context_t *context (void)
+-	{
+-	    return &mContext;
+-	}
+-	decor_shadow_t *shadow (void)
+-	{
+-	    return mShadow;
+-	}
++	
+ 	decor_extents_t *border (void)
+ 	{
+ 	    return &mBorder;
+@@ -194,7 +179,7 @@
+ 
+     private:
+ 	void createDecoration (void);
+-	bool resizeDecoration (bool force = false);
++	void resizeDecoration (bool force = false);
+ 	void updateBlurProperty (int topOffset,
+ 				 int bottomOffset,
+ 				 int leftOffset,
+@@ -205,16 +190,16 @@
+ 				  QMouseEvent		     *qme);
+ 	NET::Direction positionToDirection (int pos);
+ 	Cursor positionToCursor (QPoint pos);
+-	void rebindPixmap (void);
+ 
+ 
+     private slots:
+-	void updateShadow (void);
+ 	void handlePopupActivated (QAction *action);
+ 	void handleOpacityPopupActivated (QAction *action);
+ 	void handleDesktopPopupActivated (QAction *action);
+ 	void handlePopupAboutToShow (void);
+ 
++	void decorRepaintPending ();
++
+     private:
+ 	Type mType;
+ 	WId mParentId;
+@@ -226,23 +211,14 @@
+ 	QPixmap mIcon;
+ 	QPixmap mMiniIcon;
+ 	decor_extents_t mBorder;
++	decor_extents_t mPadding;
++	decor_extents_t mExtents;
+ 	unsigned short mOpacity;
+ 	KDecoration *mDecor;
+-	QPixmap mTexturePixmap;
+-	QPixmap mTexturePixmapBuffer;
+ 	Pixmap mPixmap;
+-	QRegion mDamage;
+-	WId mDamageId;
+-	decor_layout_t mLayout;
+-	decor_context_t mContext;
+-	decor_shadow_t *mShadow;
+-	Picture mPicture;
+-	Picture mTexturePicture;
+-	Picture mDecorationPicture;
++	QPixmap mPixmapQt;
+ 	bool mUpdateProperty;
+ 	bool mShapeSet;
+-	bool mUniqueHorzShape;
+-	bool mUniqueVertShape;
+ 	QRegion mShape;
+ 	QWidget *mActiveChild;
+ 	bool mSupportTakeFocus;
+@@ -252,10 +228,7 @@
+ 	QMenu *mOpacityMenu;
+ 	QMenu *mDesktopMenu;
+ 	unsigned long mState;
+-	bool mMapped;
+-	int mPendingMap;
+-	int mPendingConfigure;
+-	QSize mSize;
++
+ 	QProcess mProcessKiller;
+ 	KActionCollection mKeys;
+ 	bool mFakeRelease;
+@@ -271,6 +244,8 @@
+         QAction *mMinimizeOpAction;
+         QAction *mCloseOpAction;
+ 	QAction *mDesktopOpAction;
++
++	KWin::PaintRedirector *mPaintRedirector;
+     };
+ }
+ 

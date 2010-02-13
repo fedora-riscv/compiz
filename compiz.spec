@@ -14,7 +14,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.7.8
-Release:        19%{?dist}
+Release:        20%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -88,6 +88,18 @@ Patch127: compiz-0.7.8-kde42-krunner.patch
 
 # backport to fix RH #484056
 Patch128: compiz-0.7.8-gwd-pixmap-fix.patch
+
+# fix KDE4 window decorator for KDE >= 4.3, fixes Oxygen/Ozone windeco (#519299)
+# backport of upstream commit c49a8742241ba09739d0e07efed068f9b3d786ff
+Patch140: compiz-0.7.8-kde43.patch
+
+# fix initial size issues with the KDE4 window decorator
+# backport of upstream commit e90ea9aa2c2092ad61e77f6681ec71bed603f661
+Patch141: compiz-0.7.8-kde4-initialsize.patch
+
+# fix KDE4 window decorator to build and run with KDE 4.4 (#564571)
+# backport of upstream commit ef1a3e64d35d7a0f222de79006e17ff6609ce2c7
+Patch142: compiz-0.7.8-kde44.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -177,6 +189,11 @@ touch configure
 %patch127 -p1 -b .krunner
 %define _default_patch_fuzz 2
 %patch128 -p1 -b .gwd-pixmap
+%define _default_patch_fuzz 0
+
+%patch140 -p1 -b .kde43
+%patch141 -p1 -b .kde4-initialsize
+%patch142 -p1 -b .kde44
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -388,6 +405,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.7.8-20
+- backport patch to fix Oxygen/Ozone window decoration with KDE >= 4.3 (#519299)
+- backport patch to fix the initial size issues with the KDE 4 window decorator
+- backport patch to fix kde4-window-decorator build/run for KDE 4.4 (#564571)
+
 * Fri Jul 10 2009 Adel Gadllah <adel.gadllah@gmail.com> - 0.7.8-19
 - Replace compiz-0.7.8-pin-initial-plugins with a fixed up one
   by Philippe Troin <phil@fifi.org> (RH #473896)

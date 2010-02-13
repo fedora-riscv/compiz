@@ -187,9 +187,7 @@ touch configure
 %patch125 -p1 -b .terminal
 %patch126 -p1 -b .kde-crash
 %patch127 -p1 -b .krunner
-%define _default_patch_fuzz 2
 %patch128 -p1 -b .gwd-pixmap
-%define _default_patch_fuzz 0
 
 %patch140 -p1 -b .kde43
 %patch141 -p1 -b .kde4-initialsize

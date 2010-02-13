@@ -1,0 +1,12 @@
+diff -upNr compiz-0.8.4.orign/src/Makefile.am compiz-0.8.4/src/Makefile.am
+--- compiz-0.8.4.orign/src/Makefile.am	2009-09-30 14:46:45.000000000 +0200
++++ compiz-0.8.4/src/Makefile.am	2010-02-13 20:51:38.164078071 +0100
+@@ -9,7 +9,7 @@ INCLUDES =			     \
+ 
+ bin_PROGRAMS = compiz
+ 
+-compiz_LDADD = @COMPIZ_LIBS@ @GL_LIBS@ -lm
++compiz_LDADD = @COMPIZ_LIBS@ @GL_LIBS@ -lm -lX11 -lXext -ldl
+ compiz_LDFLAGS = -export-dynamic -pthread
+ compiz_SOURCES =   \
+ 	main.c	   \

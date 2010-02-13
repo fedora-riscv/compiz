@@ -6,7 +6,7 @@ diff -upNr compiz-0.8.4.orign/configure.ac compiz-0.8.4/configure.ac
  
      KDE4_CFLAGS="-I$kde4incs"
 -    KDE4_LIBS="-L$kde4libs -lkdecore -lkdecorations -lplasma"
-+    KDE4_LIBS="-L$kde4libs -lkdecore -lkdecorations -lplasma -lX11 -lXext -ldl"
++    KDE4_LIBS="-L$kde4libs -lkdecore -lkdecorations -lplasma -lX11 -lXext -ldl -lkdeui"
  
      QT4_MOC=`pkg-config QtGui --variable=moc_location`
      QDBUSXML2CPP=`pkg-config QtGui --variable=exec_prefix`"/bin/qdbusxml2cpp"

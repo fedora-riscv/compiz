@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.4
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -308,6 +308,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Feb 21 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.4-6
+- Use ccp if present (RH #532229)
+
 * Sat Feb 13 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.4-5
 - Fix FTBFS (RH #555429)
 

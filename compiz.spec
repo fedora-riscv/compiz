@@ -12,8 +12,8 @@ Name:           compiz
 URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.4
-Release:        6%{?dist}
+Version:        0.8.6
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -54,12 +54,9 @@ Obsoletes: beryl-core
 Patch103: composite-cube-logo.patch
 Patch105: fedora-logo.patch
 Patch106: redhat-logo.patch
-Patch107: compiz-0.8.4-wall.patch
+Patch107: compiz-0.8.6-wall.patch
 #Patch110: scale-key.patch
-
-Patch127: unknown-key.patch
-Patch128: kde44-api.patch
-Patch129: compiz-0.8.4-linkfix.patch
+Patch111: compiz-0.8.6-unloadpluginfix.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -125,11 +122,7 @@ and other kde integration related stuff.
 %endif
 %patch107 -p1 -b .wall
 #%patch110 -p1 -b .scale-key
-
-%patch127 -p1 -b .unknown-key
-# http://bugs.opencompositing.org/show_bug.cgi?id=1249
-%patch128 -p1 -b .kde44-api
-%patch129 -p1 -b .linkfix
+%patch111 -p1 -b .unloadfix
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -308,6 +301,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 30 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-1
+- Update to 0.8.6
+- Drop upstreamed patches
+- Forward port crashfix from F-12
+
 * Sun Feb 21 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.4-6
 - Use ccp if present (RH #532229)
 

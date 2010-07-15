@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -57,6 +57,7 @@ Patch106: redhat-logo.patch
 Patch107: compiz-0.8.6-wall.patch
 #Patch110: scale-key.patch
 Patch111: compiz-0.8.6-unloadpluginfix.patch
+Patch112: no-more-gnome-wm-settings.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -123,6 +124,7 @@ and other kde integration related stuff.
 %patch107 -p1 -b .wall
 #%patch110 -p1 -b .scale-key
 %patch111 -p1 -b .unloadfix
+%patch112 -p1 -b .gnome-wm-settings
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -270,8 +272,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_bindir}/compiz-gtk
 %{_bindir}/gtk-window-decorator
-%{_libdir}/window-manager-settings/libcompiz.so
-%{_datadir}/gnome/wm-properties/compiz-wm.desktop
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
 %{_datadir}/applications/compiz-gtk.desktop
@@ -301,6 +301,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 15 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-2
+- gnome-window-manager-settings is no more ...
+
 * Tue Mar 30 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-1
 - Update to 0.8.6
 - Drop upstreamed patches

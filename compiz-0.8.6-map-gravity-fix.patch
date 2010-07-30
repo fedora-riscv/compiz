@@ -1,0 +1,44 @@
+From a86c461684f122fd286884c4ff28f6ea673fe669 Mon Sep 17 00:00:00 2001
+From: Danny Baumann <dannybaumann@web.de>
+Date: Tue, 15 Jun 2010 05:47:05 +0000
+Subject: Only reflect the decoration size in MapRequest gravity adjustment, not
+
+the whole window size.
+---
+diff --git a/src/event.c b/src/event.c
+index 8600b5b..febb22d 100644
+--- a/src/event.c
++++ b/src/event.c
+@@ -2042,11 +2042,11 @@ handleEvent (CompDisplay *d,
+ 		    XWindowChanges xwc;
+ 		    unsigned int   xwcm, source;
+ 
+-		    /* adjust for gravity */
++		    /* adjust for gravity, but only for frame size */
+ 		    xwc.x      = w->serverX;
+ 		    xwc.y      = w->serverY;
+-		    xwc.width  = w->serverWidth;
+-		    xwc.height = w->serverHeight;
++		    xwc.width  = 0;
++		    xwc.height = 0;
+ 
+ 		    xwcm = adjustConfigureRequestForGravity (w, &xwc,
+ 							     CWX | CWY,
+diff --git a/src/window.c b/src/window.c
+index 9974df2..60b47b9 100644
+--- a/src/window.c
++++ b/src/window.c
+@@ -2568,8 +2568,8 @@ unmapWindow (CompWindow *w)
+ 	/* revert gravity adjustment made at MapRequest time */
+ 	xwc.x      = w->serverX;
+ 	xwc.y      = w->serverY;
+-	xwc.width  = w->serverWidth;
+-	xwc.height = w->serverHeight;
++	xwc.width  = 0;
++	xwc.height = 0;
+ 
+ 	xwcm = adjustConfigureRequestForGravity (w, &xwc,
+ 						 CWX | CWY,
+--
+cgit v0.8.3.1-30-gff3a
+

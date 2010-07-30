@@ -59,7 +59,7 @@ Patch107: compiz-0.8.6-wall.patch
 Patch111: compiz-0.8.6-unloadpluginfix.patch
 Patch112: no-more-gnome-wm-settings.patch
 # Some selected post 0.8.6 upstream backports
-Patch113: compiz-0.8.6-map-gravity-fix.patch
+Patch113: compiz-0.8.6-icon-size.patch
 Patch114: compiz-0.8.6-map-gravity-fix.patch
 Patch115: compiz-0.8.6-focus-denied-stacking-fix.patch
 

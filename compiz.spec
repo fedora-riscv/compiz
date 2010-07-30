@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -58,6 +58,10 @@ Patch107: compiz-0.8.6-wall.patch
 #Patch110: scale-key.patch
 Patch111: compiz-0.8.6-unloadpluginfix.patch
 Patch112: no-more-gnome-wm-settings.patch
+# Some selected post 0.8.6 upstream backports
+Patch113: compiz-0.8.6-map-gravity-fix.patch
+Patch114: compiz-0.8.6-map-gravity-fix.patch
+Patch115: compiz-0.8.6-focus-denied-stacking-fix.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -125,6 +129,9 @@ and other kde integration related stuff.
 #%patch110 -p1 -b .scale-key
 %patch111 -p1 -b .unloadfix
 %patch112 -p1 -b .gnome-wm-settings
+%patch113 -p1 -b .icon-size
+%patch114 -p1 -b .map-request
+%patch115 -p1 -b .focus-denied-stacking
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -301,6 +308,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 30 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-3
+- Some backports from upstream
+
 * Thu Jul 15 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-2
 - gnome-window-manager-settings is no more ...
 

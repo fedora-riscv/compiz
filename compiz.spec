@@ -1,5 +1,3 @@
-%define 	kde_dialogversion 0.0.6
-
 %define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall
 
 %define		gnome_plugins	annotate gconf glib svg gnomecompat
@@ -13,7 +11,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.6
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -43,9 +41,8 @@ BuildRequires:	cairo-devel
 BuildRequires:	libtool
 
 Source0:	http://releases.compiz-fusion.org/%{version}/%{name}-%{version}.tar.bz2
-Source1:	kde-desktop-effects-%{kde_dialogversion}.tar.bz2
-Source2:        compiz-gtk
-Source3:        compiz-gtk.desktop
+Source1:        compiz-gtk
+Source2:        compiz-gtk.desktop
 
 # Make sure that former beryl users still have bling
 Obsoletes: beryl-core
@@ -111,12 +108,11 @@ Requires: compiz-fusion = %{version}
 Obsoletes: beryl-kde
 
 %description kde
-The compiz-kde package contains kde-window-decorator,
+The compiz-kde package contains kde4-window-decorator,
 and other kde integration related stuff.
 
 
 %prep
-%setup -q -T -b1 -n kde-desktop-effects-%{kde_dialogversion}
 %setup -q
 
 %patch103 -p1 -b .composite-cube-logo
@@ -169,29 +165,11 @@ export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 
-install %SOURCE2 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE3
-
-# kde-desktop-effects
-echo INSTALLING KDE DESKTOP EFFECTS
-pushd ../kde-desktop-effects-%{kde_dialogversion}
-cp -a kde-desktop-effects.sh $RPM_BUILD_ROOT/%{_bindir}/
-mkdir -p $RPM_BUILD_ROOT/%{_docdir}/compiz-kde-%{version}
-cp -a ChangeLog COPYING README $RPM_BUILD_ROOT/%{_docdir}/compiz-kde-%{version}
-
-iconlist="16 24 32 36 48 96"
-for i in $iconlist; do
- mkdir -p $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/$i\x$i/apps/
- cp -p desktop-effects$i.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/$i\x$i/apps/kde-desktop-effects.png
-done
-
-desktop-file-install --vendor=""              \
---dir=%{buildroot}%{_datadir}/applications/kde \
-kde-desktop-effects.desktop
-popd
+  %SOURCE2
 
 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
@@ -290,9 +268,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_bindir}/kde4-window-decorator
 %{_docdir}/compiz-kde-%{version}
-%{_bindir}/kde-desktop-effects.sh
-%{_datadir}/applications/kde/kde-desktop-effects.desktop
-%{_datadir}/icons/hicolor/*/apps/kde-desktop-effects.png
 %{_datadir}/compiz/kconfig.xml
 
 %files devel
@@ -308,6 +283,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 06 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.8.6-4
+- Remove kde-desktop-effects.sh ("Compiz Switcher"), use System Settings instead
+
 * Fri Jul 30 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-3
 - Some backports from upstream
 

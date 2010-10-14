@@ -65,6 +65,9 @@ Patch115: compiz-0.8.6-focus-denied-stacking-fix.patch
 #http://gitweb.compiz.org/?p=compiz/core;a=commit;h=5ea5e2130c56d405fcccd63932918fc49ca1f1b9
 Patch116: gdk_display_deprecated.patch
 
+#build patch
+Patch120: dbus_build.patch
+
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
 managers for the X Window System. The integration allows it to perform
@@ -134,6 +137,7 @@ and other kde integration related stuff.
 %patch114 -p1 -b .map-request
 %patch115 -p1 -b .focus-denied-stacking
 %patch116 -p1 -b .gdk_display_deprecated
+%patch120 -p1 -b .dbus_build
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -149,7 +153,7 @@ libtoolize
 aclocal
 autoconf
 automake
-%configure GTK_WINDOW_DECORATOR_CFLAGS=` -I/usr/include/dbus-1.0` \
+%configure  \
 	--enable-gconf 			\
 	--enable-dbus 				\
 	--enable-place 			\
@@ -292,7 +296,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Oct 14 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-5
 - Don't rely on deprecated gdk symbol gdk_display.
 - Add Br libxslt-devel and dbus-devel
-- add flag to configure command so gtk decorator builds 
+- add patch to fix dbus build error 
 
 * Wed Oct 06 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.8.6-4
 - Remove kde-desktop-effects.sh ("Compiz Switcher"), use System Settings instead

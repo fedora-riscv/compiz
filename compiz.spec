@@ -11,7 +11,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.6
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -59,6 +59,9 @@ Patch112: no-more-gnome-wm-settings.patch
 Patch113: compiz-0.8.6-icon-size.patch
 Patch114: compiz-0.8.6-map-gravity-fix.patch
 Patch115: compiz-0.8.6-focus-denied-stacking-fix.patch
+#upstream patches
+#http://gitweb.compiz.org/?p=compiz/core;a=commit;h=5ea5e2130c56d405fcccd63932918fc49ca1f1b9
+Patch116: gdk_display_deprecated.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -128,6 +131,7 @@ and other kde integration related stuff.
 %patch113 -p1 -b .icon-size
 %patch114 -p1 -b .map-request
 %patch115 -p1 -b .focus-denied-stacking
+%patch116 -p1 -b .gdk_display_deprecated
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -283,6 +287,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 14 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-5
+- Don't rely on deprecated gdk symbol gdk_display.
+
 * Wed Oct 06 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.8.6-4
 - Remove kde-desktop-effects.sh ("Compiz Switcher"), use System Settings instead
 

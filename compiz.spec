@@ -40,6 +40,7 @@ BuildRequires:  fuse-devel
 BuildRequires:	cairo-devel
 BuildRequires:	libtool
 BuildRequires:  libxslt-devel
+BuildRequires:  dbus-devel
 
 Source0:	http://releases.compiz-fusion.org/%{version}/%{name}-%{version}.tar.bz2
 Source1:        compiz-gtk
@@ -148,7 +149,7 @@ libtoolize
 aclocal
 autoconf
 automake
-%configure 					\
+%configure GTK_WINDOW_DECORATOR_CFLAGS=` -I/usr/include/dbus-1.0` \
 	--enable-gconf 			\
 	--enable-dbus 				\
 	--enable-place 			\
@@ -290,7 +291,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Oct 14 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-5
 - Don't rely on deprecated gdk symbol gdk_display.
-- Add Br libxslt-devel
+- Add Br libxslt-devel and dbus-devel
+- add flag to configure command so gtk decorator builds 
 
 * Wed Oct 06 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 0.8.6-4
 - Remove kde-desktop-effects.sh ("Compiz Switcher"), use System Settings instead

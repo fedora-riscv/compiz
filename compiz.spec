@@ -11,7 +11,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.6
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -63,6 +63,8 @@ Patch115: compiz-0.8.6-focus-denied-stacking-fix.patch
 #upstream patches
 #http://gitweb.compiz.org/?p=compiz/core;a=commit;h=5ea5e2130c56d405fcccd63932918fc49ca1f1b9
 Patch116: gdk_display_deprecated.patch
+# 0f95c41a0aa175ddf7947ba18b01f746c95594a9
+Patch117: compiz-0.8.6-pixmap-size-calculation.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -288,6 +290,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 17 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-6
+- Backport fix for corruption bug (RH #614542)
+
 * Thu Oct 14 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-5
 - Don't rely on deprecated gdk symbol gdk_display.
 - Add Br libxslt-devel

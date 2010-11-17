@@ -135,6 +135,7 @@ and other kde integration related stuff.
 %patch114 -p1 -b .map-request
 %patch115 -p1 -b .focus-denied-stacking
 %patch116 -p1 -b .gdk_display_deprecated
+%patch117 -p1 -b .pixmap-calculation
 
 %build
 rm -rf $RPM_BUILD_ROOT

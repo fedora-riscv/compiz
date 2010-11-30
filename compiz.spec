@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.6
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -67,6 +67,7 @@ Patch116: compiz-0.8.6-pixmap-size-calculation.patch
 #upstream patches
 #http://gitweb.compiz.org/?p=compiz/core;a=commit;h=5ea5e2130c56d405fcccd63932918fc49ca1f1b9
 Patch117: gdk_display_deprecated.patch
+Patch118: gdk_drawable_deprecated.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -139,6 +140,7 @@ and other kde integration related stuff.
 %patch115 -p1 -b .focus-denied-stacking
 %patch116 -p1 -b .pixmap-calculation
 %patch117 -p1 -b .gdk_display_deprecated
+%patch118 -p1 -b .gdk_drawable_deprecated
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -315,6 +317,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 30 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-6
+- add more upstream gdk fixes
+
 * Tue Nov 30 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-5
 - Don't rely on deprecated gdk symbol gdk_display.
 

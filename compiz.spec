@@ -13,7 +13,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.6
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -64,6 +64,9 @@ Patch114: compiz-0.8.6-map-gravity-fix.patch
 Patch115: compiz-0.8.6-focus-denied-stacking-fix.patch
 # 0f95c41a0aa175ddf7947ba18b01f746c95594a9
 Patch116: compiz-0.8.6-pixmap-size-calculation.patch
+#upstream patches
+#http://gitweb.compiz.org/?p=compiz/core;a=commit;h=5ea5e2130c56d405fcccd63932918fc49ca1f1b9
+Patch117: gdk_display_deprecated.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -135,6 +138,7 @@ and other kde integration related stuff.
 %patch114 -p1 -b .map-request
 %patch115 -p1 -b .focus-denied-stacking
 %patch116 -p1 -b .pixmap-calculation
+%patch117 -p1 -b .gdk_display_deprecated
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -311,6 +315,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 30 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-5
+- Don't rely on deprecated gdk symbol gdk_display.
+
 * Wed Nov 17 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-4
 - Backport upstream fix for corruption bug (RH #614542)
 

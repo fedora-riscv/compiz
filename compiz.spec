@@ -61,10 +61,12 @@ Patch113: compiz-0.8.6-icon-size.patch
 Patch114: compiz-0.8.6-map-gravity-fix.patch
 Patch115: compiz-0.8.6-focus-denied-stacking-fix.patch
 #upstream patches
-#http://gitweb.compiz.org/?p=compiz/core;a=commit;h=5ea5e2130c56d405fcccd63932918fc49ca1f1b9
+# 5ea5e2130c56d405fcccd63932918fc49ca1f1b9
 Patch116: gdk_display_deprecated.patch
 # 0f95c41a0aa175ddf7947ba18b01f746c95594a9
 Patch117: compiz-0.8.6-pixmap-size-calculation.patch
+# 777e5ecdb197105f770e7bcedd83eb54c53457f3
+Patch118: gdk_drawable_deprecated.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -136,6 +138,7 @@ and other kde integration related stuff.
 %patch115 -p1 -b .focus-denied-stacking
 %patch116 -p1 -b .gdk_display_deprecated
 %patch117 -p1 -b .pixmap-calculation
+%patch118 -p1 -b .gdk_drawable_deprecated
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -275,7 +278,6 @@ rm -rf $RPM_BUILD_ROOT
 %files kde
 %defattr(-, root, root)
 %{_bindir}/kde4-window-decorator
-%{_docdir}/compiz-kde-%{version}
 %{_datadir}/compiz/kconfig.xml
 
 %files devel
@@ -291,6 +293,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 30 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-7
+- add more upstream gdk fixes
+
 * Wed Nov 17 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-6
 - Backport fix for corruption bug (RH #614542)
 

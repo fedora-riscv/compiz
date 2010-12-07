@@ -11,7 +11,7 @@ URL:            http://www.go-compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.6
-Release:        7%{?dist}
+Release:        8%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -40,6 +40,7 @@ BuildRequires:  fuse-devel
 BuildRequires:	cairo-devel
 BuildRequires:	libtool
 BuildRequires:  libxslt-devel
+BuildRequires:  dbus-devel
 
 Source0:	http://releases.compiz-fusion.org/%{version}/%{name}-%{version}.tar.bz2
 Source1:        compiz-gtk
@@ -293,6 +294,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 08 2010 Adel Gadllah <adel.gadllah@gmail.com> - 0.8.6-8
+- BR dbus-devel
+
 * Tue Nov 30 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-7
 - add more upstream gdk fixes
 

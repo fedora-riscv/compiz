@@ -1,17 +1,23 @@
-%define		core_plugins	blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall
+%global	core_plugins	blur clone commands compiztoolbox composite copytex cube dbus decor fade imgpng imgsvg ini inotify move obs opengl place regex resize rotate scale screenshot switcher water wobbly zoom
 
-%define		gnome_plugins	annotate gconf glib svg gnomecompat
+%global	gtk_plugins	annotate gnomecompat
 
-# List of plugins passed to ./configure.  The order is important
+%global	obsolete_plugins	decoration fs gconf glib kconfig minimize png svg video
 
-%define		plugins		core,glib,gconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall,obs
+%global	plugins_compiz	%(echo %{core_plugins} %{gtk_plugins} | sed -e 's/\\</compiz-/g')
+%global	obsolete_plugins_compiz	%(echo %{obsolete_plugins} | sed -e 's/\\</compiz-/g')
+
+# the plugins to enable by default
+# based on intuition and some cribbing from Ubuntu. don't put imgpng
+# in here, it will cause pain
+%global	default_plugins core composite opengl copytex compiztoolbox decor scale resize gnomecompat staticswitcher place move mousepoll vpswitch regex snap session wall workarounds ezoom
 
 Name:           compiz
-URL:            http://www.go-compiz.org
+URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.6
-Release:        9%{?dist}
+Version:        0.9.2.2
+Release:        0.9.git619abc05b1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -21,14 +27,16 @@ ExcludeArch:   s390 s390x
 
 Requires:	system-logos
 Requires: 	glx-utils
-Requires(post): desktop-file-utils
 
 BuildRequires:  libX11-devel, libdrm-devel, libwnck-devel
 BuildRequires:  libXfixes-devel, libXrandr-devel, libXrender-devel
 BuildRequires:  libXcomposite-devel, libXdamage-devel, libXext-devel
 BuildRequires:  libXt-devel, libXmu-devel, libICE-devel, libSM-devel
-BuildRequires:  gnome-desktop-devel, control-center-devel, GConf2-devel
+BuildRequires:  gnome-desktop-devel
+BuildRequires:  control-center
+BuildRequires:  GConf2-devel
 BuildRequires:  desktop-file-utils
+BuildRequires:  cmake
 BuildRequires:  intltool
 BuildRequires:  gettext
 BuildRequires:  dbus-devel
@@ -41,33 +49,33 @@ BuildRequires:	cairo-devel
 BuildRequires:	libtool
 BuildRequires:  libxslt-devel
 BuildRequires:  dbus-glib-devel
+BuildRequires:  boost-devel
+BuildRequires:  glibmm24-devel
 
-Source0:	http://releases.compiz-fusion.org/%{version}/%{name}-%{version}.tar.bz2
+# This is the compiz-with-glib-mainloop branch of upstream compiz 0.9
+# git clone git://anongit.compiz.org/users/dbo/compiz-with-glib-mainloop
+# cd compiz-with-glib-mainloop
+# git archive --format=tar master > compiz-with-glib-mainloop-(commitid).tar
+# bzip2 compiz-with-glib-mainloop-(commitid).tar
+Source0:        compiz-with-glib-mainloop-ecc61dc04567947e92cbb9686c1041619abc05b1.tar.bz2
 Source1:        compiz-gtk
 Source2:        compiz-gtk.desktop
-
-# Make sure that former beryl users still have bling
-Obsoletes: beryl-core
+Source3:        compiz-gnome.desktop
+Source4:        compiz-gnome.session
 
 # Patches that are not upstream
-Patch103: composite-cube-logo.patch
-Patch105: fedora-logo.patch
-Patch106: redhat-logo.patch
-Patch107: compiz-0.8.6-wall.patch
+#Patch103: composite-cube-logo.patch
+Patch105: compiz-0.9-fedora-logo.patch
+Patch106: compiz-0.9-redhat-logo.patch
 #Patch110: scale-key.patch
-Patch111: compiz-0.8.6-unloadpluginfix.patch
-Patch112: no-more-gnome-wm-settings.patch
-# Some selected post 0.8.6 upstream backports
-Patch113: compiz-0.8.6-icon-size.patch
-Patch114: compiz-0.8.6-map-gravity-fix.patch
-Patch115: compiz-0.8.6-focus-denied-stacking-fix.patch
-#upstream patches
-# 5ea5e2130c56d405fcccd63932918fc49ca1f1b9
-Patch116: gdk_display_deprecated.patch
-# 0f95c41a0aa175ddf7947ba18b01f746c95594a9
-Patch117: compiz-0.8.6-pixmap-size-calculation.patch
-# 777e5ecdb197105f770e7bcedd83eb54c53457f3
-Patch118: gdk_drawable_deprecated.patch
+
+# Fix behaviour of COMPIZ_DISABLE_SCHEMAS_INSTALL: it should install
+# schema files but not do gconftool install (sent upstream)
+Patch121: compiz-0.9.2.1-schemas.patch
+
+# Allow installation of GNOME keybindings without GNOME window manager
+# settings stuff (sent upstream)
+Patch122: compiz-0.9.2.1-keybindings.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -76,6 +84,10 @@ compositing effects in window management, such as a minimization
 effect and a cube workspace.  Compiz is an OpenGL compositing manager
 that use Compiz use EXT_texture_from_pixmap OpenGL extension for
 binding redirected top-level windows to texture objects.
+
+This package contains only the core components necessary for compiz
+itself to run. To provide something more usable, you may wish to
+install the compiz-gnome, compiz-kde or compiz-gtk package.
 
 %package devel
 Summary: Development packages for compiz
@@ -93,28 +105,62 @@ and developer docs for the compiz package.
 Install compiz-devel if you want to develop plugins for the compiz
 windows and compositing manager.
 
-%package gnome
-Summary: Compiz gnome integration bits
+%package gtk
+Summary: Compiz GTK+ integration bits
 Group: User Interface/Desktops
-Requires: desktop-effects
-Requires: %{name} = %{version}
+Requires: %{name} = %{version}-%{release}
+Requires: libcompizconfig
+# A lot of really important plugins are in this
+Requires: compiz-plugins-main > 0.9
+# For the GNOME keybindings files (doesn't introduce any major deps)
+Requires: control-center-filesystem
+Requires(post):	desktop-file-utils
 Requires(pre): GConf2
 Requires(post): GConf2
 Requires(preun): GConf2
 Obsoletes: compiz < 0.5.2-8
-Obsoletes: beryl-gnome
+Conflicts: compiz-gnome < 0.9.2.2-0.6.git619abc05b1
+
+%description gtk
+The compiz-gtk package contains gtk-window-decorator,
+and other GTK+ integration related stuff.
+
+%package gnome
+Summary: Compiz GNOME session
+Group: User Interface/Desktops
+Requires: compiz-gtk = %{version}-%{release}
+Requires: metacity
+Requires: gnome-panel
 
 %description gnome
-The compiz-gnome package contains gtk-window-decorator,
-and other gnome integration related stuff.
+The compiz-gnome package contains a session definition which will make
+display managers provide a session named 'Classic GNOME with Compiz'
+that you can log in to. This session will start a GNOME 2-style desktop
+(with gnome-panel, not GNOME Shell) with Compiz as the window manager.
+This method is the recommended replacement for the old method of using
+desktop-effects to select Compiz as the window manager for a GNOME
+session.
+
+%package gconf
+Summary: GConf schemas for %{name}
+Group: User Interface/Desktops
+Requires: %{name} = %{version}-%{release}
+Requires(pre): GConf2
+Requires(post): GConf2
+Requires(preun): GConf2
+
+%description gconf
+This package contains the GConf schemas for plugins in the %{name}
+package. Only install it if you wish to use the deprecated GConf
+configuration storage scheme for Compiz. Typically you should not
+install this.
 
 %package kde
-Summary: Compiz kde integration bits
+Summary: Compiz KDE integration bits
 Group: User Interface/Desktops
-Requires: %{name} = %{version}
+Requires: %{name} = %{version}-%{release}
 Requires: compiz-manager
-Requires: compiz-fusion = %{version}
-Obsoletes: beryl-kde
+Requires: compiz-plugins-main > 0.9
 
 %description kde
 The compiz-kde package contains kde4-window-decorator,
@@ -122,62 +168,52 @@ and other kde integration related stuff.
 
 
 %prep
-%setup -q
+%setup -q -c compiz-0.9.2.1
 
-%patch103 -p1 -b .composite-cube-logo
 %if 0%{?fedora}
 %patch105 -p1 -b .fedora-logo
 %else
 %patch106 -p1 -b .redhat-logo
 %endif
-%patch107 -p1 -b .wall
-#%patch110 -p1 -b .scale-key
-%patch111 -p1 -b .unloadfix
-%patch112 -p1 -b .gnome-wm-settings
-%patch113 -p1 -b .icon-size
-%patch114 -p1 -b .map-request
-%patch115 -p1 -b .focus-denied-stacking
-%patch116 -p1 -b .gdk_display_deprecated
-%patch117 -p1 -b .pixmap-calculation
-%patch118 -p1 -b .gdk_drawable_deprecated
+%patch121 -p1 -b .schemas
+%patch122 -p1 -b .keybindings
 
 %build
 rm -rf $RPM_BUILD_ROOT
-
-CPPFLAGS="$CPPFLAGS -I$RPM_BUILD_ROOT%{_includedir}"
-export CPPFLAGS
-
-#needed to find kde4 libs
-LDFLAGS="$LDFLAGS -L%{_libdir}/kde4/devel"
-export LDFLAGS
-
-libtoolize
-aclocal
-autoconf
-automake
-%configure 					\
-	--enable-gconf 			\
-	--enable-dbus 				\
-	--enable-place 			\
-	--enable-librsvg 			\
-	--enable-gtk 				\
-	--enable-metacity 			\
-	--enable-gnome				\
-	--with-default-plugins=%{plugins}	\
-	--enable-gnome-keybindings		\
-	--disable-kde				\
-	--enable-kde4
-
-make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
-
+mkdir build
+pushd build
+%cmake -DCOMPIZ_DEFAULT_PLUGINS="%{default_plugins}" -DCOMPIZ_PACKAGING_ENABLED=ON -DBUILD_GNOME_KEYBINDINGS=OFF -DCOMPIZ_BUILD_WITH_RPATH=OFF -DCOMPIZ_DISABLE_SCHEMAS_INSTALL=ON -DCOMPIZ_INSTALL_GCONF_SCHEMA_DIR=%{_sysconfdir}/gconf/schemas ..
+make VERBOSE=1 %{?_smp_mflags}
+popd
 
 %install
+pushd build
 rm -rf $RPM_BUILD_ROOT
-export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
-unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 
-install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
+# This should work, but is buggy upstream:
+# make DESTDIR=$RPM_BUILD_ROOT findcompiz_install
+# So we do this instead:
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/cmake/Modules
+%__cmake -E copy ../cmake/FindCompiz.cmake $RPM_BUILD_ROOT%{_datadir}/cmake/Modules
+
+popd
+
+install %SOURCE1 $RPM_BUILD_ROOT/%{_bindir}
+
+# set up an X session
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/xsessions
+install %SOURCE3 $RPM_BUILD_ROOT/%{_datadir}/xsessions
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/gnome-session/sessions
+install %SOURCE4 $RPM_BUILD_ROOT/%{_datadir}/gnome-session/sessions
+
+# create compiz keybindings file based on the metacity ones
+# lifted straight from Ubuntu, as long as installation of the upstream
+# ones is broken at least (I've reported this upstream)
+mkdir -p $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings
+	sed 's/wm_name=\"Metacity\" package=\"metacity\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/gnome-control-center/keybindings/50-metacity-desktop-key.xml > $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
+	sed 's/wm_name=\"Metacity\" package=\"metacity\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/gnome-control-center/keybindings/50-metacity-key.xml > $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
+	sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
@@ -197,50 +233,42 @@ for f in %{core_plugins}; do
   echo %{_datadir}/compiz/$f.xml
 done >> core-files.txt
 
-for f in %{gnome_plugins}; do
+for f in %{gtk_plugins}; do
   echo %{_libdir}/compiz/lib$f.so
   echo %{_datadir}/compiz/$f.xml
-done >> gnome-files.txt
+done >> gtk-files.txt
+
+for f in %{core_plugins} %{gtk_plugins}; do
+  echo %{_sysconfdir}/gconf/schemas/compiz-$f.schemas
+done >> gconf-files.txt
+
+# I don't care how crazy you are, I'm not letting you store your
+# compiz-kde configuration in GConf
+rm -f $RPM_BUILD_ROOT/%{_sysconfdir}/gconf/schemas/compiz-kde.schemas
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
-%post gnome
+%post gtk
 update-desktop-database -q %{_datadir}/applications
+%gconf_schema_upgrade gwd
 
-export GCONF_CONFIG_SOURCE=`/usr/bin/gconftool-2 --get-default-source`
+%post gconf
+%gconf_schema_upgrade %{plugins_compiz}
 
-for p in %{core_plugins} %{gnome_plugins} core;
-	do echo %{_sysconfdir}/gconf/schemas/compiz-${p}.schemas ; done \
-	| xargs %{_bindir}/gconftool-2 --makefile-install-rule >& /dev/null || :
+%pre gconf
+%gconf_schema_prepare %{plugins_compiz}
+%gconf_schema_obsolete %{obsolete_plugins_compiz}
 
-gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
+%pre gtk
+%gconf_schema_prepare gwd
 
+%preun gconf
+%gconf_schema_remove %{plugins_compiz}
 
-%pre gnome
-if [ "$1" -gt 1 ]; then
-  export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-
-  for p in %{core_plugins} %{gnome_plugins} core;
-	do echo %{_sysconfdir}/gconf/schemas/compiz-${p}.schemas ; done \
-	| xargs %{_bindir}/gconftool-2 --makefile-uninstall-rule >& /dev/null || :
-
-  gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
-fi
-
-
-%preun gnome
-if [ "$1" -eq 0 ]; then
-  export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-
-  for p in %{core_plugins} %{gnome_plugins} core;
-	do echo %{_sysconfdir}/gconf/schemas/compiz-${p}.schemas ; done \
-	| xargs %{_bindir}/gconftool-2 --makefile-uninstall-rule >& /dev/null || :
-
-  gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/gwd.schemas >& /dev/null || :
-fi
-
+%preun gtk
+%gconf_schema_remove gwd
 
 %post kde
 update-desktop-database -q %{_datadir}/applications/kde
@@ -261,39 +289,101 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
 %dir %{_datadir}/compiz
-%{_datadir}/compiz/*.png
+%{_datadir}/compiz/images
 %{_datadir}/compiz/core.xml
 
-
-%files gnome -f gnome-files.txt
+%files gtk -f gtk-files.txt
 %defattr(-, root, root)
 %{_bindir}/compiz-gtk
 %{_bindir}/gtk-window-decorator
 %{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
 %{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
 %{_datadir}/applications/compiz-gtk.desktop
-%exclude %{_datadir}/applications/compiz.desktop
-%{_sysconfdir}/gconf/schemas/*.schemas
+# gtk-window-decorator only stores config in gconf at present
+%{_sysconfdir}/gconf/schemas/gwd.schemas
+#%exclude %{_datadir}/applications/compiz.desktop
 
+%files gnome
+%defattr(-, root, root)
+%{_datadir}/xsessions/compiz-gnome.desktop
+%{_datadir}/gnome-session/sessions/compiz-gnome.session
+
+%files gconf -f gconf-files.txt
+%defattr(-, root, root)
+%{_sysconfdir}/gconf/schemas/compiz-core.schemas
 
 %files kde
 %defattr(-, root, root)
 %{_bindir}/kde4-window-decorator
-%{_datadir}/compiz/kconfig.xml
+%{_libdir}/compiz/libkde.so
+%{_datadir}/compiz/kde.xml
 
 %files devel
 %defattr(-, root, root)
 %{_libdir}/pkgconfig/compiz.pc
 %{_libdir}/pkgconfig/libdecoration.pc
+%{_libdir}/pkgconfig/compiz-compiztoolbox.pc
+%{_libdir}/pkgconfig/compiz-composite.pc
 %{_libdir}/pkgconfig/compiz-cube.pc
-%{_libdir}/pkgconfig/compiz-gconf.pc
+%{_libdir}/pkgconfig/compiz-opengl.pc
 %{_libdir}/pkgconfig/compiz-scale.pc
-%{_datadir}/compiz/schemas.xslt
+%{_datadir}/compiz/xslt
+%{_datadir}/compiz/cmake
+%{_datadir}/cmake/Modules/FindCompiz.cmake
 %{_includedir}/compiz
 %{_libdir}/libdecoration.so
 
 
 %changelog
+* Tue Jan 18 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.9.git619abc05b1
+- drop desktop-effects dependency
+
+* Mon Jan 17 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.8.git619abc05b1
+- drop rotate from the default plugin list (it goes with cube)
+- tighten up dependencies and fix compiz-kde deps
+
+* Mon Jan 17 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.7.git619abc05b1
+- move gwd.schemas into compiz-gtk: seems that gtk-window-decorator is
+  only able to store its config in gconf for now so we must include this
+
+* Mon Jan 17 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.6.git619abc05b1
+- add a compiz-gnome package back again: this one provides a session
+  definition so you can log into a classic GNOME plus Compiz session
+  from the login manager
+
+* Sun Jan 16 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.5.git619abc05b1
+- drop imgpng from default plugins list (somehow this causes compiz-gtk
+  to crash on start)
+- generally simplify the default plugin set a bit
+
+* Sun Jan 16 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.4.git619abc05b1
+- move core gconf schema file to gconf subpackage
+
+* Sun Jan 16 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.3.git619abc05b1
+- move the GConf schemas to a separate subpackage so you can not
+  install them unless you really want them
+- rename the -gnome subpackage to -gtk as it's not really GNOME
+  specific now
+
+* Sun Jan 16 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.2.git619abc05b1
+- drop the BR of metacity as we already BR metacity-devel
+- don't load imgsvg by default, do load imgpng
+- put all the GConf schemas in the GNOME subpackage, no point having
+  them in main and weighing it down with dependencies
+- drop the ancient beryl obsoletes
+- drop --ignore-desktop-hints from compiz-gtk (no longer valid)
+
+* Sat Jan 15 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.1.git619abc05b1
+- bump to 0.9 git:
+	+ drop several patches now upstreamed
+	+ keybindings.patch replaces no-more-gnome-wm-settings.patch
+- switch to new cmake buildsystem
+- use gconf macros not snippets
+- fix up compiz-gtk to just always launch with ccm, the test for gconf
+  was done exactly the wrong way around and anyway using the gconf
+  backend is a bad idea
+- depend on new compiz-plugins-main as lots of vital plugins are in it
+
 * Fri Dec 10 2010 leigh scott <leigh123linux@googlemail.com> - 0.8.6-9
 - remove the dupe BR dbus-devel and add BR dbus-glib-devel
 

@@ -17,7 +17,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.9.2.2
-Release:        0.9.git619abc05b1%{?dist}
+Release:        0.10.git619abc05b1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -131,6 +131,11 @@ Group: User Interface/Desktops
 Requires: compiz-gtk = %{version}-%{release}
 Requires: metacity
 Requires: gnome-panel
+# For now, this is using the ini backend due to a bug when using gconf
+# but it should be switched to gconf backend (in libcompizconfig) and
+# these requires activated once that's fixed
+#Requires: compiz-gconf = %{version}-%{release}
+#Requires: compizconfig-backend-gconf > 0.9
 
 %description gnome
 The compiz-gnome package contains a session definition which will make
@@ -160,6 +165,7 @@ Summary: Compiz KDE integration bits
 Group: User Interface/Desktops
 Requires: %{name} = %{version}-%{release}
 Requires: compiz-manager
+Requires: compizconfig-backend-kconfig4
 Requires: compiz-plugins-main > 0.9
 
 %description kde
@@ -337,6 +343,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 19 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.10.git619abc05b1
+- adjust GNOME and KDE package requirements
+
 * Tue Jan 18 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.9.git619abc05b1
 - drop desktop-effects dependency
 

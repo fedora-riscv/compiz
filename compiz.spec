@@ -17,7 +17,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.9.2.2
-Release:        0.10.git619abc05b1%{?dist}
+Release:        0.11.git619abc05b1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -76,6 +76,9 @@ Patch121: compiz-0.9.2.1-schemas.patch
 # Allow installation of GNOME keybindings without GNOME window manager
 # settings stuff (sent upstream)
 Patch122: compiz-0.9.2.1-keybindings.patch
+
+# Fix to not overwrite any passed-in cflags (sent upstream)
+Patch123: compiz-0.9.2.1-cflags.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -183,6 +186,7 @@ and other kde integration related stuff.
 %endif
 %patch121 -p1 -b .schemas
 %patch122 -p1 -b .keybindings
+%patch123 -p1 -b .cflags
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -343,6 +347,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 23 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.11.git619abc05b1
+- cflags.patch: don't overwrite passed-in CFLAGS
+
 * Wed Jan 19 2011 Adam Williamson <awilliam@redhat.com> - 0.9.2.2-0.10.git619abc05b1
 - adjust GNOME and KDE package requirements
 

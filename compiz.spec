@@ -16,8 +16,8 @@ Name:           compiz
 URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.9.2.2
-Release:        0.13.git619abc05b1%{?dist}
+Version:        0.9.4
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -51,13 +51,7 @@ BuildRequires:  libxslt-devel
 BuildRequires:  dbus-glib-devel
 BuildRequires:  boost-devel
 BuildRequires:  glibmm24-devel
-
-# This is the compiz-with-glib-mainloop branch of upstream compiz 0.9
-# git clone git://anongit.compiz.org/users/dbo/compiz-with-glib-mainloop
-# cd compiz-with-glib-mainloop
-# git archive --format=tar master > compiz-with-glib-mainloop-(commitid).tar
-# bzip2 compiz-with-glib-mainloop-(commitid).tar
-Source0:        compiz-with-glib-mainloop-ecc61dc04567947e92cbb9686c1041619abc05b1.tar.bz2
+Source0:        http://releases.compiz.org/%{version}/compiz-core-%{version}.tar.bz2
 Source1:        compiz-gtk
 Source2:        compiz-gtk.desktop
 Source3:        compiz-gnome.desktop
@@ -69,16 +63,9 @@ Patch105: compiz-0.9-fedora-logo.patch
 Patch106: compiz-0.9-redhat-logo.patch
 #Patch110: scale-key.patch
 
-# Fix behaviour of COMPIZ_DISABLE_SCHEMAS_INSTALL: it should install
-# schema files but not do gconftool install (sent upstream)
-Patch121: compiz-0.9.2.1-schemas.patch
-
 # Allow installation of GNOME keybindings without GNOME window manager
 # settings stuff (sent upstream)
 Patch122: compiz-0.9.2.1-keybindings.patch
-
-# Fix to not overwrite any passed-in cflags (sent upstream)
-Patch123: compiz-0.9.2.1-cflags.patch
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -177,16 +164,14 @@ and other kde integration related stuff.
 
 
 %prep
-%setup -q -c compiz-0.9.2.1
+%setup -q -n core
 
 %if 0%{?fedora}
 %patch105 -p1 -b .fedora-logo
 %else
 %patch106 -p1 -b .redhat-logo
 %endif
-%patch121 -p1 -b .schemas
 %patch122 -p1 -b .keybindings
-%patch123 -p1 -b .cflags
 
 %build
 rm -rf $RPM_BUILD_ROOT
@@ -223,9 +208,13 @@ install %SOURCE4 $RPM_BUILD_ROOT/%{_datadir}/gnome-session/sessions
 # lifted straight from Ubuntu, as long as installation of the upstream
 # ones is broken at least (I've reported this upstream)
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings
-	sed 's/wm_name=\"Metacity\" package=\"metacity\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/gnome-control-center/keybindings/50-metacity-desktop-key.xml > $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
-	sed 's/wm_name=\"Metacity\" package=\"metacity\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/gnome-control-center/keybindings/50-metacity-key.xml > $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
-	sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
+	sed 's/wm_name=\"Metacity\" package=\"metacity\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/gnome-control-center/keybindings/50-metacity-launchers.xml > $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-launchers.xml
+	sed 's/wm_name=\"Metacity\" package=\"metacity\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/gnome-control-center/keybindings/50-metacity-navigation.xml > $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-navigation.xml
+	sed 's/wm_name=\"Metacity\" package=\"metacity\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/gnome-control-center/keybindings/50-metacity-screenshot.xml > $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-screenshot.xml
+	sed 's/wm_name=\"Metacity\" package=\"metacity\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/gnome-control-center/keybindings/50-metacity-system.xml > $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-system.xml
+	sed 's/wm_name=\"Metacity\" package=\"metacity\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/gnome-control-center/keybindings/50-metacity-windows.xml > $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-windows.xml
+	sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-navigation.xml
+	sed -i 's#key=\"/apps/metacity/general/num_workspaces\" comparison=\"gt\"##g' $RPM_BUILD_ROOT/%{_datadir}/gnome-control-center/keybindings/50-compiz-windows.xml
 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
@@ -301,15 +290,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
 %dir %{_datadir}/compiz
-%{_datadir}/compiz/images
+%{_datadir}/compiz/cube/images
 %{_datadir}/compiz/core.xml
+%{_datadir}/compiz/icon.png
 
 %files gtk -f gtk-files.txt
 %defattr(-, root, root)
 %{_bindir}/compiz-gtk
 %{_bindir}/gtk-window-decorator
-%{_datadir}/gnome-control-center/keybindings/50-compiz-desktop-key.xml
-%{_datadir}/gnome-control-center/keybindings/50-compiz-key.xml
+%{_datadir}/gnome-control-center/keybindings/50-compiz-*.xml
 %{_datadir}/applications/compiz-gtk.desktop
 # gtk-window-decorator only stores config in gconf at present
 %{_sysconfdir}/gconf/schemas/gwd.schemas
@@ -347,6 +336,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 14 2011 Adam Williamson <awilliam@redhat.com> - 0.9.4-1
+- new release 0.9.4
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.9.2.2-0.13.git619abc05b1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 

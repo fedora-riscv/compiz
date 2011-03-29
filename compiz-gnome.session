@@ -1,7 +1,6 @@
 [GNOME Session]
-_Name=Classic GNOME with Compiz
-Required=windowmanager;panel;filemanager;
-Required-windowmanager=compiz-gtk
-Required-panel=gnome-panel
-Required-filemanager=nautilus
-DefaultApps=gnome-settings-daemon;
+Name=Classic GNOME with Compiz
+RequiredComponents=gnome-panel;gnome-settings-daemon;
+RequiredProviders=windowmanager;notifications;
+DefaultProvider-windowmanager=compiz-gtk
+DefaultProvider-notifications=notification-daemon

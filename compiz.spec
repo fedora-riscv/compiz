@@ -17,7 +17,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.9.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -336,6 +336,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 07 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.4-3
+- rebuilt against boost 1.46.1
+
 * Mon Mar 28 2011 Adam Williamson <awilliam@redhat.com> - 0.9.4-2
 - fix up the GNOME session stuff so it actually works
 

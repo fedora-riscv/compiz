@@ -16,8 +16,8 @@ Name:           compiz
 URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.9.4
-Release:        3%{?dist}
+Version:        0.9.5.0
+Release:        1%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -51,7 +51,7 @@ BuildRequires:  libxslt-devel
 BuildRequires:  dbus-glib-devel
 BuildRequires:  boost-devel
 BuildRequires:  glibmm24-devel
-Source0:        http://releases.compiz.org/%{version}/compiz-core-%{version}.tar.bz2
+Source0:        http://releases.compiz.org/%{version}/compiz-%{version}.tar.bz2
 Source1:        compiz-gtk
 Source2:        compiz-gtk.desktop
 Source3:        compiz-gnome.desktop
@@ -336,6 +336,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 15 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.0-1
+- new release 0.9.5.0
+
 * Thu Apr 07 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.4-3
 - rebuilt against boost 1.46.1
 

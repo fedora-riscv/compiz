@@ -164,7 +164,7 @@ and other kde integration related stuff.
 
 
 %prep
-%setup -q -n core
+%setup -q
 
 %if 0%{?fedora}
 %patch105 -p1 -b .fedora-logo

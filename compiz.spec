@@ -17,7 +17,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.9.5.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -336,6 +336,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 21 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.0-2
+- rebuild against boost 1.47.0
+
 * Fri Jul 15 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.0-1
 - new release 0.9.5.0
 

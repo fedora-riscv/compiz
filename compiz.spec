@@ -17,7 +17,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.9.5.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OpenGL window and compositing manager
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -110,6 +110,7 @@ Requires(post): GConf2
 Requires(preun): GConf2
 Obsoletes: compiz < 0.5.2-8
 Conflicts: compiz-gnome < 0.9.2.2-0.6.git619abc05b1
+Obsoletes: emerald < 0.8.5-0.5.git90c9604441
 
 %description gtk
 The compiz-gtk package contains gtk-window-decorator,
@@ -336,6 +337,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 17 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.0-3
+- add changes for emerald's retirement
+
 * Thu Jul 21 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.0-2
 - rebuild against boost 1.47.0
 

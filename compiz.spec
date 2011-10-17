@@ -12,15 +12,16 @@
 # in here, it will cause pain
 %global	default_plugins core composite opengl copytex compiztoolbox decor scale resize gnomecompat staticswitcher place move mousepoll vpswitch regex snap session wall workarounds ezoom
 
+%global git_snapshot e676f1b12eb8db3a76978eed5bfc7c2cf9a0b6ce
+
 Name:           compiz
 URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.9.5.0
-Release:        3%{?dist}
+Version:        0.9.5.92.1
+Release:        0.1.git%{git_snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # libdrm is not available on these arches
 ExcludeArch:   s390 s390x
@@ -51,7 +52,10 @@ BuildRequires:  libxslt-devel
 BuildRequires:  dbus-glib-devel
 BuildRequires:  boost-devel
 BuildRequires:  glibmm24-devel
-Source0:        http://releases.compiz.org/%{version}/compiz-%{version}.tar.bz2
+#Source0:        http://releases.compiz.org/%{version}/compiz-%{version}.tar.bz2
+# git snapshot
+# http://gitweb.compiz.org/?p=compiz/core;a=snapshot;h=%{git_snapshot};sf=tgz
+Source0:        core-%{git_snapshot}.tar.gz
 Source1:        compiz-gtk
 Source2:        compiz-gtk.desktop
 Source3:        compiz-gnome.desktop
@@ -110,9 +114,6 @@ Requires(post): GConf2
 Requires(preun): GConf2
 Obsoletes: compiz < 0.5.2-8
 Conflicts: compiz-gnome < 0.9.2.2-0.6.git619abc05b1
-Provides: emerald = %{version}-%{release}
-Provides: emerald-devel = %{version}-%{release}
-Provides: emerald-themes = %{version}-%{release}
 Obsoletes: emerald < 0.8.5-0.5.git90c9604441
 Obsoletes: emerald-devel < 0.8.5-0.5.git90c9604441
 Obsoletes: emerald-themes < 0.5.2-7
@@ -170,7 +171,7 @@ and other kde integration related stuff.
 
 
 %prep
-%setup -q
+%setup -q -n core
 
 %if 0%{?fedora}
 %patch105 -p1 -b .fedora-logo
@@ -184,9 +185,7 @@ rm -rf $RPM_BUILD_ROOT
 mkdir build
 pushd build
 %cmake -DCOMPIZ_DEFAULT_PLUGINS="%{default_plugins}" -DCOMPIZ_PACKAGING_ENABLED=ON -DBUILD_GNOME_KEYBINDINGS=OFF -DCOMPIZ_BUILD_WITH_RPATH=OFF -DCOMPIZ_DISABLE_SCHEMAS_INSTALL=ON -DCOMPIZ_INSTALL_GCONF_SCHEMA_DIR=%{_sysconfdir}/gconf/schemas ..
-# Parallel build with -j16 on the cluster failed, though with -j4 on
-# dual-core, dual-thread it worked
-make VERBOSE=1 
+make VERBOSE=1 %{_smp_mflags}
 popd
 
 %install
@@ -342,6 +341,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 17 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.92.1-0.1.git%{git_snapshot}
+- start using git snapshots as the releases suck
+
 * Sat Sep 17 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.0-3
 - more changes for emerald's retirement
 

@@ -185,7 +185,9 @@ rm -rf $RPM_BUILD_ROOT
 mkdir build
 pushd build
 %cmake -DCOMPIZ_DEFAULT_PLUGINS="%{default_plugins}" -DCOMPIZ_PACKAGING_ENABLED=ON -DBUILD_GNOME_KEYBINDINGS=OFF -DCOMPIZ_BUILD_WITH_RPATH=OFF -DCOMPIZ_DISABLE_SCHEMAS_INSTALL=ON -DCOMPIZ_INSTALL_GCONF_SCHEMA_DIR=%{_sysconfdir}/gconf/schemas ..
-make VERBOSE=1 %{_smp_mflags}
+# Parallel build with -j16 on the cluster failed, though with -j4 on
+# dual-core, dual-thread it worked
+make VERBOSE=1 
 popd
 
 %install

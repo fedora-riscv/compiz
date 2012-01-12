@@ -19,7 +19,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.9.5.92.1
-Release:        0.2.git%{git_snapshot}%{?dist}
+Release:        0.3.git%{git_snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 
@@ -343,6 +343,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 12 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.9.5.92.1-0.3.gite676f1b12eb8db3a76978eed5bfc7c2cf9a0b6ce
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Tue Dec 06 2011 Adam Jackson <ajax@redhat.com> - 0.9.5.92.1-0.2.gite676f1b12eb8db3a76978eed5bfc7c2cf9a0b6ce
 - Rebuild for new libpng
 

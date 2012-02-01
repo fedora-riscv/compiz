@@ -19,7 +19,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.9.5.92.1
-Release:        0.2.git%{git_snapshot}%{?dist}
+Release:        0.3.git%{git_snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 
@@ -208,9 +208,9 @@ install %SOURCE1 $RPM_BUILD_ROOT/%{_bindir}
 
 # set up an X session
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/xsessions
-install %SOURCE3 $RPM_BUILD_ROOT/%{_datadir}/xsessions
+install -m 644 %SOURCE3 $RPM_BUILD_ROOT/%{_datadir}/xsessions
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/gnome-session/sessions
-install %SOURCE4 $RPM_BUILD_ROOT/%{_datadir}/gnome-session/sessions
+install -m 644 %SOURCE4 $RPM_BUILD_ROOT/%{_datadir}/gnome-session/sessions
 
 # create compiz keybindings file based on the metacity ones
 # lifted straight from Ubuntu, as long as installation of the upstream
@@ -257,7 +257,7 @@ rm -f $RPM_BUILD_ROOT/%{_sysconfdir}/gconf/schemas/compiz-kde.schemas
 
 # Add file to start polkit https://bugzilla.redhat.com/show_bug.cgi?id=746733
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/gnome/autostart
-install %SOURCE5 $RPM_BUILD_ROOT/%{_datadir}/gnome/autostart
+install -m 644 %SOURCE5 $RPM_BUILD_ROOT/%{_datadir}/gnome/autostart
 
 %post -p /sbin/ldconfig
 
@@ -349,6 +349,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 01 2012 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.92.1-0.3.gite676f1b12eb8db3a76978eed5bfc7c2cf9a0b6ce
+- fix permissions on compiz-gnome package
+
 * Wed Feb 01 2012 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.92.1-0.2.gite676f1b12eb8db3a76978eed5bfc7c2cf9a0b6ce
 - add file to start polkit (RH #746733)
 

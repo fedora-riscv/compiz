@@ -19,7 +19,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.9.5.92.1
-Release:        0.1.git%{git_snapshot}%{?dist}
+Release:        0.2.git%{git_snapshot}%{?dist}
 
 Summary:        OpenGL window and compositing manager
 
@@ -60,6 +60,7 @@ Source1:        compiz-gtk
 Source2:        compiz-gtk.desktop
 Source3:        compiz-gnome.desktop
 Source4:        compiz-gnome.session
+Source5:        compiz-authentication-agent.desktop
 
 # Patches that are not upstream
 #Patch103: composite-cube-logo.patch
@@ -254,6 +255,10 @@ done >> gconf-files.txt
 # compiz-kde configuration in GConf
 rm -f $RPM_BUILD_ROOT/%{_sysconfdir}/gconf/schemas/compiz-kde.schemas
 
+# Add file to start polkit https://bugzilla.redhat.com/show_bug.cgi?id=746733
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/gnome/autostart
+install %SOURCE5 $RPM_BUILD_ROOT/%{_datadir}/gnome/autostart
+
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
@@ -315,6 +320,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_datadir}/xsessions/compiz-gnome.desktop
 %{_datadir}/gnome-session/sessions/compiz-gnome.session
+%{_datadir}/gnome/autostart/compiz-authentication-agent.desktop
 
 %files gconf -f gconf-files.txt
 %defattr(-, root, root)
@@ -343,7 +349,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Oct 17 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.92.1-0.1.git%{git_snapshot}
+* Wed Feb 01 2012 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.92.1-0.2.gite676f1b12eb8db3a76978eed5bfc7c2cf9a0b6ce
+- add file to start polkit (RH #746733)
+
+* Mon Oct 17 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.92.1-0.1.gite676f1b12eb8db3a76978eed5bfc7c2cf9a0b6ce
 - start using git snapshots as the releases suck
 
 * Sat Sep 17 2011 Leigh Scott <leigh123linux@googlemail.com> - 0.9.5.0-4

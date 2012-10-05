@@ -1,0 +1,42 @@
+diff -upr compiz-0.8.8-orig/configure.ac compiz-0.8.8/configure.ac
+--- compiz-0.8.8-orig/configure.ac	2012-09-16 10:04:18.000000000 +0200
++++ compiz-0.8.8/configure.ac	2012-09-16 10:10:26.095872922 +0200
+@@ -323,12 +323,12 @@ if test "x$use_gtk" = "xyes"; then
+     if test "x$use_marco" = "xyes"; then
+       PKG_CHECK_MODULES(MARCO, libmarco-private,
+ 			[use_marco=yes], [use_marco=no])
+-      PKG_CHECK_EXISTS(libmarco-private >= 2.15.21,
++      PKG_CHECK_EXISTS(libmarco-private >= 1.2.0,
+ 		       [have_marco_2_15_21=yes], [have_marco_2_15_21=no])
+-      PKG_CHECK_EXISTS(libmarco-private >= 2.17.0,
++      PKG_CHECK_EXISTS(libmarco-private >= 1.2.0,
+ 		       [have_marco_2_17_0=yes], [have_marco_2_17_0=no])
+       PKG_CHECK_EXISTS(libmarco-private >= 1.2.0,
+-		       [have_marco_2_23_2=yes], [have_marco_1_2_0=no])
++		       [have_marco_2_23_2=yes], [have_marco_2_23_2=no])
+     fi
+ 
+     if test "x$use_mate" = "xyes"; then
+@@ -382,8 +382,8 @@ if test "$use_marco" = yes; then
+     AC_DEFINE(HAVE_MARCO_2_17_0, 1,
+ 	      [Define to 1 if marco version >= 2.17.0])
+   fi
+-  if test "$have_marco_1_2_0" = yes; then
+-    AC_DEFINE(HAVE_MARCO_1_2_0, 1,
++  if test "$have_marco_2_23_2" = yes; then
++    AC_DEFINE(HAVE_MARCO_2_23_2, 1,
+ 	      [Define to 1 if marco version >= 1.2.0])
+   fi
+ fi
+diff -upr compiz-0.8.8-orig/gtk/mate/compiz-window-manager.c compiz-0.8.8/gtk/mate/compiz-window-manager.c
+--- compiz-0.8.8-orig/gtk/mate/compiz-window-manager.c	2012-09-16 10:04:18.000000000 +0200
++++ compiz-0.8.8/gtk/mate/compiz-window-manager.c	2012-09-16 10:12:15.613373978 +0200
+@@ -370,7 +370,7 @@ add_themes_from_dir (GList	*current_list
+     {
+ 	theme_file_path =
+ 	    g_build_filename (path, entry->d_name,
+-			      "marco-1/marco-theme-1.xml", NULL);
++			      "metacity-1/metacity-theme-1.xml", NULL);
+ 
+ 	if (g_file_test (theme_file_path, G_FILE_TEST_EXISTS))
+ 	{

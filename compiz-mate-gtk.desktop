@@ -1,0 +1,8 @@
+
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=Compiz
+TryExec=compiz-mate-gtk
+Exec=compiz-mate-gtk
+NoDisplay=true

@@ -11,7 +11,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
 
@@ -198,13 +198,14 @@ done >> mate-files.txt
 %postun -p /sbin/ldconfig
 
 %post mate
-%mateconf_schema_upgrade compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-kconfig compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
+%mateconf_schema_upgrade compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
 
 %pre mate
-%mateconf_schema_prepare compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-kconfig compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
+%mateconf_schema_prepare compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
+%gconf_schema_obsolete compiz-kconfig
 
 %preun mate
-%mateconf_schema_remove compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-kconfig compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
+%mateconf_schema_remove compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
 
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README TODO NEWS
@@ -241,6 +242,9 @@ done >> mate-files.txt
 
 
 %changelog
+* Fri Oct 05 2012 Leigh Scott <leigh123linux@googlemail.com> - 1:0.8.8-7
+- remove and obsolete compiz-kconfig schema
+
 * Fri Oct 05 2012 Wolfgang Ulbrich <chat-to-me@raveit.de> - 0.8.8-6
 - remove update update-desktop-database from %%post mate
 - remove (noreplace) from mateconf schema dir

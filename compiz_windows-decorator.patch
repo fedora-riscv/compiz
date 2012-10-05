@@ -1,0 +1,35 @@
+diff -upr compiz-0.8.8-orig/gtk/window-decorator/gtk-window-decorator.c compiz-0.8.8/gtk/window-decorator/gtk-window-decorator.c
+--- compiz-0.8.8-orig/gtk/window-decorator/gtk-window-decorator.c	2012-05-16 12:40:35.000000000 +0200
++++ compiz-0.8.8/gtk/window-decorator/gtk-window-decorator.c	2012-05-16 13:55:44.000000000 +0200
+@@ -1318,7 +1318,7 @@ draw_window_decoration (decor_t *d)
+     }
+ }
+ 
+-#ifdef USE_MARCO
++
+ static void
+ decor_update_meta_window_property (decor_t	  *d,
+ 				   MetaTheme	  *theme,
+@@ -1405,17 +1405,16 @@ meta_get_corner_radius (const MetaFrameG
+ 			int			*bottom_right_radius)
+ {
+ 
+-#ifdef HAVE_MARCO_2_17_0
++#ifdef HAVE_MARCO_1_2_0
+     *top_left_radius     = fgeom->top_left_corner_rounded_radius;
+     *top_right_radius    = fgeom->top_right_corner_rounded_radius;
+     *bottom_left_radius  = fgeom->bottom_left_corner_rounded_radius;
+     *bottom_right_radius = fgeom->bottom_right_corner_rounded_radius;
+ #else
+-    *top_left_radius     = fgeom->top_left_corner_rounded ? 5 : 0;
+-    *top_right_radius    = fgeom->top_right_corner_rounded ? 5 : 0;
+-    *bottom_left_radius  = fgeom->bottom_left_corner_rounded ? 5 : 0;
+-    *bottom_right_radius = fgeom->bottom_right_corner_rounded ? 5 : 0;
+-#endif
++    *top_left_radius     = fgeom->top_left_corner_rounded_radius;
++    *top_right_radius    = fgeom->top_right_corner_rounded_radius;
++    *bottom_left_radius  = fgeom->bottom_left_corner_rounded_radius;
++    *bottom_right_radius = fgeom->bottom_right_corner_rounded_radius;
+ 
+ }
+ 

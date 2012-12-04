@@ -1,26 +1,28 @@
 %global    core_plugins    blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall
-
+ 
 %global    mate_plugins    annotate mateconf glib svg matecompat
-
+ 
+%global  plugins_schemas     compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
+ 
 # List of plugins passed to ./configure.  The order is important
-
+ 
 %global    plugins         core,glib,mateconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall,obs
-
+ 
 Name:           compiz
 URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        8%{?dist}
+Release:        10%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
-
+ 
 # libdrm is not available on these arches
 ExcludeArch:   s390 s390x
-
+ 
 Requires:       system-logos
 Requires:       glx-utils
-
+ 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
 BuildRequires: libwnck-devel
@@ -49,14 +51,14 @@ BuildRequires: fuse-devel
 BuildRequires: cairo-devel
 BuildRequires: libtool
 BuildRequires: libxslt-devel
-
+ 
 Source0:       http://releases.compiz.org/%{version}/%{name}-%{version}.tar.bz2
 Source2:       compiz-mate-gtk
 Source3:       compiz-mate-gtk.desktop
 Source4:       50-marco-navigation.xml
 Source5:       50-marco-system.xml
 Source6:       50-marco-windows.xml
-
+ 
 # fork gnome to mate
 Patch0:        comiz_mate_fork.patch
 # fix http://forums.mate-desktop.org/viewtopic.php?f=8&t=818
@@ -82,8 +84,8 @@ Patch18:       compiz_hide_tooltip_on_decorator.patch
 Patch19:       compiz_fullscreen_stacking_fixes.patch
 Patch20:       compiz_damage-report-non-empty.patch
 Patch21:       compiz_stacking.patch
-
-
+ 
+ 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
 managers for the X Window System. The integration allows it to perform
@@ -91,7 +93,7 @@ compositing effects in window management, such as a minimization
 effect and a cube work space. Compiz is an OpenGL compositing manager
 that use Compiz use EXT_texture_from_pixmap OpenGL extension for
 binding redirected top-level windows to texture objects.
-
+ 
 %package devel
 Summary: Development packages for compiz
 Group: Development/Libraries
@@ -100,14 +102,14 @@ Requires: pkgconfig
 Requires: libXcomposite-devel libXfixes-devel libXdamage-devel libXrandr-devel
 Requires: libXinerama-devel libICE-devel libSM-devel libxml2-devel
 Requires: libxslt-devel startup-notification-devel
-
+ 
 %description devel
 The compiz-devel package includes the header files,
 and developer docs for the compiz package.
-
+ 
 Install compiz-devel if you want to develop plugins for the compiz
 windows and compositing manager.
-
+ 
 %package mate
 Summary: Compiz mate integration bits
 Group: User Interface/Desktops
@@ -115,12 +117,12 @@ Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires(pre): mate-conf
 Requires(post): mate-conf
 Requires(preun): mate-conf
-
+ 
 %description mate
 The compiz-mate package contains gtk-window-decorator,
 and other mate integration related stuff.
-
-
+ 
+ 
 %prep
 %setup -q
 %patch0 -p1 -b .comiz_mate_fork
@@ -147,10 +149,10 @@ and other mate integration related stuff.
 %patch19 -p1 -b .fullscreen_stacking
 %patch20 -p1 -b .damage-report
 %patch21 -p1 -b .stacking
-
-
+ 
+ 
 %build
-
+ 
 libtoolize
 aclocal
 autoconf
@@ -168,75 +170,75 @@ automake
     --disable-kde4 \
     --disable-kconfig         \
     --disable-mate-keybindings
-
+ 
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
-
-
+ 
+ 
 %install
 export MATECONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 unset MATECONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
-
+ 
 install %SOURCE2 $RPM_BUILD_ROOT%{_bindir}
-
+ 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   %SOURCE3
-
+ 
 rm $RPM_BUILD_ROOT%{_datadir}/compiz/kconfig.xml
 rm $RPM_BUILD_ROOT%{_sysconfdir}/mateconf/schemas/compiz-kconfig.schemas
-
+ 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
-
+ 
 # create compiz keybindings file based on the marco ones
 # lifted straight from Ubuntu, as long as installation of the upstream
 # ones is broken at least (I've reported this upstream)
 #mkdir -p $RPM_BUILD_ROOT/%{_datadir}/mate-control-center/keybindings
 #sed 's/wm_name=\"Marco\" package=\"marco\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/mate-control-center/keybindings/50-marco-desktop-key.xml > $RPM_BUILD_ROOT/%{_datadir}/mate-control-center/keybindings/50-compiz-desktop-key.xml
 #sed 's/wm_name=\"Marco\" package=\"marco\"/wm_name=\"Compiz\" package=\"compiz\"/'  /usr/share/mate-control-center/keybindings/50-marco-key.xml > $RPM_BUILD_ROOT/%{_datadir}/mate-control-center/keybindings/50-compiz-key.xml
-
+ 
 #cp %SOURCE4 $RPM_BUILD_ROOT%{_datadir}/mate-control-center/keybindings/50-compiz-navigation.xml
 #cp %SOURCE5 $RPM_BUILD_ROOT%{_datadir}/mate-control-center/keybindings/50-compiz-system.xml
 #cp %SOURCE6 $RPM_BUILD_ROOT%{_datadir}/mate-control-center/keybindings/50-compiz-windows.xml
-
+ 
 #sed -i 's#key=\"/apps/marco/general/num_workspaces\" comparison=\"gt\"##g' $RPM_BUILD_ROOT/%{_datadir}/mate-control-center/keybindings/50-compiz-desktop-key.xml
 #sed -i 's#key=\"/apps/marco/general/num_workspaces\" comparison=\"gt\"##g' $RPM_BUILD_ROOT/%{_datadir}/mate-control-center/keybindings/50-compiz-key.xml
-
+ 
 %find_lang %{name}
-
+ 
 cat %{name}.lang > core-files.txt
-
+ 
 for f in %{core_plugins}; do
   echo %{_libdir}/compiz/lib$f.so
   echo %{_datadir}/compiz/$f.xml
 done >> core-files.txt
-
+ 
 for f in %{mate_plugins}; do
   echo %{_libdir}/compiz/lib$f.so
   echo %{_datadir}/compiz/$f.xml
 done >> mate-files.txt
-
-
+ 
+ 
 %check
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.desktop
-
-
+ 
+ 
 %post -p /sbin/ldconfig
-
+ 
 %postun -p /sbin/ldconfig
-
+ 
 %post mate
-%mateconf_schema_upgrade compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
-
+%mateconf_schema_upgrade %{plugins_schemas}
+ 
 %pre mate
-%mateconf_schema_prepare compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
-%gconf_schema_obsolete compiz-kconfig
-
+%mateconf_schema_prepare %{plugins_schemas}
+%mateconf_schema_obsolete compiz-kconfig
+ 
 %preun mate
-%mateconf_schema_remove compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
-
-
+%mateconf_schema_remove %{plugins_schemas}
+ 
+ 
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README TODO NEWS
 %{_bindir}/compiz
@@ -245,7 +247,7 @@ desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.d
 %dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
 %{_datadir}/compiz/core.xml
-
+ 
 %files mate -f mate-files.txt
 %{_bindir}/compiz-mate-gtk
 %{_bindir}/gtk-window-decorator
@@ -257,8 +259,8 @@ desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.d
 %{_datadir}/applications/compiz-mate-gtk.desktop
 %exclude %{_datadir}/applications/compiz.desktop
 %config(noreplace) %{_sysconfdir}/mateconf/schemas/*.schemas
-
-
+ 
+ 
 %files devel
 %{_libdir}/pkgconfig/compiz.pc
 %{_libdir}/pkgconfig/libdecoration.pc
@@ -269,8 +271,10 @@ desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.d
 %{_includedir}/compiz/
 %{_libdir}/libdecoration.so
 
-
 %changelog
+* Sun Dec 02 2012 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-10
+- add %%global  plugins_schemas again
+
 * Sun Dec 02 2012 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-9
 - revert scriptlet change
 

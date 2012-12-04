@@ -2,8 +2,6 @@
 
 %global    mate_plugins    annotate mateconf glib svg matecompat
 
-%global  plugins_schemas     compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom
-
 # List of plugins passed to ./configure.  The order is important
 
 %global    plugins         core,glib,mateconf,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall,obs
@@ -229,14 +227,14 @@ desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.d
 %postun -p /sbin/ldconfig
 
 %post mate
-%mateconf_schema_upgrade %{plugins_schemas} gwd
+%mateconf_schema_upgrade compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
 
 %pre mate
-%mateconf_schema_prepare %{plugins_schemas} gwd
+%mateconf_schema_prepare compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
 %gconf_schema_obsolete compiz-kconfig
 
 %preun mate
-%mateconf_schema_remove %{plugins_schemas} gwd
+%mateconf_schema_remove compiz-annotate compiz-blur compiz-clone compiz-commands compiz-core compiz-cube compiz-dbus compiz-decoration compiz-fade compiz-fs compiz-glib compiz-ini compiz-inotify compiz-matecompat compiz-mateconf compiz-minimize compiz-move compiz-obs compiz-place compiz-png compiz-regex compiz-resize compiz-rotate compiz-scale compiz-screenshot compiz-svg compiz-switcher compiz-video compiz-wall compiz-water compiz-wobbly compiz-zoom gwd
 
 
 %files -f core-files.txt
@@ -273,6 +271,9 @@ desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.d
 
 
 %changelog
+* Sun Dec 02 2012 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-9
+- revert scriptlet change
+
 * Sun Dec 02 2012 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-8
 - add %%global  plugins_schemas
 - change mateconf scriptlets

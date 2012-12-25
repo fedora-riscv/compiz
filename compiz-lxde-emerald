@@ -1,12 +1,12 @@
 #!/bin/bash
 
 function runCompiz() {
-	gtk-window-decorator &
-	if ( [ -e /usr/lib/compizconfig/backends/libmateconf.so ] || [ -e /usr/lib64/compizconfig/backends/libmateconf.so ] )
+    if ( [ -e /usr/lib/compizconfig/backends/libini.so ] || [ -e /usr/lib64/compizconfig/backends/libini.so ] )
         then
-                exec compiz --ignore-desktop-hints ccp $@
+            exec compiz --replace --sm-disable --ignore-desktop-hints ccp &&
+            emerald --replace $@
         else
-        	exec compiz --ignore-desktop-hints glib mateconf matecompat $@
+        	exec compiz --replace --sm-disable --ignore-desktop-hints ccp glib ini $@
         fi
 }
 
@@ -28,5 +28,5 @@ if ( [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then
 	runCompiz $@
 fi
 
-# Fall back to marco
-exec marco $@
+# Fall back to openbox-lxde
+exec openbox-lxde $@

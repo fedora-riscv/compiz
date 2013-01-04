@@ -293,7 +293,7 @@ fi
 
 
 %changelog
-* Fri Jan 04 2012 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-13
+* Fri Jan 04 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-13
 - add require emerald again
 
 * Tue Dec 25 2012 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-12

@@ -12,7 +12,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        13%{?dist}
+Release:        15%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  

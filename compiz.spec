@@ -12,7 +12,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        15%{?dist}
+Release:        16%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -296,6 +296,9 @@ fi
 
 
 %changelog
+* Tue Feb 12 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-16
+- add require emerald again
+
 * Tue Feb 12 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-15
 - remove require emerald until it is in fedora 17 stable
 

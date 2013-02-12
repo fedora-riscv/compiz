@@ -85,6 +85,7 @@ Patch17:       compiz_always_unredirect_screensaver_on_nvidia.patch
 Patch19:       compiz_fullscreen_stacking_fixes.patch
 Patch20:       compiz_damage-report-non-empty.patch
 Patch21:       compiz_stacking.patch
+# https://bugzilla.redhat.com/show_bug.cgi?id=909657
 Patch22:       compiz_primary-is-control.patch
  
  

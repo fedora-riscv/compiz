@@ -12,7 +12,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        14%{?dist}
+Release:        13%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -22,7 +22,7 @@ ExcludeArch:   s390 s390x
 Requires:       system-logos
 Requires:       glx-utils
 # this is an inverse require which is needed for build without gtk-windows-decorator
-Requires:       emerald
+# Requires:       emerald
  
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
@@ -296,6 +296,9 @@ fi
 
 
 %changelog
+* Tue Feb 12 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-15
+- remove require emerald until it is in fedora 17 stable
+
 * Sun Feb 10 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-14
 - add compiz_primary-is-control.patch
 - this will set all default configurations to pimary key

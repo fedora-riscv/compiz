@@ -12,7 +12,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        13%{?dist}
+Release:        14%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -85,6 +85,7 @@ Patch17:       compiz_always_unredirect_screensaver_on_nvidia.patch
 Patch19:       compiz_fullscreen_stacking_fixes.patch
 Patch20:       compiz_damage-report-non-empty.patch
 Patch21:       compiz_stacking.patch
+Patch22:       compiz_primary-is-control.patch
  
  
 %description
@@ -165,6 +166,7 @@ for lxde.
 %patch19 -p1 -b .fullscreen_stacking
 %patch20 -p1 -b .damage-report
 %patch21 -p1 -b .stacking
+%patch22 -p1 -b .primary-is-control
  
  
 %build
@@ -293,6 +295,12 @@ fi
 
 
 %changelog
+* Sun Feb 10 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-14
+- add compiz_primary-is-control.patch
+- this will set all default configurations to pimary key
+- change compiz-wall.patch for set primary is control key
+- fix (#909657)
+
 * Fri Jan 04 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-13
 - add require emerald again
 

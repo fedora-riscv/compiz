@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<KeyListEntries wm_name="Marco" package="marco" group="system" name="System">
-
-	<KeyListEntry name="/apps/marco/global_keybindings/panel_run_dialog"/>
-
-	<KeyListEntry name="/apps/marco/global_keybindings/panel_main_menu"/>
-
-</KeyListEntries>

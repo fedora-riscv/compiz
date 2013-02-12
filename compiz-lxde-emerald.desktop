@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Compiz
+TryExec=compiz-lxde-emerald
+Exec=compiz-lxde-emerald
+NoDisplay=true
+Name[de_DE]=compiz-lxde-emerald.desktop
+X-Desktop-File-Install-Version=0.21

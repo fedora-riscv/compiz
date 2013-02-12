@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Compiz
+TryExec=compiz-mate-emerald
+Exec=compiz-mate-emerald
+NoDisplay=true
+Name[de_DE]=compiz-mate-emerald.desktop

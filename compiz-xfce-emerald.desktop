@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Compiz
+TryExec=compiz-xfce-emerald
+Exec=compiz-xfce-emerald
+NoDisplay=true
+Name[de_DE]=compiz-xfce-emerald.desktop
+X-Desktop-File-Install-Version=0.21

@@ -12,7 +12,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        16%{?dist}
+Release:        17%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -296,6 +296,9 @@ fi
 
 
 %changelog
+* Tue Feb 12 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-17
+- fix wall patch for primary is control
+
 * Tue Feb 12 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-16
 - add require emerald again
 

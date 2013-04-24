@@ -1,8 +1,12 @@
 [Desktop Entry]
 Type=Application
-Name=Compiz
+Name=Compiz LXDE Emerald
+Comment=start or restart Compiz Fusion with Emerald windows-decoator
 TryExec=compiz-lxde-emerald
 Exec=compiz-lxde-emerald
-NoDisplay=true
-Name[de_DE]=compiz-lxde-emerald.desktop
-X-Desktop-File-Install-Version=0.21
+Icon=fusion-icon
+NoDisplay=false
+StartupNotify=true
+Categories=Utility;
+OnlyShowIn=LXDE;
+Name[de_DE]=Compiz LXDE Emerald

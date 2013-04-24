@@ -1,13 +1,8 @@
 #!/bin/bash
 
 function runCompiz() {
-    if ( [ -e /usr/lib/compizconfig/backends/libini.so ] || [ -e /usr/lib64/compizconfig/backends/libini.so ] )
-        then
-            exec compiz --replace --sm-disable --ignore-desktop-hints ccp &&
-            emerald --replace $@
-        else
-        	exec compiz --replace --sm-disable --ignore-desktop-hints ccp glib ini $@
-        fi
+    emerald --replace &
+    exec compiz --replace --sm-disable --ignore-desktop-hints ccp $@
 }
 
 ISSW=`glxinfo | grep "Software Rasterizer" -c`
@@ -30,3 +25,4 @@ fi
 
 # Fall back to xfwm4
 exec xfwm4 $@
+

@@ -1,8 +1,12 @@
 #!/bin/bash
 
+theme=`xfconf-query -c xfwm4 -p /general/theme`
+
+echo "$theme"
+
 function runCompiz() {
-    emerald --replace &
-    exec compiz --replace --sm-disable --ignore-desktop-hints ccp $@
+	gtk-window-decorator --replace --marco-theme "$theme" &
+	exec compiz --replace --sm-disable --ignore-desktop-hints ccp $@ 
 }
 
 ISSW=`glxinfo | grep "Software Rasterizer" -c`
@@ -23,6 +27,6 @@ if ( [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then
 	runCompiz $@
 fi
 
-# Fall back to marco
-exec marco $@
+# Fall back to xfwm4
+exec xfwm4 $@
 

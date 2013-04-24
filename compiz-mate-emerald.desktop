@@ -1,7 +1,12 @@
 [Desktop Entry]
 Type=Application
-Name=Compiz
+Name=Compiz MATE Emerald
+Comment=start or restart Compiz Fusion with Emerald windows-decoator
 TryExec=compiz-mate-emerald
 Exec=compiz-mate-emerald
-NoDisplay=true
-Name[de_DE]=compiz-mate-emerald.desktop
+Icon=fusion-icon
+NoDisplay=false
+StartupNotify=true
+Categories=Utility;
+OnlyShowIn=MATE;
+Name[de_DE]=Compiz MATE Emerald

@@ -34,8 +34,8 @@ Last-Updated: 2012-10-09
  #include <X11/Xregion.h>
 +#include <X11/Xcursor/Xcursor.h>
  
- #ifndef GDK_DISABLE_DEPRECATED
- #define GDK_DISABLE_DEPRECATED
+ #include <gtk/gtk.h>
+ #include <gdk/gdkx.h>
 @@ -75,6 +76,14 @@
  #include <marco-private/theme.h>
  #endif

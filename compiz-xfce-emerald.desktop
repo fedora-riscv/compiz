@@ -1,8 +1,12 @@
 [Desktop Entry]
 Type=Application
-Name=Compiz
+Name=Compiz XFCE Emerald
+Comment=start or restart Compiz Fusion with Emerald windows-decoator
 TryExec=compiz-xfce-emerald
 Exec=compiz-xfce-emerald
-NoDisplay=true
-Name[de_DE]=compiz-xfce-emerald.desktop
-X-Desktop-File-Install-Version=0.21
+Icon=fusion-icon
+NoDisplay=false
+StartupNotify=true
+Categories=Utility;
+OnlyShowIn=XFCE;
+Name[de_DE]=Compiz XFCE Emerald

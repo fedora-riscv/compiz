@@ -1,10 +1,10 @@
-%global    core_plugins    blur clone cube dbus decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall glib annotate svg
+%global    core_plugins    blur clone cube decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall annotate svg
  
 %global    mate_plugins    matecompat
  
 # List of plugins passed to ./configure.  The order is important
  
-%global    plugins         core,glib,dbus,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall,obs
+%global    plugins         core,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall,obs
 
 
 Name:           compiz
@@ -12,7 +12,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        15%{?dist}
+Release:        16%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -26,7 +26,7 @@ Requires:       emerald
  
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
-BuildRequires: libwnck-devel
+BuildRequires: libmatewnck-devel
 BuildRequires: libXfixes-devel
 BuildRequires: libXrandr-devel
 BuildRequires: libXrender-devel
@@ -37,56 +37,64 @@ BuildRequires: libXt-devel
 BuildRequires: libSM-devel
 BuildRequires: libICE-devel
 BuildRequires: libXmu-devel
-BuildRequires: mate-conf-devel
 BuildRequires: desktop-file-utils
 BuildRequires: intltool
 BuildRequires: gettext
-BuildRequires: dbus-devel
-BuildRequires: dbus-glib-devel
 BuildRequires: librsvg2-devel
 BuildRequires: mesa-libGLU-devel
 BuildRequires: fuse-devel
 BuildRequires: cairo-devel
 BuildRequires: libtool
 BuildRequires: libxslt-devel
-
+BuildRequires: mate-window-manager-devel
  
 Source0:       http://releases.compiz.org/%{version}/%{name}-%{version}.tar.bz2
-Source2:       compiz-mate-emerald
-Source3:       compiz-mate-emerald.desktop
-Source4:       compiz-xfce-emerald
-Source5:       compiz-xfce-emerald.desktop
-Source6:       compiz-lxde-emerald
-Source7:       compiz-lxde-emerald.desktop
-Source8:       compiz-plugins-main_plugin-matecompat.svg
+Source1:       compiz-mate-gtk
+Source2:       compiz-mate-gtk.desktop
+Source3:       compiz-mate-emerald
+Source4:       compiz-mate-emerald.desktop
+Source5:       compiz-xfce-gtk
+Source6:       compiz-xfce-gtk.desktop
+Source7:       compiz-xfce-emerald
+Source8:       compiz-xfce-emerald.desktop
+Source9:       compiz-lxde-gtk
+Source10:      compiz-lxde-gtk.desktop
+Source11:      compiz-lxde-emerald
+Source12:      compiz-lxde-emerald.desktop
+Source13:      compiz-plugins-main_plugin-matecompat.svg
  
 # fork gnome to mate
-Patch0:        comiz_mate_fork.patch
-# fix http://forums.mate-desktop.org/viewtopic.php?f=8&t=818
-#Patch1:        compiz_gtk_window_decoration_button_placement.patch
-#Patch2:        compiz_windows-decorator.patch
+Patch0:        compiz_new_mate.patch
 # Patches that are not upstream
-Patch3:        composite-cube-logo.patch
-Patch4:        fedora-logo.patch
-Patch5:        redhat-logo.patch
+Patch1:        compiz_disable_gdk_gtk_disable_deprecated.patch
+Patch3:        compiz_composite-cube-logo.patch
+Patch4:        compiz_fedora-logo.patch
+Patch5:        compiz_redhat-logo.patch
 Patch6:        compiz-0.8.6-wall.patch
-Patch7:        compiz-0.8.6-unloadpluginfix.patch
-Patch8:        no-more-mate-wm-settings.patch
-Patch9:        compiz-0.88_incorrect-fsf-address.patch
+Patch7:        compiz-0.8.6-new_unloadpluginfix.patch
+Patch9:        compiz-0.8.8_incorrect-fsf-address.patch
 Patch10:       compiz-disable-child-window-clipping.patch
-Patch11:       compiz-add-cursor-theme-support.patch
-#Patch12:       compiz-fix-gtk-window-decorator-no-argb-crash.patch
+Patch11:       compiz_new_add-cursor-theme-support.patch
+Patch12:       compiz-fix-gtk-window-decorator-no-argb-crash.patch
 Patch13:       compiz_fix-no-border-window-shadow.patch
 Patch14:       compiz_draw_dock_shadows_on_desktop.patch
 Patch15:       compiz_optional-fbo.patch
 Patch16:       compiz_call_glxwaitx_before_drawing.patch
 Patch17:       compiz_always_unredirect_screensaver_on_nvidia.patch
-#Patch18:       compiz_hide_tooltip_on_decorator.patch
 Patch19:       compiz_fullscreen_stacking_fixes.patch
 Patch20:       compiz_damage-report-non-empty.patch
 Patch21:       compiz_stacking.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=909657
 Patch22:       compiz_primary-is-control.patch
+# those patches belongs together
+Patch23:       compiz_remove_keybindings_and_matewindows-settings_files.patch
+Patch24:       compiz_remove_kde.patch
+Patch25:       compiz_remove_mateconf_dbus_glib.patch
+Patch26:       compiz_clean_potfiles.patch
+Patch27:       compiz_remove_old_metacity_checks.patch
+Patch28:       compiz_commandline_options_for_button_layout_and_titlebar_font.patch
+Patch29:       compiz_wnck_to_matewnck.patch
+Patch30:       compiz_matewnck_corrections.patch
  
  
 %description
@@ -109,43 +117,42 @@ Requires: libxslt-devel startup-notification-devel
 %description devel
 The compiz-devel package includes the header files,
 and developer docs for the compiz package.
- 
 Install compiz-devel if you want to develop plugins for the compiz
 windows and compositing manager.
- 
+
 %package mate
 Summary: Compiz mate integration bits
 Group: User Interface/Desktops
 Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
  
 %description mate
-The compiz-mate package contains matecompat plugin
-and a compiz start script for mate.
+The compiz-mate package contains the matecompat plugin
+and start scripts to start Compiz with emerald and
+gtk-windows-decorator.
 
 %package xfce
-Summary: Compiz mate integration bits
+Summary: Compiz xfce integration bits
 Group: User Interface/Desktops
 Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
  
 %description xfce
-The compiz-xfce package contains a compiz start script
-for xfce.
+The compiz-xfce package contains start scripts to start
+Compiz with emerald and gtk-windows-decorator.
 
 %package lxde
-Summary: Compiz mate integration bits
+Summary: Compiz lxde integration bits
 Group: User Interface/Desktops
 Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
  
 %description lxde
-The compiz-lxde package contains a compiz start script
-for lxde.
+The compiz-lxde package contains start scripts to start
+Compiz with emerald and gtk-windows-decorator.
 
  
 %prep
 %setup -q
 %patch0 -p1 -b .comiz_mate_fork
-#%patch1 -p1 -b .compiz_gtk_window_decoration_button
-#%patch2 -p1 -b .compiz_windows-decorator
+%patch1 -p1 -b .disable_deprecated
 %patch3 -p1 -b .composite-cube-logo
 %if 0%{?fedora}
 %patch4 -p1 -b .fedora-logo
@@ -154,21 +161,26 @@ for lxde.
 %endif
 %patch6 -p1 -b .wall
 %patch7 -p1 -b .unloadfix
-%patch8 -p1 -b .mate-wm-settings
 %patch9 -p1 -b .incorrect-fsf-address
 %patch11 -p1 -b .cursor-theme-support
-#%patch12 -p1 -b .gtk-window-decorator-no-argb-crash
+%patch12 -p1 -b .gtk-window-decorator-no-argb-crash
 %patch13 -p1 -b .no-border-window-shadow
 %patch14 -p1 -b .draw_dock_shadows
 %patch15 -p1 -b .fbo
 %patch16 -p1 -b .glxwaitx_before_drawing
 %patch17 -p1 -b .always_unredirect_screensaver
-#%patch18 -p1 -b .tooltip_on_decorator
 %patch19 -p1 -b .fullscreen_stacking
 %patch20 -p1 -b .damage-report
 %patch21 -p1 -b .stacking
 %patch22 -p1 -b .primary-is-control
- 
+%patch23 -p1 -b .remove_keybindings
+%patch24 -p1 -b .remove_kde
+%patch25 -p1 -b .remove_mateconf_dbus_glib
+%patch26 -p1 -b .potfiles
+%patch27 -p1 -b .old_metacity_checks
+%patch28 -p1 -b .commandline_options
+%patch29 -p1 -b .wnck_to_matewnck
+%patch30 -p1 -b .matewnck_corrections
  
 %build
  
@@ -177,18 +189,11 @@ aclocal
 autoconf
 automake
 %configure \
-    --disable-mateconf \
-    --enable-dbus \
     --enable-librsvg \
-    --disable-gtk \
-    --disable-marco \
+    --enable-gtk \
+    --enable-marco \
     --enable-mate \
-    --with-default-plugins=%{plugins} \
-    --disable-mate-keybindings \
-    --disable-kde \
-    --disable-kde4 \
-    --disable-kconfig
-
+    --with-default-plugins=%{plugins}
  
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
  
@@ -196,26 +201,36 @@ make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 %install
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 
-install %SOURCE2 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE4 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE6 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE5 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE7 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE9 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE11 $RPM_BUILD_ROOT%{_bindir}
 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE3
+  %SOURCE2
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE5
+  %SOURCE4
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE7
+  %SOURCE6
+desktop-file-install --vendor="" \
+  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+  %SOURCE8
+desktop-file-install --vendor="" \
+  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+  %SOURCE10
+desktop-file-install --vendor="" \
+  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+  %SOURCE12
 
 # matecompat icon
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/ccsm/icons/hicolor/scalable/apps
-cp -f %SOURCE8 $RPM_BUILD_ROOT%{_datadir}/ccsm/icons/hicolor/scalable/apps/plugin-matecompat.svg
+cp -f %SOURCE13 $RPM_BUILD_ROOT%{_datadir}/ccsm/icons/hicolor/scalable/apps/plugin-matecompat.svg
 
-rm $RPM_BUILD_ROOT%{_datadir}/compiz/kconfig.xml
-rm $RPM_BUILD_ROOT%{_datadir}/compiz/mateconf.xml
 rm $RPM_BUILD_ROOT%{_datadir}/applications/compiz.desktop
  
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
@@ -237,8 +252,11 @@ done >> mate-files.txt
  
  
 %check
+desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-emerald.desktop
+desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-xfce-gtk.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-xfce-emerald.desktop
+desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-lxde-gtk.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-lxde-emerald.desktop
  
  
@@ -262,29 +280,40 @@ fi
 /usr/bin/gtk-update-icon-cache %{_datadir}/compiz &>/dev/null || :
 /usr/bin/gtk-update-icon-cache %{_datadir}/ccsm/icons/hicolor/scalable/apps &>/dev/null || :
 
+%post mate -p /sbin/ldconfig
+
+%postun mate -p /sbin/ldconfig
+
  
  
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README TODO NEWS
 %{_bindir}/compiz
+%{_bindir}/gtk-window-decorator
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
 %dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
 %{_datadir}/compiz/core.xml
- 
+
 %files mate -f mate-files.txt
 %{_bindir}/compiz-mate-emerald
+%{_bindir}/compiz-mate-gtk
 %{_datadir}/applications/compiz-mate-emerald.desktop
+%{_datadir}/applications/compiz-mate-gtk.desktop
 %{_datadir}/ccsm/icons/hicolor/scalable/apps/plugin-matecompat.svg
 
 %files xfce
 %{_bindir}/compiz-xfce-emerald
+%{_bindir}/compiz-xfce-gtk
 %{_datadir}/applications/compiz-xfce-emerald.desktop
+%{_datadir}/applications/compiz-xfce-gtk.desktop
 
 %files lxde
 %{_bindir}/compiz-lxde-emerald
+%{_bindir}/compiz-lxde-gtk
 %{_datadir}/applications/compiz-lxde-emerald.desktop
+%{_datadir}/applications/compiz-lxde-gtk.desktop
  
 %files devel
 %{_libdir}/pkgconfig/compiz.pc
@@ -296,6 +325,19 @@ fi
 
 
 %changelog
+* Wed Apr 24 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-16
+- enable gtk-windows-decorator based on marco (mate-window-manager)
+- add compiz_disable_gdk_gtk_disable_deprecated patch
+- remove dbus
+- remove glib
+- remove mateconf
+- remove kde
+- remove keybindings
+- add start scripts for gtk-windows-decorator
+- update start scripts for emerald
+- add ldconfig scriptlet for mate subpackage
+- using libmatewnck instead of libwnck
+
 * Wed Feb 13 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-15
 - fix primary-is-control in wall patch
 

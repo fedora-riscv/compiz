@@ -1,0 +1,404 @@
+diff -uprN compiz-0.8.8-orig/configure.ac compiz-0.8.8/configure.ac
+--- compiz-0.8.8-orig/configure.ac	2013-04-19 10:34:23.593756000 +0200
++++ compiz-0.8.8/configure.ac	2013-04-19 10:36:57.465302146 +0200
+@@ -243,20 +243,6 @@ if test "x$use_gtk" = "xyes"; then
+ 		    pangocairo,
+ 		    [use_gtk=yes], [use_gtk=no])
+   if test "x$use_gtk" = "xyes"; then
+-    save_CFLAGS="$CFLAGS"
+-    save_LIBS="$LIBS"
+-    CFLAGS="$CFLAGS $GTK_WINDOW_DECORATOR_CFLAGS"
+-    LIBS="$LIBS $GTK_WINDOW_DECORATOR_LIBS"
+-    AC_CHECK_FUNCS(matewnck_window_has_name)
+-    CFLAGS="$save_CFLAGS"
+-    LIBS="$save_LIBS"
+-
+-    PKG_CHECK_EXISTS(libmatewnck-1.0 >= 2.18.1,
+-		     [have_libmatewnck_2_18_1=yes], [have_libmatewnck_2_18_1=no])
+-
+-	PKG_CHECK_EXISTS(libmatewnck-1.0 >= 2.19.4,
+-		     [have_libmatewnck_2_19_4=yes], [have_libmatewnck_2_19_4=no])
+-
+     if test "x$use_marco" = "xyes"; then
+       PKG_CHECK_MODULES(MARCO, libmarco-private,
+ 			[use_marco=yes], [use_marco=no])
+@@ -273,14 +259,6 @@ fi
+ AM_CONDITIONAL(USE_GTK, test "x$use_gtk" = "xyes")
+ if test "$use_gtk" = yes; then
+   AC_DEFINE(USE_GTK, 1, [Build gtk window decorator])
+-  if test "$have_libmatewnck_2_18_1" = yes; then
+-    AC_DEFINE(HAVE_LIBMATEWNCK_2_18_1, 1,
+-	      [Define to 1 if libmatewnck version >= 2_18_1])
+-  fi
+-  if test "$have_libmatewnck_2_19_4" = yes; then
+-    AC_DEFINE(HAVE_LIBMATEWNCK_2_19_4, 1,
+-	      [Define to 1 if libmatewnck version >= 2_19_4])
+-  fi
+ fi
+ 
+ AM_CONDITIONAL(USE_MARCO, test "x$use_marco" = "xyes")
+diff -uprN compiz-0.8.8-orig/gtk/window-decorator/gtk-window-decorator.c compiz-0.8.8/gtk/window-decorator/gtk-window-decorator.c
+--- compiz-0.8.8-orig/gtk/window-decorator/gtk-window-decorator.c	2013-04-19 10:34:23.596756000 +0200
++++ compiz-0.8.8/gtk/window-decorator/gtk-window-decorator.c	2013-04-19 10:54:42.299020150 +0200
+@@ -36,14 +36,9 @@
+ #include <gdk/gdkx.h>
+ #include <glib/gi18n.h>
+ 
+-#define MATEWNCK_I_KNOW_THIS_IS_UNSTABLE
+ #include <libmatewnck/libmatewnck.h>
+ #include <libmatewnck/window-action-menu.h>
+ 
+-#ifndef HAVE_LIBMATEWNCK_2_19_4
+-#define matewnck_window_get_client_window_geometry matewnck_window_get_geometry
+-#endif
+-
+ #include <cairo.h>
+ #include <cairo-xlib.h>
+ 
+@@ -3068,21 +3056,11 @@ update_event_windows (MatewnckWindow *wi
+ 	    MATEWNCK_WINDOW_ACTION_MINIMIZE,
+ 	    0,
+ 	    MATEWNCK_WINDOW_ACTION_SHADE,
+-
+-#ifdef HAVE_LIBMATEWNCK_2_18_1
+ 	    MATEWNCK_WINDOW_ACTION_ABOVE,
+ 	    MATEWNCK_WINDOW_ACTION_STICK,
+ 	    MATEWNCK_WINDOW_ACTION_UNSHADE,
+ 	    MATEWNCK_WINDOW_ACTION_ABOVE,
+ 	    MATEWNCK_WINDOW_ACTION_UNSTICK
+-#else
+-	    0,
+-	    0,
+-	    0,
+-	    0,
+-	    0
+-#endif
+-
+ 	};
+ 
+ 	if (button_actions[i] && !(actions & button_actions[i]))
+@@ -3106,14 +3084,11 @@ update_event_windows (MatewnckWindow *wi
+     gdk_error_trap_pop ();
+ }
+ 
+-#ifdef HAVE_MATEWNCK_WINDOW_HAS_NAME
+ static const char *
+-matewnck_window_get_real_name (MatewnckWindow *win)
++wnck_window_get_real_name (MatewnckWindow *win)
+ {
+     return matewnck_window_has_name (win) ? matewnck_window_get_name (win) : NULL;
+ }
+-#define matewnck_window_get_name matewnck_window_get_real_name
+-#endif
+ 
+ static gint
+ max_window_name_width (MatewnckWindow *win)
+@@ -3131,7 +3106,7 @@ max_window_name_width (MatewnckWindow *w
+ 	pango_layout_set_wrap (d->layout, PANGO_WRAP_CHAR);
+     }
+ 
+-    name = matewnck_window_get_name (win);
++    name = wnck_window_get_real_name (win);
+     if (!name)
+ 	return 0;
+ 
+@@ -3160,7 +3135,7 @@ update_window_decoration_name (MatewnckW
+ 	d->name = NULL;
+     }
+ 
+-    name = matewnck_window_get_name (win);
++    name = wnck_window_get_real_name (win);
+     if (name && (name_length = strlen (name)))
+     {
+ 	gint w;
+@@ -3603,7 +3578,7 @@ update_switcher_window (MatewnckWindow *
+ 	    d->name = NULL;
+ 	}
+ 
+-	name = matewnck_window_get_name (selected_win);
++	name = wnck_window_get_real_name (selected_win);
+ 	if (name && (name_length = strlen (name)))
+ 	{
+ 	    if (!d->layout)
+@@ -4478,11 +4453,6 @@ action_menu_map (MatewnckWindow *win,
+ 	return;
+     case MATEWNCK_WINDOW_NORMAL:
+     case MATEWNCK_WINDOW_DIALOG:
+-
+-#ifndef HAVE_LIBMATEWNCK_2_19_4
+-    case MATEWNCK_WINDOW_MODAL_DIALOG:
+-#endif
+-
+     case MATEWNCK_WINDOW_TOOLBAR:
+     case MATEWNCK_WINDOW_MENU:
+     case MATEWNCK_WINDOW_UTILITY:
+@@ -4572,11 +4542,6 @@ above_button_event (MatewnckWindow *win,
+ 	{
+ 	    if (state == BUTTON_EVENT_ACTION_STATE)
+ 	    {
+-
+-#ifdef HAVE_LIBMATEWNCK_2_18_1
+-		matewnck_window_make_above (win);
+-#endif
+-
+ 	    }
+ 	}
+ 	break;
+@@ -4638,11 +4603,7 @@ unabove_button_event (MatewnckWindow *wi
+ 	{
+ 	    if (state == BUTTON_EVENT_ACTION_STATE)
+ 	    {
+-
+-#ifdef HAVE_LIBMATEWNCK_2_18_1
+ 		matewnck_window_unmake_above (win);
+-#endif
+-
+ 	    }
+ 	}
+ 	break;
+@@ -5006,7 +4967,7 @@ show_force_quit_dialog (MatewnckWindow *
+     if (d->force_quit_dialog)
+ 	return;
+ 
+-    tmp = g_markup_escape_text (matewnck_window_get_name (win), -1);
++    tmp = g_markup_escape_text (wnck_window_get_real_name (win), -1);
+     str = g_strdup_printf (_("The window \"%s\" is not responding."), tmp);
+ 
+     g_free (tmp);
+@@ -6534,139 +6495,6 @@ value_changed (MateConfClient *client,
+     if (changed)
+ 	decorations_changed (data);
+ }
+-
+-#elif USE_DBUS_GLIB
+-
+-static DBusHandlerResult
+-dbus_handle_message (DBusConnection *connection,
+-		     DBusMessage    *message,
+-		     void           *user_data)
+-{
+-    MatewnckScreen	      *screen = user_data;
+-    char	      **path;
+-    const char        *interface, *member;
+-    DBusHandlerResult result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+-
+-    interface = dbus_message_get_interface (message);
+-    member    = dbus_message_get_member (message);
+-
+-    (void) connection;
+-
+-    if (!interface || !member)
+-	return result;
+-
+-    if (!dbus_message_is_signal (message, interface, member))
+-	return result;
+-
+-    if (strcmp (member, "changed"))
+-	return result;
+-
+-    if (!dbus_message_get_path_decomposed (message, &path))
+-	return result;
+-
+-    if (!path[0] || !path[1] || !path[2] || !path[3] || !path[4] || !path[5])
+-    {
+-	dbus_free_string_array (path);
+-	return result;
+-    }
+-
+-    if (!strcmp (path[0], "org")	 &&
+-	!strcmp (path[1], "freedesktop") &&
+-	!strcmp (path[2], "compiz")      &&
+-	!strcmp (path[3], "decoration")  &&
+-	!strcmp (path[4], "allscreens"))
+-    {
+-	result = DBUS_HANDLER_RESULT_HANDLED;
+-
+-	if (strcmp (path[5], "shadow_radius") == 0)
+-	{
+-	    dbus_message_get_args (message, NULL,
+-				   DBUS_TYPE_DOUBLE, &shadow_radius,
+-				   DBUS_TYPE_INVALID);
+-	}
+-	else if (strcmp (path[5], "shadow_opacity") == 0)
+-	{
+-	    dbus_message_get_args (message, NULL,
+-				   DBUS_TYPE_DOUBLE, &shadow_opacity,
+-				   DBUS_TYPE_INVALID);
+-	}
+-	else if (strcmp (path[5], "shadow_color") == 0)
+-	{
+-	    DBusError error;
+-	    char      *str;
+-
+-	    dbus_error_init (&error);
+-
+-	    dbus_message_get_args (message, &error,
+-				   DBUS_TYPE_STRING, &str,
+-				   DBUS_TYPE_INVALID);
+-
+-	    if (!dbus_error_is_set (&error))
+-	    {
+-		int c[4];
+-
+-		if (sscanf (str, "#%2x%2x%2x%2x",
+-			    &c[0], &c[1], &c[2], &c[3]) == 4)
+-		{
+-		    shadow_color[0] = c[0] << 8 | c[0];
+-		    shadow_color[1] = c[1] << 8 | c[1];
+-		    shadow_color[2] = c[2] << 8 | c[2];
+-		}
+-	    }
+-
+-	    dbus_error_free (&error);
+-	}
+-	else if (strcmp (path[5], "shadow_x_offset") == 0)
+-	{
+-	    dbus_message_get_args (message, NULL,
+-				   DBUS_TYPE_INT32, &shadow_offset_x,
+-				   DBUS_TYPE_INVALID);
+-	}
+-	else if (strcmp (path[5], "shadow_y_offset") == 0)
+-	{
+-	    dbus_message_get_args (message, NULL,
+-				   DBUS_TYPE_INT32, &shadow_offset_y,
+-				   DBUS_TYPE_INVALID);
+-	}
+-
+-	decorations_changed (screen);
+-    }
+-
+-    dbus_free_string_array (path);
+-
+-    return result;
+-}
+-
+-static DBusMessage *
+-send_and_block_for_shadow_option_reply (DBusConnection *connection,
+-					char	       *path)
+-{
+-    DBusMessage *message;
+-
+-    message = dbus_message_new_method_call (NULL,
+-					    path,
+-					    DBUS_INTERFACE,
+-					    DBUS_METHOD_GET);
+-    if (message)
+-    {
+-	DBusMessage *reply;
+-	DBusError   error;
+-
+-	dbus_message_set_destination (message, DBUS_DEST);
+-
+-	dbus_error_init (&error);
+-	reply = dbus_connection_send_with_reply_and_block (connection,
+-							   message, -1,
+-							   &error);
+-	dbus_message_unref (message);
+-
+-	if (!dbus_error_is_set (&error))
+-	    return reply;
+-    }
+-
+-    return NULL;
+-}
+-
+ #endif
+ 
+ static gboolean
+@@ -6708,96 +6536,6 @@ init_settings (MatewnckScreen *screen)
+ 		      screen);
+ 
+     cursor_theme_changed(mateconf);
+-
+-#elif USE_DBUS_GLIB
+-    DBusConnection *connection;
+-    DBusMessage	   *reply;
+-    DBusError	   error;
+-
+-    dbus_error_init (&error);
+-
+-    connection = dbus_bus_get (DBUS_BUS_SESSION, &error);
+-    if (!dbus_error_is_set (&error))
+-    {
+-	dbus_bus_add_match (connection, "type='signal'", &error);
+-
+-	dbus_connection_add_filter (connection,
+-				    dbus_handle_message,
+-				    screen, NULL);
+-
+-	dbus_connection_setup_with_g_main (connection, NULL);
+-    }
+-
+-    reply = send_and_block_for_shadow_option_reply (connection, DBUS_PATH
+-						    "/shadow_radius");
+-    if (reply)
+-    {
+-	dbus_message_get_args (reply, NULL,
+-			       DBUS_TYPE_DOUBLE, &shadow_radius,
+-			       DBUS_TYPE_INVALID);
+-
+-	dbus_message_unref (reply);
+-    }
+-
+-    reply = send_and_block_for_shadow_option_reply (connection, DBUS_PATH
+-						    "/shadow_opacity");
+-    if (reply)
+-    {
+-	dbus_message_get_args (reply, NULL,
+-			       DBUS_TYPE_DOUBLE, &shadow_opacity,
+-			       DBUS_TYPE_INVALID);
+-	dbus_message_unref (reply);
+-    }
+-
+-    reply = send_and_block_for_shadow_option_reply (connection, DBUS_PATH
+-						    "/shadow_color");
+-    if (reply)
+-    {
+-	DBusError error;
+-	char      *str;
+-
+-	dbus_error_init (&error);
+-
+-	dbus_message_get_args (reply, &error,
+-			       DBUS_TYPE_STRING, &str,
+-			       DBUS_TYPE_INVALID);
+-
+-	if (!dbus_error_is_set (&error))
+-	{
+-	    int c[4];
+-
+-	    if (sscanf (str, "#%2x%2x%2x%2x", &c[0], &c[1], &c[2], &c[3]) == 4)
+-	    {
+-		shadow_color[0] = c[0] << 8 | c[0];
+-		shadow_color[1] = c[1] << 8 | c[1];
+-		shadow_color[2] = c[2] << 8 | c[2];
+-	    }
+-	}
+-
+-	dbus_error_free (&error);
+-
+-	dbus_message_unref (reply);
+-    }
+-
+-    reply = send_and_block_for_shadow_option_reply (connection, DBUS_PATH
+-						    "/shadow_x_offset");
+-    if (reply)
+-    {
+-	dbus_message_get_args (reply, NULL,
+-			       DBUS_TYPE_INT32, &shadow_offset_x,
+-			       DBUS_TYPE_INVALID);
+-	dbus_message_unref (reply);
+-    }
+-
+-    reply = send_and_block_for_shadow_option_reply (connection, DBUS_PATH
+-						    "/shadow_y_offset");
+-    if (reply)
+-    {
+-	dbus_message_get_args (reply, NULL,
+-			       DBUS_TYPE_INT32, &shadow_offset_y,
+-			       DBUS_TYPE_INVALID);
+-	dbus_message_unref (reply);
+-    }
+ #endif
+ 
+     style_window = gtk_window_new (GTK_WINDOW_POPUP);

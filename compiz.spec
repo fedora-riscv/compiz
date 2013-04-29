@@ -12,7 +12,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        16%{?dist}
+Release:        18%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -325,6 +325,9 @@ fi
 
 
 %changelog
+* Mon Apr 29 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-18
+- bump version in spec file
+
 * Wed Apr 24 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-16
 - enable gtk-windows-decorator based on marco (mate-window-manager)
 - add compiz_disable_gdk_gtk_disable_deprecated patch

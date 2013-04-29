@@ -53,8 +53,6 @@ Source1:       compiz-mate-gtk
 Source2:       compiz-mate-gtk.desktop
 Source3:       compiz-mate-emerald
 Source4:       compiz-mate-emerald.desktop
-Source5:       compiz-xfce-gtk
-Source6:       compiz-xfce-gtk.desktop
 Source7:       compiz-xfce-emerald
 Source8:       compiz-xfce-emerald.desktop
 Source9:       compiz-lxde-gtk

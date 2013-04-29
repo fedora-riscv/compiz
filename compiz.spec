@@ -12,7 +12,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        18%{?dist}
+Release:        19%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -53,8 +53,6 @@ Source1:       compiz-mate-gtk
 Source2:       compiz-mate-gtk.desktop
 Source3:       compiz-mate-emerald
 Source4:       compiz-mate-emerald.desktop
-Source5:       compiz-xfce-gtk
-Source6:       compiz-xfce-gtk.desktop
 Source7:       compiz-xfce-emerald
 Source8:       compiz-xfce-emerald.desktop
 Source9:       compiz-lxde-gtk
@@ -66,7 +64,7 @@ Source13:      compiz-plugins-main_plugin-matecompat.svg
 # fork gnome to mate
 Patch0:        compiz_new_mate.patch
 # Patches that are not upstream
-Patch1:        compiz_disable_gdk_gtk_disable_deprecated.patch
+Patch1:        compiz_disable_gdk_disable_deprecated.patch
 Patch3:        compiz_composite-cube-logo.patch
 Patch4:        compiz_fedora-logo.patch
 Patch5:        compiz_redhat-logo.patch
@@ -203,7 +201,6 @@ make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 
 install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE5 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE7 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE9 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE11 $RPM_BUILD_ROOT%{_bindir}
@@ -214,9 +211,6 @@ desktop-file-install --vendor="" \
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   %SOURCE4
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE6
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   %SOURCE8
@@ -254,7 +248,6 @@ done >> mate-files.txt
 %check
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-emerald.desktop
-desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-xfce-gtk.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-xfce-emerald.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-lxde-gtk.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-lxde-emerald.desktop
@@ -305,9 +298,7 @@ fi
 
 %files xfce
 %{_bindir}/compiz-xfce-emerald
-%{_bindir}/compiz-xfce-gtk
 %{_datadir}/applications/compiz-xfce-emerald.desktop
-%{_datadir}/applications/compiz-xfce-gtk.desktop
 
 %files lxde
 %{_bindir}/compiz-lxde-emerald
@@ -325,8 +316,14 @@ fi
 
 
 %changelog
+* Mon Apr 29 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-19
+- remove compiz-xfce-gtk start script
+
 * Mon Apr 29 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-18
-- bump version in spec file
+- rename compiz_disable_gtk_disable_deprecated.patch
+
+* Mon Apr 29 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-17
+- remove compiz-xfce-gtk.desktop
 
 * Wed Apr 24 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-16
 - enable gtk-windows-decorator based on marco (mate-window-manager)

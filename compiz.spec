@@ -12,7 +12,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        19%{?dist}
+Release:        20%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -23,6 +23,11 @@ Requires:       system-logos
 Requires:       glx-utils
 # this is an inverse require which is needed for build without gtk-windows-decorator
 Requires:       emerald
+
+Provides: %{name}-xfce%{?_isa} = %{epoch}:%{version}-%{release}
+Provides: %{name}-xfce = %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-xfce%{?_isa} < %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
  
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
@@ -53,8 +58,6 @@ Source1:       compiz-mate-gtk
 Source2:       compiz-mate-gtk.desktop
 Source3:       compiz-mate-emerald
 Source4:       compiz-mate-emerald.desktop
-Source7:       compiz-xfce-emerald
-Source8:       compiz-xfce-emerald.desktop
 Source9:       compiz-lxde-gtk
 Source10:      compiz-lxde-gtk.desktop
 Source11:      compiz-lxde-emerald
@@ -128,15 +131,14 @@ The compiz-mate package contains the matecompat plugin
 and start scripts to start Compiz with emerald and
 gtk-windows-decorator.
 
-%package xfce
+%package gtk-windows-decorator
 Summary: Compiz xfce integration bits
 Group: User Interface/Desktops
 Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
  
-%description xfce
-The compiz-xfce package contains start scripts to start
-Compiz with emerald and gtk-windows-decorator.
-
+%description gtk-windows-decorator
+The compiz-gtk-windows-decorator package contains the GTK
+decorator for compiz.
 %package lxde
 Summary: Compiz lxde integration bits
 Group: User Interface/Desktops
@@ -201,7 +203,6 @@ make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 
 install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE7 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE9 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE11 $RPM_BUILD_ROOT%{_bindir}
 
@@ -211,9 +212,6 @@ desktop-file-install --vendor="" \
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   %SOURCE4
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE8
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   %SOURCE10
@@ -248,7 +246,6 @@ done >> mate-files.txt
 %check
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-emerald.desktop
-desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-xfce-emerald.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-lxde-gtk.desktop
 desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-lxde-emerald.desktop
  
@@ -282,7 +279,6 @@ fi
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README TODO NEWS
 %{_bindir}/compiz
-%{_bindir}/gtk-window-decorator
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
 %dir %{_datadir}/compiz
@@ -296,9 +292,8 @@ fi
 %{_datadir}/applications/compiz-mate-gtk.desktop
 %{_datadir}/ccsm/icons/hicolor/scalable/apps/plugin-matecompat.svg
 
-%files xfce
-%{_bindir}/compiz-xfce-emerald
-%{_datadir}/applications/compiz-xfce-emerald.desktop
+%files gtk-windows-decorator
+%{_bindir}/gtk-window-decorator
 
 %files lxde
 %{_bindir}/compiz-lxde-emerald
@@ -316,6 +311,11 @@ fi
 
 
 %changelog
+* Tue May 07 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-20
+- DISABLE XFCE SUPPORT
+- remove xfce subpackage
+- move gwd decorator to a subpackage
+
 * Mon Apr 29 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-19
 - remove compiz-xfce-gtk start script
 

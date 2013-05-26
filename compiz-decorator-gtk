@@ -4,9 +4,8 @@ theme=`gsettings get org.mate.Marco.general theme | cut -d\' -f2`
 
 echo "$theme"
 
-function runCompiz() {
-	gtk-window-decorator --replace --marco-theme "$theme" &
-	exec compiz --replace ccp $@ 
+function runGTK() {
+	gtk-window-decorator --replace --marco-theme "$theme" $@ 
 }
 
 ISSW=`glxinfo | grep "Software Rasterizer" -c`
@@ -24,9 +23,7 @@ export LIBGL_ALWAYS_INDIRECT=1
 HAVETFP=`glxinfo | grep texture_from_pixmap -c`
 
 if ( [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then 
-	runCompiz $@
+	runGTK $@
 fi
 
-# Fall back to marco
-exec marco $@
 

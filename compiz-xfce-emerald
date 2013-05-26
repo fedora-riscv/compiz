@@ -1,12 +1,8 @@
 #!/bin/bash
 
-theme=`gsettings get org.mate.Marco.general theme | cut -d\' -f2`
-
-echo "$theme"
-
 function runCompiz() {
-	gtk-window-decorator --replace --marco-theme "$theme" &
-	exec compiz --replace ccp $@ 
+    emerald --replace &
+    exec compiz --replace ccp $@
 }
 
 ISSW=`glxinfo | grep "Software Rasterizer" -c`
@@ -27,6 +23,6 @@ if ( [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then
 	runCompiz $@
 fi
 
-# Fall back to marco
-exec marco $@
+# Fall back to xfwm4
+exec xfwm4 $@
 

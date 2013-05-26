@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Compiz MATE GTK
-Comment=start or restart Compiz Fusion with GTK windows-decoator
+Comment=start or restart Compiz Fusion with GTK windows-decorator
 TryExec=compiz-mate-gtk
 Exec=compiz-mate-gtk
 Icon=fusion-icon

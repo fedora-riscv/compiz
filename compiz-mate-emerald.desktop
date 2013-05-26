@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Compiz MATE Emerald
-Comment=start or restart Compiz Fusion with Emerald windows-decoator
+Comment=start or restart Compiz Fusion with Emerald windows-decorator
 TryExec=compiz-mate-emerald
 Exec=compiz-mate-emerald
 Icon=fusion-icon

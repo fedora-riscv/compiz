@@ -51,59 +51,6 @@ diff -uprN compiz-0.8.8-orig/configure.ac compiz-0.8.8/configure.ac
    fi
  fi
  
-diff -uprN compiz-0.8.8-orig/configure.ac.comiz_mate_fork compiz-0.8.8/configure.ac.comiz_mate_fork
---- compiz-0.8.8-orig/configure.ac.comiz_mate_fork	2011-03-30 11:22:47.000000000 +0200
-+++ compiz-0.8.8/configure.ac.comiz_mate_fork	2013-04-18 21:23:41.163314864 +0200
-@@ -302,7 +302,7 @@ if test "x$use_gtk" = "xyes"; then
-   PKG_CHECK_MODULES(GTK_WINDOW_DECORATOR,
- 		    xrender >= 0.8.4  \
- 		    gtk+-2.0 >= 2.8.0 \
--		    libwnck-1.0	      \
-+		    libmatewnck-1.0	      \
- 		    pangocairo,
- 		    [use_gtk=yes], [use_gtk=no])
-   if test "x$use_gtk" = "xyes"; then
-@@ -310,15 +310,15 @@ if test "x$use_gtk" = "xyes"; then
-     save_LIBS="$LIBS"
-     CFLAGS="$CFLAGS $GTK_WINDOW_DECORATOR_CFLAGS"
-     LIBS="$LIBS $GTK_WINDOW_DECORATOR_LIBS"
--    AC_CHECK_FUNCS(wnck_window_has_name)
-+    AC_CHECK_FUNCS(matewnck_window_has_name)
-     CFLAGS="$save_CFLAGS"
-     LIBS="$save_LIBS"
- 
--    PKG_CHECK_EXISTS(libwnck-1.0 >= 2.18.1,
--		     [have_libwnck_2_18_1=yes], [have_libwnck_2_18_1=no])
-+    PKG_CHECK_EXISTS(libmatewnck-1.0 >= 2.18.1,
-+		     [have_libmatewnck_2_18_1=yes], [have_libmatewnck_2_18_1=no])
- 
--	PKG_CHECK_EXISTS(libwnck-1.0 >= 2.19.4,
--		     [have_libwnck_2_19_4=yes], [have_libwnck_2_19_4=no])
-+	PKG_CHECK_EXISTS(libmatewnck-1.0 >= 2.19.4,
-+		     [have_libmatewnck_2_19_4=yes], [have_libmatewnck_2_19_4=no])
- 
-     if test "x$use_metacity" = "xyes"; then
-       PKG_CHECK_MODULES(METACITY, libmetacity-private,
-@@ -361,13 +361,13 @@ AC_SUBST(keybindingsdir)
- AM_CONDITIONAL(USE_GTK, test "x$use_gtk" = "xyes")
- if test "$use_gtk" = yes; then
-   AC_DEFINE(USE_GTK, 1, [Build gtk window decorator])
--  if test "$have_libwnck_2_18_1" = yes; then
--    AC_DEFINE(HAVE_LIBWNCK_2_18_1, 1,
--	      [Define to 1 if libwnck version >= 2_18_1])
-+  if test "$have_libmatewnck_2_18_1" = yes; then
-+    AC_DEFINE(HAVE_LIBMATEWNCK_2_18_1, 1,
-+	      [Define to 1 if libmatewnck version >= 2_18_1])
-   fi
--  if test "$have_libwnck_2_19_4" = yes; then
--    AC_DEFINE(HAVE_LIBWNCK_2_19_4, 1,
--	      [Define to 1 if libwnck version >= 2_19_4])
-+  if test "$have_libmatewnck_2_19_4" = yes; then
-+    AC_DEFINE(HAVE_LIBMATEWNCK_2_19_4, 1,
-+	      [Define to 1 if libmatewnck version >= 2_19_4])
-   fi
- fi
- 
 diff -uprN compiz-0.8.8-orig/gtk/window-decorator/gtk-window-decorator.c compiz-0.8.8/gtk/window-decorator/gtk-window-decorator.c
 --- compiz-0.8.8-orig/gtk/window-decorator/gtk-window-decorator.c	2013-04-18 21:13:02.905829000 +0200
 +++ compiz-0.8.8/gtk/window-decorator/gtk-window-decorator.c	2013-04-18 21:23:40.292306019 +0200

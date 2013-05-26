@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Compiz LXDE Emerald
-Comment=start or restart Compiz Fusion with Emerald windows-decoator
+Comment=start or restart Compiz Fusion with Emerald windows-decorator
 TryExec=compiz-lxde-emerald
 Exec=compiz-lxde-emerald
 Icon=fusion-icon

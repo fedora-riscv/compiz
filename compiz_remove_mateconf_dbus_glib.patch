@@ -1,12 +1,12 @@
-diff -uprN compiz-0.8.8-orig/compiz-mateconf.pc.in compiz-0.8.8/compiz-mateconf.pc.in
---- compiz-0.8.8-orig/compiz-mateconf.pc.in	2013-04-19 13:37:07.022678000 +0200
-+++ compiz-0.8.8/compiz-mateconf.pc.in	1970-01-01 01:00:00.000000000 +0100
+diff -uprN compiz-0.8.8-orig/compiz-gconf.pc.in compiz-0.8.8/compiz-gconf.pc.in
+--- compiz-0.8.8-orig/compiz-gconf.pc.in	2013-04-19 13:37:07.022678000 +0200
++++ compiz-0.8.8/compiz-gconf.pc.in	1970-01-01 01:00:00.000000000 +0100
 @@ -1,6 +0,0 @@
 -prefix=@prefix@
 -xsltdir=@datarootdir@/compiz
 -
--Name: compiz-mateconf
--Description: MateConf plugin for compiz
+-Name: compiz-gconf
+-Description: GConf plugin for compiz
 -Version: @VERSION@
 diff -uprN compiz-0.8.8-orig/configure.ac compiz-0.8.8/configure.ac
 --- compiz-0.8.8-orig/configure.ac	2013-04-19 13:37:07.140680000 +0200

@@ -2,7 +2,7 @@
 
 function runCompiz() {
     emerald --replace &
-    exec compiz --replace --sm-disable --ignore-desktop-hints ccp $@
+    exec compiz --replace ccp $@
 }
 
 ISSW=`glxinfo | grep "Software Rasterizer" -c`

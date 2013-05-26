@@ -1,6 +1,4 @@
-%global    core_plugins    blur clone cube decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall annotate svg
- 
-%global    mate_plugins    matecompat
+%global    core_plugins    blur clone cube decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall annotate svg matecompat
  
 # List of plugins passed to ./configure.  The order is important
  
@@ -12,7 +10,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        21%{?dist}
+Release:        22%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -23,12 +21,8 @@ Requires:       system-logos
 Requires:       glx-utils
 # this is an inverse require which is needed for build without gtk-windows-decorator
 Requires:       emerald
+Requires:       hicolor-icon-theme
 
-Provides: %{name}-xfce%{?_isa} = %{epoch}:%{version}-%{release}
-Provides: %{name}-xfce = %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-xfce%{?_isa} < %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
- 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
 BuildRequires: libmatewnck-devel
@@ -60,40 +54,58 @@ Source3:       compiz-mate-emerald
 Source4:       compiz-mate-emerald.desktop
 Source5:       compiz-lxde-emerald
 Source6:       compiz-lxde-emerald.desktop
-Source7:       compiz-plugins-main_plugin-matecompat.svg
- 
-# fork gnome to mate
-Patch0:        compiz_new_mate.patch
+Source7:       compiz-xfce-emerald
+Source8:       compiz-xfce-emerald.desktop
+Source9:       compiz-decorator-gtk
+Source10:      gtk-decorator.desktop
+Source11:      compiz-decorator-emerald
+Source12:      emerald-decorator.desktop
+Source13:      compiz-plugins-main_plugin-matecompat.svg
+Source14:      emerald-decorator.svg
+Source15:      gtk-decorator.svg
+
+# build for aarch64
+Patch0:        compiz-aarch64.patch 
+# usage of matecompat plugin and marco for gtk-windows-decorator
+Patch1:        compiz_new_mate.patch
 # Patches that are not upstream
-Patch1:        compiz_disable_gdk_disable_deprecated.patch
+Patch2:        compiz_disable_gdk_disable_deprecated.patch
 Patch3:        compiz_composite-cube-logo.patch
 Patch4:        compiz_fedora-logo.patch
 Patch5:        compiz_redhat-logo.patch
 Patch6:        compiz-0.8.6-wall.patch
 Patch7:        compiz-0.8.6-new_unloadpluginfix.patch
-Patch9:        compiz-0.8.8_incorrect-fsf-address.patch
-Patch10:       compiz-disable-child-window-clipping.patch
-Patch11:       compiz_new_add-cursor-theme-support.patch
-Patch12:       compiz-fix-gtk-window-decorator-no-argb-crash.patch
-Patch13:       compiz_fix-no-border-window-shadow.patch
-Patch14:       compiz_draw_dock_shadows_on_desktop.patch
-Patch15:       compiz_optional-fbo.patch
-Patch16:       compiz_call_glxwaitx_before_drawing.patch
-Patch17:       compiz_always_unredirect_screensaver_on_nvidia.patch
-Patch19:       compiz_fullscreen_stacking_fixes.patch
-Patch20:       compiz_damage-report-non-empty.patch
-Patch21:       compiz_stacking.patch
+Patch8:        compiz-0.8.8_incorrect-fsf-address.patch
+Patch9:        compiz_new_add-cursor-theme-support.patch
+Patch10:       compiz-fix-gtk-window-decorator-no-argb-crash.patch
+Patch11:       compiz_fix-no-border-window-shadow.patch
+Patch12:       compiz_draw_dock_shadows_on_desktop.patch
+Patch13:       compiz_optional-fbo.patch
+Patch14:       compiz_call_glxwaitx_before_drawing.patch
+Patch15:       compiz_always_unredirect_screensaver_on_nvidia.patch
+Patch16:       compiz_fullscreen_stacking_fixes.patch
+Patch17:       compiz_damage-report-non-empty.patch
+Patch18:       compiz_stacking.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=909657
-Patch22:       compiz_primary-is-control.patch
-# those patches belongs together
-Patch23:       compiz_remove_keybindings_and_matewindows-settings_files.patch
-Patch24:       compiz_remove_kde.patch
-Patch25:       compiz_remove_mateconf_dbus_glib.patch
-Patch26:       compiz_clean_potfiles.patch
-Patch27:       compiz_remove_old_metacity_checks.patch
-Patch28:       compiz_commandline_options_for_button_layout_and_titlebar_font.patch
-Patch29:       compiz_wnck_to_matewnck.patch
-Patch30:       compiz_matewnck_corrections.patch
+Patch19:       compiz_primary-is-control.patch
+# those patches belongs together, removal of keybindings, mate-windows-settings
+# kde, gconf/mateconf, dbus, glib and old metacity checks
+Patch20:       compiz_remove_keybindings_and_mate-windows-settings_files.patch
+Patch21:       compiz_remove_kde.patch
+Patch22:       compiz_remove_mateconf_dbus_glib.patch
+Patch23:       compiz_clean_potfiles.patch
+Patch24:       compiz_remove_old_metacity_checks.patch
+# gtk-windows-decorator
+Patch25:       compiz_commandline_options_for_button_layout_and_titlebar_font.patch
+# usage of libmatewnck for gtk-windows-decorator
+Patch26:       compiz_libwnck_to_libmatewnck.patch
+Patch27:       compiz_matewnck_corrections.patch
+# new patch series
+Patch28:       compiz_get_smclient-id_from_DESKTOP-AUTOSTART-ID.patch
+# removing the rest of the gconf/mateconf code in gtk-windows-decorator
+Patch29:       compiz_removal_gconf.patch
+Patch30:       compiz_automake-1.13.patch
+
  
  
 %description
@@ -129,20 +141,30 @@ The compiz-mate package contains the matecompat plugin
 and start scripts to start Compiz with emerald and
 gtk-windows-decorator.
 
+%package xfce
+Summary: Compiz xfce integration bits
+Group: User Interface/Desktops
+Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
+ 
+%description xfce
+The compiz-xfce package contains a start script to start
+Compiz with emerald.
+
 %package lxde
 Summary: Compiz lxde integration bits
 Group: User Interface/Desktops
 Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
  
 %description lxde
-The compiz-lxde package contains start scripts to start
-Compiz with emerald and gtk-windows-decorator.
+The compiz-lxde package contains a start script to start
+Compiz with emerald.
 
  
 %prep
 %setup -q
-%patch0 -p1 -b .comiz_mate_fork
-%patch1 -p1 -b .disable_deprecated
+%patch0 -p1 -b .aarch64
+%patch1 -p1 -b .mate
+%patch2 -p1 -b .disable_deprecated
 %patch3 -p1 -b .composite-cube-logo
 %if 0%{?fedora}
 %patch4 -p1 -b .fedora-logo
@@ -151,33 +173,33 @@ Compiz with emerald and gtk-windows-decorator.
 %endif
 %patch6 -p1 -b .wall
 %patch7 -p1 -b .unloadfix
-%patch9 -p1 -b .incorrect-fsf-address
-%patch11 -p1 -b .cursor-theme-support
-%patch12 -p1 -b .gtk-window-decorator-no-argb-crash
-%patch13 -p1 -b .no-border-window-shadow
-%patch14 -p1 -b .draw_dock_shadows
-%patch15 -p1 -b .fbo
-%patch16 -p1 -b .glxwaitx_before_drawing
-%patch17 -p1 -b .always_unredirect_screensaver
-%patch19 -p1 -b .fullscreen_stacking
-%patch20 -p1 -b .damage-report
-%patch21 -p1 -b .stacking
-%patch22 -p1 -b .primary-is-control
-%patch23 -p1 -b .remove_keybindings
-%patch24 -p1 -b .remove_kde
-%patch25 -p1 -b .remove_mateconf_dbus_glib
-%patch26 -p1 -b .potfiles
-%patch27 -p1 -b .old_metacity_checks
-%patch28 -p1 -b .commandline_options
-%patch29 -p1 -b .wnck_to_matewnck
-%patch30 -p1 -b .matewnck_corrections
+%patch8 -p1 -b .incorrect-fsf-address
+%patch9 -p1 -b .cursor-theme-support
+%patch10 -p1 -b .gtk-window-decorator-no-argb-crash
+%patch11 -p1 -b .no-border-window-shadow
+%patch12 -p1 -b .draw_dock_shadows
+%patch13 -p1 -b .fbo
+%patch14 -p1 -b .glxwaitx_before_drawing
+%patch15 -p1 -b .always_unredirect_screensaver
+%patch16 -p1 -b .fullscreen_stacking
+%patch17 -p1 -b .damage-report
+%patch18 -p1 -b .stacking
+%patch19 -p1 -b .primary-is-control
+%patch20 -p1 -b .remove_keybindings
+%patch21 -p1 -b .remove_kde
+%patch22 -p1 -b .remove_mateconf_dbus_glib
+%patch23 -p1 -b .potfiles
+%patch24 -p1 -b .old_metacity_checks
+%patch25 -p1 -b .commandline_options
+%patch26 -p1 -b .wnck_to_matewnck
+%patch27 -p1 -b .matewnck_corrections
+%patch28 -p1 -b .get_smclient-id
+%patch29 -p1 -b .gconf
+%patch30 -p1 -b .automake
  
 %build
- 
-libtoolize
-aclocal
-autoconf
-automake
+autoreconf -f -i
+
 %configure \
     --enable-librsvg \
     --enable-gtk \
@@ -194,6 +216,9 @@ make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE5 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE7 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE9 $RPM_BUILD_ROOT%{_bindir}
+install %SOURCE11 $RPM_BUILD_ROOT%{_bindir}
 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
@@ -204,10 +229,23 @@ desktop-file-install --vendor="" \
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   %SOURCE6
+desktop-file-install --vendor="" \
+  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+  %SOURCE8
+desktop-file-install --vendor="" \
+  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+  %SOURCE10
+desktop-file-install --vendor="" \
+  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+  %SOURCE12
 
 # matecompat icon
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/ccsm/icons/hicolor/scalable/apps
-cp -f %SOURCE7 $RPM_BUILD_ROOT%{_datadir}/ccsm/icons/hicolor/scalable/apps/plugin-matecompat.svg
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
+cp -f %SOURCE13 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/plugin-matecompat.svg
+# emerald-decorator icon
+cp -f %SOURCE14 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/emerald-decorator.svg
+# gtk-decorator icon
+cp -f %SOURCE15 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/gtk-decorator.svg
 
 rm $RPM_BUILD_ROOT%{_datadir}/applications/compiz.desktop
  
@@ -223,37 +261,24 @@ for f in %{core_plugins}; do
   echo %{_datadir}/compiz/$f.xml
 done >> core-files.txt
  
-for f in %{mate_plugins}; do
-  echo %{_libdir}/compiz/lib$f.so
-  echo %{_datadir}/compiz/$f.xml
-done >> mate-files.txt
- 
- 
-%check
-desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-gtk.desktop
-desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-mate-emerald.desktop
-desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/compiz-lxde-emerald.desktop
- 
- 
+
 %post
 /sbin/ldconfig
 /bin/touch --no-create %{_datadir}/compiz &>/dev/null || :
-/bin/touch --no-create %{_datadir}/ccsm/icons/hicolor/scalable/apps &>/dev/null || :
+/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
  
 %postun
 /sbin/ldconfig
 if [ $1 -eq 0 ] ; then
     /bin/touch --no-create %{_datadir}/compiz &>/dev/null
     /usr/bin/gtk-update-icon-cache %{_datadir}/compiz &>/dev/null || :
-fi
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/ccsm/icons/hicolor/scalable/apps &>/dev/null
-    /usr/bin/gtk-update-icon-cache %{_datadir}/ccsm/icons/hicolor/scalable/apps &>/dev/null || :
+    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 fi
 
 %posttrans
 /usr/bin/gtk-update-icon-cache %{_datadir}/compiz &>/dev/null || :
-/usr/bin/gtk-update-icon-cache %{_datadir}/ccsm/icons/hicolor/scalable/apps &>/dev/null || :
+/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %post mate -p /sbin/ldconfig
 
@@ -269,14 +294,22 @@ fi
 %dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
 %{_datadir}/compiz/core.xml
+%{_datadir}/icons/hicolor/scalable/apps/*.svg
 
-%files mate -f mate-files.txt
+%files mate
 %{_bindir}/gtk-window-decorator
 %{_bindir}/compiz-mate-emerald
 %{_bindir}/compiz-mate-gtk
+%{_bindir}/compiz-decorator-gtk
+%{_bindir}/compiz-decorator-emerald
 %{_datadir}/applications/compiz-mate-emerald.desktop
 %{_datadir}/applications/compiz-mate-gtk.desktop
-%{_datadir}/ccsm/icons/hicolor/scalable/apps/plugin-matecompat.svg
+%{_datadir}/applications/gtk-decorator.desktop
+%{_datadir}/applications/emerald-decorator.desktop
+
+%files xfce
+%{_bindir}/compiz-xfce-emerald
+%{_datadir}/applications/compiz-xfce-emerald.desktop
 
 %files lxde
 %{_bindir}/compiz-lxde-emerald
@@ -293,6 +326,22 @@ fi
 
 
 %changelog
+* Sun May 26 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-22
+- add patch to speed up start
+- remove --sm-disable --ignore-desktop-hints from start scipts
+- fix build for aarch64
+- add xfce subpackage again with start script and desktop file
+- move matecompat plugin to main package
+- add requires hicolor-icon-theme
+- add scripts and desktop files for switch the windows-decorator to
+- mate subpackage
+- remove useless compiz_new_add-cursor-theme-support.patch
+- complete removal of gconf
+- clean up patches
+- rename patches and add more descriptions to spec file
+- remove unnecessary desktop-file-validate checks
+- update icon-cache scriptlets
+
 * Wed May 08 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-21
 - remove compiz-lxde-gtk script and desktop file
 

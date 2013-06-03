@@ -1,24 +1,15 @@
 #!/bin/bash
 
-function runEmerald() {
-    emerald --replace $@
-}
+compiz=`ps ax | grep 'compiz --replace' | grep -v 'grep' | awk '{print $5}'`
 
-ISSW=`glxinfo | grep "Software Rasterizer" -c`
 
-# Try with direct rendering
-HAVETFP=`glxinfo | grep texture_from_pixmap -c`
 
-if ( [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then 
-	runCompiz $@
+if [ "$compiz" = "compiz" ] ; then
+	emerald --replace &
+	echo "$compiz with Emerald windows-decorator"
+	else
+	exit 0
 fi
 
-# Try again with indirect rendering
-export LIBGL_ALWAYS_INDIRECT=1
-
-HAVETFP=`glxinfo | grep texture_from_pixmap -c`
-
-if ( [ $ISSW == 0 ] && [ $HAVETFP -gt 2 ] ); then 
-	runEmerald $@
-fi
+exit 0
 

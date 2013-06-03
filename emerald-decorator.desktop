@@ -2,8 +2,8 @@
 Type=Application
 Name=Emerald Decorator
 Comment=switch to Emerald windows-decorator if compiz is running
-TryExec=compiz-decorator-Emerald
-Exec=compiz-decorator-Emerald
+TryExec=compiz-decorator-emerald
+Exec=compiz-decorator-emerald
 Icon=emerald-decorator
 NoDisplay=false
 StartupNotify=true

@@ -10,7 +10,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        22%{?dist}
+Release:        23%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -326,6 +326,9 @@ fi
 
 
 %changelog
+* Mon Jun 03 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-23
+- fix windows-decorator scripts and desktop files
+
 * Sun May 26 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-22
 - add patch to speed up start
 - remove --sm-disable --ignore-desktop-hints from start scipts

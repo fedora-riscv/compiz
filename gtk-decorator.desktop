@@ -2,8 +2,8 @@
 Type=Application
 Name=GTK Decorator
 Comment=switch to GTK windows-decorator if compiz is running
-TryExec=compiz-decorator-GTK
-Exec=compiz-decorator-GTK
+TryExec=compiz-decorator-gtk
+Exec=compiz-decorator-gtk
 Icon=gtk-decorator
 NoDisplay=false
 StartupNotify=true

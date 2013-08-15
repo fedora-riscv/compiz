@@ -10,7 +10,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        24%{?dist}
+Release:        25%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -331,8 +331,11 @@ fi
 
 
 %changelog
-* Thu Aug 15 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-24
+* Thu Aug 15 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-25
 - obsolete old compiz versions from f15/f16, rhbz (#997557)
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-24
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
 * Mon Jun 03 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-23
 - fix windows-decorator scripts and desktop files

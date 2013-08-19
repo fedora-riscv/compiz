@@ -10,42 +10,12 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        23%{?dist}
+Release:        25%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
 # libdrm is not available on these arches
 ExcludeArch:   s390 s390x
- 
-Requires:       system-logos
-Requires:       glx-utils
-# this is an inverse require which is needed for build without gtk-windows-decorator
-Requires:       emerald
-Requires:       hicolor-icon-theme
-
-BuildRequires: libX11-devel
-BuildRequires: libdrm-devel
-BuildRequires: libmatewnck-devel
-BuildRequires: libXfixes-devel
-BuildRequires: libXrandr-devel
-BuildRequires: libXrender-devel
-BuildRequires: libXcomposite-devel
-BuildRequires: libXdamage-devel
-BuildRequires: libXext-devel
-BuildRequires: libXt-devel
-BuildRequires: libSM-devel
-BuildRequires: libICE-devel
-BuildRequires: libXmu-devel
-BuildRequires: desktop-file-utils
-BuildRequires: intltool
-BuildRequires: gettext
-BuildRequires: librsvg2-devel
-BuildRequires: mesa-libGLU-devel
-BuildRequires: fuse-devel
-BuildRequires: cairo-devel
-BuildRequires: libtool
-BuildRequires: libxslt-devel
-BuildRequires: mate-window-manager-devel
  
 Source0:       http://releases.compiz.org/%{version}/%{name}-%{version}.tar.bz2
 Source1:       compiz-mate-gtk
@@ -105,6 +75,42 @@ Patch28:       compiz_get_smclient-id_from_DESKTOP-AUTOSTART-ID.patch
 # removing the rest of the gconf/mateconf code in gtk-windows-decorator
 Patch29:       compiz_removal_gconf.patch
 Patch30:       compiz_automake-1.13.patch
+
+BuildRequires: libX11-devel
+BuildRequires: libdrm-devel
+BuildRequires: libmatewnck-devel
+BuildRequires: libXfixes-devel
+BuildRequires: libXrandr-devel
+BuildRequires: libXrender-devel
+BuildRequires: libXcomposite-devel
+BuildRequires: libXdamage-devel
+BuildRequires: libXext-devel
+BuildRequires: libXt-devel
+BuildRequires: libSM-devel
+BuildRequires: libICE-devel
+BuildRequires: libXmu-devel
+BuildRequires: desktop-file-utils
+BuildRequires: intltool
+BuildRequires: gettext
+BuildRequires: librsvg2-devel
+BuildRequires: mesa-libGLU-devel
+BuildRequires: fuse-devel
+BuildRequires: cairo-devel
+BuildRequires: libtool
+BuildRequires: libxslt-devel
+BuildRequires: mate-window-manager-devel
+
+Requires:       system-logos
+Requires:       glx-utils
+# this is an inverse require which is needed for build without gtk-windows-decorator
+Requires:       emerald
+Requires:       hicolor-icon-theme
+
+# obsolete old compiz versions from f15/f16, rhbz (#997557)
+Obsoletes: %{name}-gconf < %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-gnome < %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-gtk < %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-kde < %{epoch}:%{version}-%{release}
 
  
  
@@ -326,6 +332,12 @@ fi
 
 
 %changelog
+* Thu Aug 15 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-25
+- obsolete old compiz versions from f15/f16, rhbz (#997557)
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-24
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Mon Jun 03 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-23
 - fix windows-decorator scripts and desktop files
 

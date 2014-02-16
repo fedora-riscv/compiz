@@ -1,15 +1,6 @@
 diff -uprN compiz-0.8.8-orig/configure.ac compiz-0.8.8/configure.ac
 --- compiz-0.8.8-orig/configure.ac	2013-04-19 14:12:09.341857000 +0200
 +++ compiz-0.8.8/configure.ac	2013-04-19 14:19:14.618100294 +0200
-@@ -231,7 +231,7 @@ AC_ARG_ENABLE(marco,
-   [use_marco=$enableval], [use_marco=yes])
- 
- AC_ARG_ENABLE(mate,
--  [  --disable-mate         Disable mate settings module],
-+  [  --disable-mate         Disable mate compatibility plugin],
-   [use_mate=$enableval], [use_mate=yes])
- 
- if test "x$use_gtk" = "xyes"; then
 @@ -260,12 +260,6 @@ if test "x$use_gtk" = "xyes"; then
      if test "x$use_marco" = "xyes"; then
        PKG_CHECK_MODULES(MARCO, libmarco-private,

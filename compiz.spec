@@ -10,7 +10,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        25%{?dist}
+Release:        26%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -98,7 +98,7 @@ BuildRequires: fuse-devel
 BuildRequires: cairo-devel
 BuildRequires: libtool
 BuildRequires: libxslt-devel
-BuildRequires: mate-window-manager-devel
+BuildRequires: marco-devel
 
 Requires:       system-logos
 Requires:       glx-utils
@@ -331,6 +331,9 @@ fi
 
 
 %changelog
+* Sun Feb 16 2014 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-26
+- change BR to marco-devel for f21
+
 * Thu Aug 15 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-25
 - obsolete old compiz versions from f15/f16, rhbz (#997557)
 

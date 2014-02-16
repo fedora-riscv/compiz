@@ -78,7 +78,7 @@ Patch28:       compiz_cube-set-opacity-during-rotation-to-70-as-default.patch
 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
-BuildRequires: libmatewnck-devel
+BuildRequires: libwnck-devel
 BuildRequires: libXfixes-devel
 BuildRequires: libXrandr-devel
 BuildRequires: libXrender-devel
@@ -338,6 +338,7 @@ fi
 - rwork compiz_remove_mateconf_dbus_glib.patch
 - rework compiz_remove_old_metacity_checks.patch
 - compiz_cube-set-opacity-during-rotation-to-70-as-default.patch
+- switch to libwnck for f21
 
 * Thu Aug 15 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-25
 - obsolete old compiz versions from f15/f16, rhbz (#997557)

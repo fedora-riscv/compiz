@@ -60,21 +60,21 @@ Patch18:       compiz_stacking.patch
 Patch19:       compiz_primary-is-control.patch
 # those patches belongs together, removal of keybindings, mate-windows-settings
 # kde, gconf/mateconf, dbus, glib and old metacity checks
-Patch20:       compiz_remove_keybindings_and_mate-windows-settings_files.patch
-Patch21:       compiz_remove_kde.patch
-Patch22:       compiz_remove_mateconf_dbus_glib.patch
-Patch23:       compiz_clean_potfiles.patch
-Patch24:       compiz_remove_old_metacity_checks.patch
+Patch20:       compiz_new_remove-keybindings-and-mate-windows-settings-files.patch
+Patch21:       compiz_new_remove-kde.patch
 # gtk-windows-decorator
+Patch22:       compiz_new_remove_mateconf_dbus_glib.patch
+Patch23:       compiz_clean_potfiles.patch
+Patch24:       compiz_new_remove_old_metacity_checks.patch
 Patch25:       compiz_commandline_options_for_button_layout_and_titlebar_font.patch
-# usage of libmatewnck for gtk-windows-decorator
-Patch26:       compiz_libwnck_to_libmatewnck.patch
-Patch27:       compiz_matewnck_corrections.patch
 # new patch series
-Patch28:       compiz_get_smclient-id_from_DESKTOP-AUTOSTART-ID.patch
-# removing the rest of the gconf/mateconf code in gtk-windows-decorator
-Patch29:       compiz_removal_gconf.patch
-Patch30:       compiz_automake-1.13.patch
+Patch26:       compiz_get_smclient-id_from_DESKTOP-AUTOSTART-ID.patch
+Patch27:       compiz_automake-1.13.patch
+Patch28:       compiz_cube-set-opacity-during-rotation-to-70-as-default.patch
+# clean dbus
+#Patch28:       compiz_remove-rest-of-dbus-code.patch
+# clean gconf/mateconf code in gtk-windows-decorator
+#Patch29:       compiz_new_removal-gconf.patch
 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
@@ -197,11 +197,11 @@ Compiz with emerald.
 %patch23 -p1 -b .potfiles
 %patch24 -p1 -b .old_metacity_checks
 %patch25 -p1 -b .commandline_options
-%patch26 -p1 -b .wnck_to_matewnck
-%patch27 -p1 -b .matewnck_corrections
-%patch28 -p1 -b .get_smclient-id
-%patch29 -p1 -b .gconf
-%patch30 -p1 -b .automake
+%patch26 -p1 -b .get_smclient-id
+%patch27 -p1 -b .automake
+%patch28 -p1 -b .rotation
+#%patch28 -p1 -b .compiz_remove-rest-of-dbus-code.patch
+#%patch29 -p1 -b .gconf
  
 %build
 autoreconf -f -i
@@ -333,6 +333,11 @@ fi
 %changelog
 * Sun Feb 16 2014 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-26
 - change BR to marco-devel for f21
+- rework remove-keybindings-and-mate-windows-settings-files patch
+- rework remove-kde patch
+- rwork compiz_remove_mateconf_dbus_glib.patch
+- rework compiz_remove_old_metacity_checks.patch
+- compiz_cube-set-opacity-during-rotation-to-70-as-default.patch
 
 * Thu Aug 15 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-25
 - obsolete old compiz versions from f15/f16, rhbz (#997557)

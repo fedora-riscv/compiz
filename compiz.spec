@@ -200,8 +200,7 @@ Compiz with emerald.
 %patch26 -p1 -b .get_smclient-id
 %patch27 -p1 -b .automake
 %patch28 -p1 -b .rotation
-#%patch28 -p1 -b .compiz_remove-rest-of-dbus-code.patch
-#%patch29 -p1 -b .gconf
+
  
 %build
 autoreconf -f -i
@@ -217,7 +216,7 @@ make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
  
  
 %install
-make DESTDIR=$RPM_BUILD_ROOT install || exit 1
+%{make_install}
 
 install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
@@ -331,8 +330,9 @@ fi
 
 
 %changelog
-* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-27
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+* Sun Feb 16 2014 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-27
+- rebuild for Mate-1.8
+- use modern 'make install' macro
 
 * Sun Feb 16 2014 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-26
 - change BR to marco-devel for f21

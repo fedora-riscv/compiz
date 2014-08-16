@@ -10,7 +10,7 @@ URL:            http://www.compiz.org
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.8
-Release:        27%{?dist}
+Release:        28%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -331,6 +331,9 @@ fi
 
 
 %changelog
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-28
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-27
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 

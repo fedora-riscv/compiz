@@ -331,7 +331,7 @@ fi
 
 
 %changelog
-* Wed Jul 15 2013 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-29
+* Wed Jul 15 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-29
 - rebuild for mate-1.10, fix broken gtk-decorator
 
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-28

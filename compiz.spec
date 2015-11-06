@@ -23,7 +23,6 @@ Source1:       compiz-mate-gtk
 Source2:       compiz-mate-gtk.desktop
 Source9:       compiz-decorator-gtk
 Source10:      gtk-decorator.desktop
-Source13:      compiz-plugins-main_plugin-matecompat.svg
 Source15:      gtk-decorator.svg
 
 # fedora specific
@@ -132,9 +131,6 @@ desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   %SOURCE10
 
-# matecompat icon
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
-cp -f %SOURCE13 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/plugin-matecompat.svg
 # gtk-decorator icon
 cp -f %SOURCE15 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/gtk-decorator.svg
 
@@ -216,6 +212,7 @@ fi
 - no xfce/lxde subpackages anymore
 - remove runtime requires emerald and hicolors
 - use runtime require fedora-logos for the cube plugin
+- remove external matecompat logo, it's in the tarball now
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

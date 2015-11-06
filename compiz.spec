@@ -21,18 +21,9 @@ ExcludeArch:   s390 s390x
 Source0: https://raveit65.fedorapeople.org/compiz/SOURCE/%{version}/%{name}-%{version}.tar.xz
 Source1:       compiz-mate-gtk
 Source2:       compiz-mate-gtk.desktop
-Source3:       compiz-mate-emerald
-Source4:       compiz-mate-emerald.desktop
-Source5:       compiz-lxde-emerald
-Source6:       compiz-lxde-emerald.desktop
-Source7:       compiz-xfce-emerald
-Source8:       compiz-xfce-emerald.desktop
 Source9:       compiz-decorator-gtk
 Source10:      gtk-decorator.desktop
-Source11:      compiz-decorator-emerald
-Source12:      emerald-decorator.desktop
 Source13:      compiz-plugins-main_plugin-matecompat.svg
-Source14:      emerald-decorator.svg
 Source15:      gtk-decorator.svg
 
 # fedora specific
@@ -150,36 +141,18 @@ make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 
 install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE5 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE7 $RPM_BUILD_ROOT%{_bindir}
 install %SOURCE9 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE11 $RPM_BUILD_ROOT%{_bindir}
 
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   %SOURCE2
 desktop-file-install --vendor="" \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE4
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE6
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE8
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   %SOURCE10
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE12
 
 # matecompat icon
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
 cp -f %SOURCE13 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/plugin-matecompat.svg
-# emerald-decorator icon
-cp -f %SOURCE14 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/emerald-decorator.svg
 # gtk-decorator icon
 cp -f %SOURCE15 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/gtk-decorator.svg
 
@@ -265,6 +238,7 @@ fi
 - update to 0.8.9
 - new upstream is at https://github.com/raveit65/compiz
 - remove upstreamed patches
+- move emerald scripts to emerald
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

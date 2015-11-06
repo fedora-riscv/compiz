@@ -6,18 +6,19 @@
 
 
 Name:           compiz
-URL:            http://www.compiz.org
+URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.8
-Release:        30%{?dist}
+Version:        0.8.9
+Release:        1%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
 # libdrm is not available on these arches
 ExcludeArch:   s390 s390x
  
-Source0:       http://releases.compiz.org/%{version}/%{name}-%{version}.tar.bz2
+# github does not create xz tarballs, so i decided to release at fedorapeople
+Source0: https://raveit65.fedorapeople.org/compiz/SOURCE/%{version}/%{name}-%{version}.tar.xz
 Source1:       compiz-mate-gtk
 Source2:       compiz-mate-gtk.desktop
 Source3:       compiz-mate-emerald
@@ -331,6 +332,10 @@ fi
 
 
 %changelog
+* Fri Nov 06 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.9-1
+- update to 0.8.9
+- new upstream is at https://github.com/raveit65/compiz-bcop
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 

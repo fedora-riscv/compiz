@@ -55,9 +55,6 @@ BuildRequires: marco-devel
 
 Requires:       system-logos
 Requires:       glx-utils
-# this is an inverse require which is needed for build without gtk-windows-decorator
-Requires:       emerald
-Requires:       hicolor-icon-theme
 
 # obsolete old subpackges
 Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
@@ -217,6 +214,7 @@ fi
 - remove upstreamed patches
 - move emerald scripts to emerald
 - no xfce/lxde subpackages anymore
+- remove runtime requires emerald and hicolors
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

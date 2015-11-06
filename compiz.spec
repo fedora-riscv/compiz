@@ -54,12 +54,6 @@ Requires:       glx-utils
 Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-lxde < %{epoch}:%{version}-%{release}
 
-# obsolete old compiz versions from f15/f16, rhbz (#997557)
-Obsoletes: %{name}-gconf < %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-gnome < %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-gtk < %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-kde < %{epoch}:%{version}-%{release}
-
 
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
@@ -193,6 +187,7 @@ fi
 - use runtime require fedora-logos for the cube plugin
 - remove external matecompat logo, it's in the tarball now
 - remove mate gwd scripts, they are in the tarball now
+- remove old obsoletes for f15/16
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

@@ -26,6 +26,7 @@ Patch0:        compiz_fedora-logo.patch
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
 BuildRequires: libwnck-devel
+BuildRequires: libXcursor-devel
 BuildRequires: libXfixes-devel
 BuildRequires: libXrandr-devel
 BuildRequires: libXrender-devel
@@ -44,6 +45,7 @@ BuildRequires: mesa-libGLU-devel
 BuildRequires: fuse-devel
 BuildRequires: cairo-devel
 BuildRequires: libtool
+BuildRequires: libjpeg-turbo-devel
 BuildRequires: libxslt-devel
 BuildRequires: marco-devel
 
@@ -191,6 +193,7 @@ fi
 - remove old obsoletes for f15/16
 - some spec file cleanup
 - add desktop-file-install scriptlet
+- update build requires
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

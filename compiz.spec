@@ -155,6 +155,7 @@ fi
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README TODO NEWS
 %{_bindir}/compiz
+%{_bindir}/gtk-window-decorator
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
 %dir %{_datadir}/compiz
@@ -194,6 +195,7 @@ fi
 - some spec file cleanup
 - add desktop-file-install scriptlet
 - update build requires
+- move gtk-window-decorator to main package
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

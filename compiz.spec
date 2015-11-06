@@ -19,11 +19,6 @@ ExcludeArch:   s390 s390x
  
 # github does not create xz tarballs, so i decided to release at fedorapeople
 Source0: https://raveit65.fedorapeople.org/compiz/SOURCE/%{version}/%{name}-%{version}.tar.xz
-Source1:       compiz-mate-gtk
-Source2:       compiz-mate-gtk.desktop
-Source9:       compiz-decorator-gtk
-Source10:      gtk-decorator.desktop
-Source15:      gtk-decorator.svg
 
 # fedora specific
 Patch0:        compiz_fedora-logo.patch
@@ -121,19 +116,6 @@ make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
 %install
 make DESTDIR=$RPM_BUILD_ROOT install || exit 1
 
-install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE9 $RPM_BUILD_ROOT%{_bindir}
-
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE2
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE10
-
-# gtk-decorator icon
-cp -f %SOURCE15 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/gtk-decorator.svg
-
 rm $RPM_BUILD_ROOT%{_datadir}/applications/compiz.desktop
  
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
@@ -182,17 +164,14 @@ fi
 %{_datadir}/compiz/*.png
 %{_datadir}/compiz/core.xml
 %{_datadir}/icons/hicolor/scalable/apps/*.svg
+%{_datadir}/icons/hicolor/*/apps/*.png
 
 %files mate
 %{_bindir}/gtk-window-decorator
-%{_bindir}/compiz-mate-emerald
 %{_bindir}/compiz-mate-gtk
 %{_bindir}/compiz-decorator-gtk
-%{_bindir}/compiz-decorator-emerald
-%{_datadir}/applications/compiz-mate-emerald.desktop
 %{_datadir}/applications/compiz-mate-gtk.desktop
 %{_datadir}/applications/gtk-decorator.desktop
-%{_datadir}/applications/emerald-decorator.desktop
 
 %files devel
 %{_libdir}/pkgconfig/compiz.pc
@@ -213,6 +192,7 @@ fi
 - remove runtime requires emerald and hicolors
 - use runtime require fedora-logos for the cube plugin
 - remove external matecompat logo, it's in the tarball now
+- remove mate gwd scripts, they are in the tarball now
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

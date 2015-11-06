@@ -6,79 +6,27 @@
 
 
 Name:           compiz
-URL:            http://www.compiz.org
+URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.8
-Release:        29%{?dist}
+Version:        0.8.9
+Release:        1%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
 # libdrm is not available on these arches
 ExcludeArch:   s390 s390x
  
-Source0:       http://releases.compiz.org/%{version}/%{name}-%{version}.tar.bz2
-Source1:       compiz-mate-gtk
-Source2:       compiz-mate-gtk.desktop
-Source3:       compiz-mate-emerald
-Source4:       compiz-mate-emerald.desktop
-Source5:       compiz-lxde-emerald
-Source6:       compiz-lxde-emerald.desktop
-Source7:       compiz-xfce-emerald
-Source8:       compiz-xfce-emerald.desktop
-Source9:       compiz-decorator-gtk
-Source10:      gtk-decorator.desktop
-Source11:      compiz-decorator-emerald
-Source12:      emerald-decorator.desktop
-Source13:      compiz-plugins-main_plugin-matecompat.svg
-Source14:      emerald-decorator.svg
-Source15:      gtk-decorator.svg
+# github does not create xz tarballs, so i decided to release at fedorapeople
+Source0: https://raveit65.fedorapeople.org/compiz/SOURCE/%{version}/%{name}-%{version}.tar.xz
 
-# build for aarch64
-Patch0:        compiz-aarch64.patch 
-# usage of matecompat plugin and marco for gtk-windows-decorator
-Patch1:        compiz_new_mate.patch
-# Patches that are not upstream
-Patch2:        compiz_disable_gdk_disable_deprecated.patch
-Patch3:        compiz_composite-cube-logo.patch
-Patch4:        compiz_fedora-logo.patch
-Patch5:        compiz_redhat-logo.patch
-Patch6:        compiz-0.8.6-wall.patch
-Patch7:        compiz-0.8.6-new_unloadpluginfix.patch
-Patch8:        compiz-0.8.8_incorrect-fsf-address.patch
-Patch9:        compiz_new_add-cursor-theme-support.patch
-Patch10:       compiz-fix-gtk-window-decorator-no-argb-crash.patch
-Patch11:       compiz_fix-no-border-window-shadow.patch
-Patch12:       compiz_draw_dock_shadows_on_desktop.patch
-Patch13:       compiz_optional-fbo.patch
-Patch14:       compiz_call_glxwaitx_before_drawing.patch
-Patch15:       compiz_always_unredirect_screensaver_on_nvidia.patch
-Patch16:       compiz_fullscreen_stacking_fixes.patch
-Patch17:       compiz_damage-report-non-empty.patch
-Patch18:       compiz_stacking.patch
-# https://bugzilla.redhat.com/show_bug.cgi?id=909657
-Patch19:       compiz_primary-is-control.patch
-# those patches belongs together, removal of keybindings, mate-windows-settings
-# kde, gconf/mateconf, dbus, glib and old metacity checks
-Patch20:       compiz_new_remove-keybindings-and-mate-windows-settings-files.patch
-Patch21:       compiz_new_remove-kde.patch
-# gtk-windows-decorator
-Patch22:       compiz_new_remove_mateconf_dbus_glib.patch
-Patch23:       compiz_clean_potfiles.patch
-Patch24:       compiz_new_remove_old_metacity_checks.patch
-Patch25:       compiz_commandline_options_for_button_layout_and_titlebar_font.patch
-# new patch series
-Patch26:       compiz_get_smclient-id_from_DESKTOP-AUTOSTART-ID.patch
-Patch27:       compiz_automake-1.13.patch
-Patch28:       compiz_cube-set-opacity-during-rotation-to-70-as-default.patch
-# clean dbus
-#Patch28:       compiz_remove-rest-of-dbus-code.patch
-# clean gconf/mateconf code in gtk-windows-decorator
-#Patch29:       compiz_new_removal-gconf.patch
+# fedora specific
+Patch0:        compiz_fedora-logo.patch
 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
 BuildRequires: libwnck-devel
+BuildRequires: libXcursor-devel
 BuildRequires: libXfixes-devel
 BuildRequires: libXrandr-devel
 BuildRequires: libXrender-devel
@@ -97,23 +45,18 @@ BuildRequires: mesa-libGLU-devel
 BuildRequires: fuse-devel
 BuildRequires: cairo-devel
 BuildRequires: libtool
+BuildRequires: libjpeg-turbo-devel
 BuildRequires: libxslt-devel
 BuildRequires: marco-devel
 
-Requires:       system-logos
+Requires:       fedora-logos
 Requires:       glx-utils
-# this is an inverse require which is needed for build without gtk-windows-decorator
-Requires:       emerald
-Requires:       hicolor-icon-theme
 
-# obsolete old compiz versions from f15/f16, rhbz (#997557)
-Obsoletes: %{name}-gconf < %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-gnome < %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-gtk < %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-kde < %{epoch}:%{version}-%{release}
+# obsolete old subpackges
+Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-lxde < %{epoch}:%{version}-%{release}
 
- 
- 
+
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
 managers for the X Window System. The integration allows it to perform
@@ -147,114 +90,30 @@ The compiz-mate package contains the matecompat plugin
 and start scripts to start Compiz with emerald and
 gtk-windows-decorator.
 
-%package xfce
-Summary: Compiz xfce integration bits
-Group: User Interface/Desktops
-Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
- 
-%description xfce
-The compiz-xfce package contains a start script to start
-Compiz with emerald.
-
-%package lxde
-Summary: Compiz lxde integration bits
-Group: User Interface/Desktops
-Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
- 
-%description lxde
-The compiz-lxde package contains a start script to start
-Compiz with emerald.
-
  
 %prep
 %setup -q
-%patch0 -p1 -b .aarch64
-%patch1 -p1 -b .mate
-%patch2 -p1 -b .disable_deprecated
-%patch3 -p1 -b .composite-cube-logo
-%if 0%{?fedora}
-%patch4 -p1 -b .fedora-logo
-%else
-%patch5 -p1 -b .redhat-logo
-%endif
-%patch6 -p1 -b .wall
-%patch7 -p1 -b .unloadfix
-%patch8 -p1 -b .incorrect-fsf-address
-%patch9 -p1 -b .cursor-theme-support
-%patch10 -p1 -b .gtk-window-decorator-no-argb-crash
-%patch11 -p1 -b .no-border-window-shadow
-%patch12 -p1 -b .draw_dock_shadows
-%patch13 -p1 -b .fbo
-%patch14 -p1 -b .glxwaitx_before_drawing
-%patch15 -p1 -b .always_unredirect_screensaver
-%patch16 -p1 -b .fullscreen_stacking
-%patch17 -p1 -b .damage-report
-%patch18 -p1 -b .stacking
-%patch19 -p1 -b .primary-is-control
-%patch20 -p1 -b .remove_keybindings
-%patch21 -p1 -b .remove_kde
-%patch22 -p1 -b .remove_mateconf_dbus_glib
-%patch23 -p1 -b .potfiles
-%patch24 -p1 -b .old_metacity_checks
-%patch25 -p1 -b .commandline_options
-%patch26 -p1 -b .get_smclient-id
-%patch27 -p1 -b .automake
-%patch28 -p1 -b .rotation
-#%patch28 -p1 -b .compiz_remove-rest-of-dbus-code.patch
-#%patch29 -p1 -b .gconf
+
+%patch0 -p1 -b .fedora-logo
  
 %build
-autoreconf -f -i
-
 %configure \
     --enable-librsvg \
     --enable-gtk \
     --enable-marco \
-    --enable-mate \
     --with-default-plugins=%{plugins}
  
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
  
  
 %install
-make DESTDIR=$RPM_BUILD_ROOT install || exit 1
+%{make_install}
 
-install %SOURCE1 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE3 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE5 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE7 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE9 $RPM_BUILD_ROOT%{_bindir}
-install %SOURCE11 $RPM_BUILD_ROOT%{_bindir}
+desktop-file-install                              \
+    --delete-original                             \
+    --dir=$RPM_BUILD_ROOT%{_datadir}/applications \
+$RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
 
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE2
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE4
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE6
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE8
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE10
-desktop-file-install --vendor="" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-  %SOURCE12
-
-# matecompat icon
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
-cp -f %SOURCE13 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/plugin-matecompat.svg
-# emerald-decorator icon
-cp -f %SOURCE14 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/emerald-decorator.svg
-# gtk-decorator icon
-cp -f %SOURCE15 $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/gtk-decorator.svg
-
-rm $RPM_BUILD_ROOT%{_datadir}/applications/compiz.desktop
- 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
@@ -290,37 +149,25 @@ fi
 
 %postun mate -p /sbin/ldconfig
 
- 
- 
+
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README TODO NEWS
 %{_bindir}/compiz
+%{_bindir}/gtk-window-decorator
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
 %dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
 %{_datadir}/compiz/core.xml
 %{_datadir}/icons/hicolor/scalable/apps/*.svg
+%{_datadir}/icons/hicolor/*/apps/*.png
 
 %files mate
-%{_bindir}/gtk-window-decorator
-%{_bindir}/compiz-mate-emerald
 %{_bindir}/compiz-mate-gtk
 %{_bindir}/compiz-decorator-gtk
-%{_bindir}/compiz-decorator-emerald
-%{_datadir}/applications/compiz-mate-emerald.desktop
 %{_datadir}/applications/compiz-mate-gtk.desktop
 %{_datadir}/applications/gtk-decorator.desktop
-%{_datadir}/applications/emerald-decorator.desktop
 
-%files xfce
-%{_bindir}/compiz-xfce-emerald
-%{_datadir}/applications/compiz-xfce-emerald.desktop
-
-%files lxde
-%{_bindir}/compiz-lxde-emerald
-%{_datadir}/applications/compiz-lxde-emerald.desktop
- 
 %files devel
 %{_libdir}/pkgconfig/compiz.pc
 %{_libdir}/pkgconfig/libdecoration.pc
@@ -331,6 +178,23 @@ fi
 
 
 %changelog
+* Fri Nov 06 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.9-1
+- update to 0.8.9
+- new upstream is at https://github.com/raveit65/compiz
+- remove upstreamed patches
+- move emerald scripts to emerald
+- no xfce/lxde subpackages anymore
+- remove runtime requires emerald and hicolors
+- use runtime require fedora-logos for the cube plugin
+- remove external matecompat logo, it's in the tarball now
+- remove mate gwd scripts, they are in the tarball now
+- remove old obsoletes for f15/16
+- some spec file cleanup
+- add desktop-file-install scriptlet
+- update build requires
+- move gtk-window-decorator to main package
+- update configure flags
+
 * Wed Jul 15 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.8-29
 - rebuild for mate-1.10, fix broken gtk-decorator
 

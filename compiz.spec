@@ -149,8 +149,7 @@ fi
 
 %postun mate -p /sbin/ldconfig
 
- 
- 
+
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README TODO NEWS
 %{_bindir}/compiz
@@ -164,7 +163,6 @@ fi
 %{_datadir}/icons/hicolor/*/apps/*.png
 
 %files mate
-%{_bindir}/gtk-window-decorator
 %{_bindir}/compiz-mate-gtk
 %{_bindir}/compiz-decorator-gtk
 %{_datadir}/applications/compiz-mate-gtk.desktop

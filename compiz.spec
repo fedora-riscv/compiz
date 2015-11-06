@@ -95,8 +95,6 @@ gtk-windows-decorator.
 %patch0 -p1 -b .fedora-logo
  
 %build
-autoreconf -f -i
-
 %configure \
     --enable-librsvg \
     --enable-gtk \
@@ -108,10 +106,8 @@ make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
  
  
 %install
-make DESTDIR=$RPM_BUILD_ROOT install || exit 1
+%{make_install}
 
-rm $RPM_BUILD_ROOT%{_datadir}/applications/compiz.desktop
- 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
@@ -188,6 +184,7 @@ fi
 - remove external matecompat logo, it's in the tarball now
 - remove mate gwd scripts, they are in the tarball now
 - remove old obsoletes for f15/16
+- some spec file cleanup
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

@@ -35,47 +35,8 @@ Source13:      compiz-plugins-main_plugin-matecompat.svg
 Source14:      emerald-decorator.svg
 Source15:      gtk-decorator.svg
 
-# build for aarch64
-Patch0:        compiz-aarch64.patch 
-# usage of matecompat plugin and marco for gtk-windows-decorator
-Patch1:        compiz_new_mate.patch
-# Patches that are not upstream
-Patch2:        compiz_disable_gdk_disable_deprecated.patch
-Patch3:        compiz_composite-cube-logo.patch
-Patch4:        compiz_fedora-logo.patch
-Patch5:        compiz_redhat-logo.patch
-Patch6:        compiz-0.8.6-wall.patch
-Patch7:        compiz-0.8.6-new_unloadpluginfix.patch
-Patch8:        compiz-0.8.8_incorrect-fsf-address.patch
-Patch9:        compiz_new_add-cursor-theme-support.patch
-Patch10:       compiz-fix-gtk-window-decorator-no-argb-crash.patch
-Patch11:       compiz_fix-no-border-window-shadow.patch
-Patch12:       compiz_draw_dock_shadows_on_desktop.patch
-Patch13:       compiz_optional-fbo.patch
-Patch14:       compiz_call_glxwaitx_before_drawing.patch
-Patch15:       compiz_always_unredirect_screensaver_on_nvidia.patch
-Patch16:       compiz_fullscreen_stacking_fixes.patch
-Patch17:       compiz_damage-report-non-empty.patch
-Patch18:       compiz_stacking.patch
-# https://bugzilla.redhat.com/show_bug.cgi?id=909657
-Patch19:       compiz_primary-is-control.patch
-# those patches belongs together, removal of keybindings, mate-windows-settings
-# kde, gconf/mateconf, dbus, glib and old metacity checks
-Patch20:       compiz_new_remove-keybindings-and-mate-windows-settings-files.patch
-Patch21:       compiz_new_remove-kde.patch
-# gtk-windows-decorator
-Patch22:       compiz_new_remove_mateconf_dbus_glib.patch
-Patch23:       compiz_clean_potfiles.patch
-Patch24:       compiz_new_remove_old_metacity_checks.patch
-Patch25:       compiz_commandline_options_for_button_layout_and_titlebar_font.patch
-# new patch series
-Patch26:       compiz_get_smclient-id_from_DESKTOP-AUTOSTART-ID.patch
-Patch27:       compiz_automake-1.13.patch
-Patch28:       compiz_cube-set-opacity-during-rotation-to-70-as-default.patch
-# clean dbus
-#Patch28:       compiz_remove-rest-of-dbus-code.patch
-# clean gconf/mateconf code in gtk-windows-decorator
-#Patch29:       compiz_new_removal-gconf.patch
+# fedora specific
+Patch0:        compiz_fedora-logo.patch
 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
@@ -169,40 +130,8 @@ Compiz with emerald.
  
 %prep
 %setup -q
-%patch0 -p1 -b .aarch64
-%patch1 -p1 -b .mate
-%patch2 -p1 -b .disable_deprecated
-%patch3 -p1 -b .composite-cube-logo
-%if 0%{?fedora}
-%patch4 -p1 -b .fedora-logo
-%else
-%patch5 -p1 -b .redhat-logo
-%endif
-%patch6 -p1 -b .wall
-%patch7 -p1 -b .unloadfix
-%patch8 -p1 -b .incorrect-fsf-address
-%patch9 -p1 -b .cursor-theme-support
-%patch10 -p1 -b .gtk-window-decorator-no-argb-crash
-%patch11 -p1 -b .no-border-window-shadow
-%patch12 -p1 -b .draw_dock_shadows
-%patch13 -p1 -b .fbo
-%patch14 -p1 -b .glxwaitx_before_drawing
-%patch15 -p1 -b .always_unredirect_screensaver
-%patch16 -p1 -b .fullscreen_stacking
-%patch17 -p1 -b .damage-report
-%patch18 -p1 -b .stacking
-%patch19 -p1 -b .primary-is-control
-%patch20 -p1 -b .remove_keybindings
-%patch21 -p1 -b .remove_kde
-%patch22 -p1 -b .remove_mateconf_dbus_glib
-%patch23 -p1 -b .potfiles
-%patch24 -p1 -b .old_metacity_checks
-%patch25 -p1 -b .commandline_options
-%patch26 -p1 -b .get_smclient-id
-%patch27 -p1 -b .automake
-%patch28 -p1 -b .rotation
-#%patch28 -p1 -b .compiz_remove-rest-of-dbus-code.patch
-#%patch29 -p1 -b .gconf
+
+%patch0 -p1 -b .fedora-logo
  
 %build
 autoreconf -f -i
@@ -334,7 +263,8 @@ fi
 %changelog
 * Fri Nov 06 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.9-1
 - update to 0.8.9
-- new upstream is at https://github.com/raveit65/compiz-bcop
+- new upstream is at https://github.com/raveit65/compiz
+- remove upstreamed patches
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

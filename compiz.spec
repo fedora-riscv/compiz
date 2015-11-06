@@ -59,14 +59,17 @@ Requires:       glx-utils
 Requires:       emerald
 Requires:       hicolor-icon-theme
 
+# obsolete old subpackges
+Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-lxde < %{epoch}:%{version}-%{release}
+
 # obsolete old compiz versions from f15/f16, rhbz (#997557)
 Obsoletes: %{name}-gconf < %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-gnome < %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-gtk < %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-kde < %{epoch}:%{version}-%{release}
 
- 
- 
+
 %description
 Compiz is one of the first OpenGL-accelerated compositing window
 managers for the X Window System. The integration allows it to perform
@@ -99,24 +102,6 @@ Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 The compiz-mate package contains the matecompat plugin
 and start scripts to start Compiz with emerald and
 gtk-windows-decorator.
-
-%package xfce
-Summary: Compiz xfce integration bits
-Group: User Interface/Desktops
-Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
- 
-%description xfce
-The compiz-xfce package contains a start script to start
-Compiz with emerald.
-
-%package lxde
-Summary: Compiz lxde integration bits
-Group: User Interface/Desktops
-Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
- 
-%description lxde
-The compiz-lxde package contains a start script to start
-Compiz with emerald.
 
  
 %prep
@@ -216,14 +201,6 @@ fi
 %{_datadir}/applications/gtk-decorator.desktop
 %{_datadir}/applications/emerald-decorator.desktop
 
-%files xfce
-%{_bindir}/compiz-xfce-emerald
-%{_datadir}/applications/compiz-xfce-emerald.desktop
-
-%files lxde
-%{_bindir}/compiz-lxde-emerald
-%{_datadir}/applications/compiz-lxde-emerald.desktop
- 
 %files devel
 %{_libdir}/pkgconfig/compiz.pc
 %{_libdir}/pkgconfig/libdecoration.pc
@@ -239,6 +216,7 @@ fi
 - new upstream is at https://github.com/raveit65/compiz
 - remove upstreamed patches
 - move emerald scripts to emerald
+- no xfce/lxde subpackages anymore
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

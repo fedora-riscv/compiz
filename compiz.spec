@@ -101,7 +101,6 @@ gtk-windows-decorator.
     --enable-librsvg \
     --enable-gtk \
     --enable-marco \
-    --enable-mate \
     --with-default-plugins=%{plugins}
  
 make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
@@ -196,6 +195,7 @@ fi
 - add desktop-file-install scriptlet
 - update build requires
 - move gtk-window-decorator to main package
+- update configure flags
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.8.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild

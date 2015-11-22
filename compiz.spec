@@ -10,7 +10,7 @@ URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -49,7 +49,6 @@ BuildRequires: libjpeg-turbo-devel
 BuildRequires: libxslt-devel
 BuildRequires: marco-devel
 
-Requires:       fedora-logos
 Requires:       glx-utils
 
 # obsolete old subpackges
@@ -178,6 +177,9 @@ fi
 
 
 %changelog
+* Sun Nov 22 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.9-2
+- remove runtime requires fedora-logos, fix rhbz (#1284217)
+ 
 * Fri Nov 06 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.9-1
 - update to 0.8.9
 - new upstream is at https://github.com/raveit65/compiz

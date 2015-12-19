@@ -9,16 +9,15 @@ Name:           compiz
 URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.9
-Release:        2%{?dist}
+Version:        0.8.10
+Release:        1%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
 # libdrm is not available on these arches
 ExcludeArch:   s390 s390x
  
-# github does not create xz tarballs, so i decided to release at fedorapeople
-Source0: https://raveit65.fedorapeople.org/compiz/SOURCE/%{version}/%{name}-%{version}.tar.xz
+Source0:       https://github.com/raveit65/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
 
 # fedora specific
 Patch0:        compiz_fedora-logo.patch
@@ -48,12 +47,21 @@ BuildRequires: libtool
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libxslt-devel
 BuildRequires: marco-devel
+BuildRequires: glib2-devel
+BuildRequires: gobject-introspection-devel
 
 Requires:       glx-utils
+Requires:       gobject-introspection
+Requires:       python3
+Requires:       pygobject3
 
 # obsolete old subpackges
 Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-lxde < %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-mate < %{epoch}:%{version}-%{release}
+%if 0%{?fedora} < 25
+Provides:  compiz-mate = %{epoch}:%{version}-%{release}
+%endif
 
 
 %description
@@ -79,16 +87,6 @@ and developer docs for the compiz package.
 Install compiz-devel if you want to develop plugins for the compiz
 windows and compositing manager.
 
-%package mate
-Summary: Compiz mate integration bits
-Group: User Interface/Desktops
-Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
- 
-%description mate
-The compiz-mate package contains the matecompat plugin
-and start scripts to start Compiz with emerald and
-gtk-windows-decorator.
-
  
 %prep
 %setup -q
@@ -97,12 +95,15 @@ gtk-windows-decorator.
  
 %build
 %configure \
+    --with-gtk=2.0 \
     --enable-librsvg \
     --enable-gtk \
     --enable-marco \
+    --enable-mwd \
+    --enable-menu-entries \
     --with-default-plugins=%{plugins}
  
-make %{?_smp_mflags} imagedir=%{_datadir}/pixmaps
+make %{?_smp_mflags} V=1
  
  
 %install
@@ -144,15 +145,13 @@ fi
 /usr/bin/gtk-update-icon-cache %{_datadir}/compiz &>/dev/null || :
 /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
-%post mate -p /sbin/ldconfig
-
-%postun mate -p /sbin/ldconfig
-
 
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README TODO NEWS
 %{_bindir}/compiz
+%{_bindir}/compiz-decorator
 %{_bindir}/gtk-window-decorator
+%{_bindir}/mate-window-decorator
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
 %dir %{_datadir}/compiz
@@ -160,12 +159,8 @@ fi
 %{_datadir}/compiz/core.xml
 %{_datadir}/icons/hicolor/scalable/apps/*.svg
 %{_datadir}/icons/hicolor/*/apps/*.png
-
-%files mate
-%{_bindir}/compiz-mate-gtk
-%{_bindir}/compiz-decorator-gtk
-%{_datadir}/applications/compiz-mate-gtk.desktop
-%{_datadir}/applications/gtk-decorator.desktop
+%{_datadir}/applications/compiz.desktop
+%{_datadir}/applications/compiz-start.desktop
 
 %files devel
 %{_libdir}/pkgconfig/compiz.pc
@@ -177,6 +172,15 @@ fi
 
 
 %changelog
+* Sat Dec 19 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.10-1
+- update to 0.8.10 release
+- use gtk3 for gwd decorator (mate-window-manager)
+- remove old start sripts + desktop files
+- use only one menuentry to start compiz
+- honor decorator changes in mate-control-center if mate-window-decorator is running
+- 'compiz' is now the gsettings key value to start compiz with session start
+- drop mate subpackage
+
 * Sun Nov 22 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.9-2
 - remove runtime requires fedora-logos, fix rhbz (#1284217)
  

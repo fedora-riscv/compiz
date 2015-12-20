@@ -10,7 +10,7 @@ URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -53,7 +53,7 @@ BuildRequires: gobject-introspection-devel
 Requires:       glx-utils
 Requires:       gobject-introspection
 Requires:       python3
-Requires:       pygobject3
+Requires:       python3-gobject
 
 # obsolete old subpackges
 Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Sun Dec 20 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.10-2
+- fix runtime requires
+
 * Sat Dec 19 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.10-1
 - update to 0.8.10 release
 - use gtk3 for gwd decorator (mate-window-manager)

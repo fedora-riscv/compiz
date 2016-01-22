@@ -10,7 +10,7 @@ URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.10
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -21,6 +21,9 @@ Source0:       https://github.com/raveit65/%{name}/releases/download/v%{version}
 
 # fedora specific
 Patch0:        compiz_fedora-logo.patch
+# rhbz (#1300162, #1298016)
+# https://github.com/raveit65/compiz/commit/b76e810
+Patch1:        compiz_gtk-window-decorator-do-not-free-what-should-not-be-freed.patch
 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
@@ -92,6 +95,7 @@ windows and compositing manager.
 %setup -q
 
 %patch0 -p1 -b .fedora-logo
+%patch1 -p1 -b .gtk-window-decorator
  
 %build
 %configure \
@@ -172,6 +176,9 @@ fi
 
 
 %changelog
+* Fri Jan 22 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.10-3
+- fix crash with gwd using close button, rhbz (#1300162, #1298016)
+
 * Sun Dec 20 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.10-2
 - fix runtime requires
 

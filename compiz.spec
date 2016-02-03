@@ -10,7 +10,7 @@ URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.10
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -176,6 +176,9 @@ fi
 
 
 %changelog
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.10-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Fri Jan 22 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.10-3
 - fix crash with gwd using close button, rhbz (#1300162, #1298016)
 

@@ -176,7 +176,7 @@ fi
 
 
 %changelog
-* Sat Feb 13 2015 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12-1
+* Sat Feb 13 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12-1
 - update to 0.8.12
 - Move mate-window-decorator.py into gtk-window-decorator.
 - Add an optional libcompizconfig build dependency that makes it so

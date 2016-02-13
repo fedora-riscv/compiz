@@ -9,8 +9,8 @@ Name:           compiz
 URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.10
-Release:        3%{?dist}
+Version:        0.8.12
+Release:        1%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -21,9 +21,6 @@ Source0:       https://github.com/raveit65/%{name}/releases/download/v%{version}
 
 # fedora specific
 Patch0:        compiz_fedora-logo.patch
-# rhbz (#1300162, #1298016)
-# https://github.com/raveit65/compiz/commit/b76e810
-Patch1:        compiz_gtk-window-decorator-do-not-free-what-should-not-be-freed.patch
 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
@@ -51,12 +48,12 @@ BuildRequires: libjpeg-turbo-devel
 BuildRequires: libxslt-devel
 BuildRequires: marco-devel
 BuildRequires: glib2-devel
-BuildRequires: gobject-introspection-devel
+BuildRequires: libwnck-devel
+BuildRequires: libcompizconfig-devel
+BuildRequires: dbus-devel
+BuildRequires: dbus-glib-devel
 
 Requires:       glx-utils
-Requires:       gobject-introspection
-Requires:       python3
-Requires:       python3-gobject
 
 # obsolete old subpackges
 Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
@@ -95,7 +92,6 @@ windows and compositing manager.
 %setup -q
 
 %patch0 -p1 -b .fedora-logo
-%patch1 -p1 -b .gtk-window-decorator
  
 %build
 %configure \
@@ -103,7 +99,6 @@ windows and compositing manager.
     --enable-librsvg \
     --enable-gtk \
     --enable-marco \
-    --enable-mwd \
     --enable-menu-entries \
     --with-default-plugins=%{plugins}
  
@@ -148,6 +143,7 @@ fi
 %posttrans
 /usr/bin/gtk-update-icon-cache %{_datadir}/compiz &>/dev/null || :
 /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 
 %files -f core-files.txt
@@ -155,16 +151,20 @@ fi
 %{_bindir}/compiz
 %{_bindir}/compiz-decorator
 %{_bindir}/gtk-window-decorator
-%{_bindir}/mate-window-decorator
 %{_libdir}/libdecoration.so.*
 %dir %{_libdir}/compiz
+%{_libdir}/compiz/libdbus.so
+%{_libdir}/compiz/libglib.so
 %dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
 %{_datadir}/compiz/core.xml
+%{_datadir}/compiz/dbus.xml
+%{_datadir}/compiz/glib.xml
 %{_datadir}/icons/hicolor/scalable/apps/*.svg
 %{_datadir}/icons/hicolor/*/apps/*.png
 %{_datadir}/applications/compiz.desktop
 %{_datadir}/applications/compiz-start.desktop
+%{_datadir}/glib-2.0/schemas/org.compiz-0.gwd.gschema.xml
 
 %files devel
 %{_libdir}/pkgconfig/compiz.pc
@@ -176,6 +176,16 @@ fi
 
 
 %changelog
+* Sat Feb 13 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12-1
+- update to 0.8.12
+- Move mate-window-decorator.py into gtk-window-decorator.
+- Add an optional libcompizconfig build dependency that makes it so
+- gtk-window-decorator honors ccsm shadow settings and MATE or
+- GNOME Flashback cursor theme settings.
+- changes with annotate plugin
+- Fix Desktop Wall settings of arrow and gradient thumbs colors.
+- implement native GSettings lookup for gwd
+
 * Fri Jan 22 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.10-3
 - fix crash with gwd using close button, rhbz (#1300162, #1298016)
 

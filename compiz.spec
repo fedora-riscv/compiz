@@ -9,7 +9,7 @@ Name:           compiz
 URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.12
+Version:        0.8.12.2
 Release:        1%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
@@ -147,7 +147,7 @@ fi
 
 
 %files -f core-files.txt
-%doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README TODO NEWS
+%doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README.md TODO NEWS
 %{_bindir}/compiz
 %{_bindir}/compiz-decorator
 %{_bindir}/gtk-window-decorator
@@ -176,6 +176,9 @@ fi
 
 
 %changelog
+* Mon Mar 28 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.2-1
+- update to 0.8.12.2 release
+
 * Sat Feb 13 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12-1
 - update to 0.8.12
 - Move mate-window-decorator.py into gtk-window-decorator.

@@ -2,20 +2,16 @@
  
 # List of plugins passed to ./configure.  The order is important
  
-%global    plugins         core,png,svg,video,screenshot,decoration,clone,place,fade,minimize,move,resize,switcher,scale,wall,obs
-
+%global    plugins         core,dbus,decoration,fade,minimize,move,obs,place,png,resize,scale,screenshot,svg,switcher,wall
 
 Name:           compiz
 URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.12.2
+Version:        0.8.12.3
 Release:        1%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
- 
-# libdrm is not available on these arches
-ExcludeArch:   s390 s390x
  
 Source0:       https://github.com/raveit65/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
 
@@ -176,6 +172,11 @@ fi
 
 
 %changelog
+* Tue Apr 12 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.3-1
+- update 0.8.12.3 release
+- remove ExcludeArch: s390 s390x, they have libdrm now
+- remove video from default plugins
+
 * Mon Mar 28 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.2-1
 - update to 0.8.12.2 release
 

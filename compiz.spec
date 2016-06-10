@@ -45,7 +45,7 @@ BuildRequires: libxslt-devel
 BuildRequires: marco-devel
 BuildRequires: glib2-devel
 BuildRequires: libwnck3-devel
-BuildRequires: libcompizconfig-devel
+#BuildRequires: libcompizconfig-devel
 BuildRequires: dbus-devel
 BuildRequires: dbus-glib-devel
 

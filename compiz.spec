@@ -9,7 +9,7 @@ URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.12.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -44,7 +44,7 @@ BuildRequires: libjpeg-turbo-devel
 BuildRequires: libxslt-devel
 BuildRequires: marco-devel
 BuildRequires: glib2-devel
-BuildRequires: libwnck-devel
+BuildRequires: libwnck3-devel
 BuildRequires: libcompizconfig-devel
 BuildRequires: dbus-devel
 BuildRequires: dbus-glib-devel
@@ -91,7 +91,7 @@ windows and compositing manager.
  
 %build
 %configure \
-    --with-gtk=2.0 \
+    --with-gtk=3.0 \
     --enable-librsvg \
     --enable-gtk \
     --enable-marco \
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Sat Jun 11 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.3-2
+- switch to gtk3
+
 * Tue Apr 12 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.3-1
 - update 0.8.12.3 release
 - remove ExcludeArch: s390 s390x, they have libdrm now

@@ -9,7 +9,7 @@ URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.12.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Sat Jun 11 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.3-3
+- bump version for rebuild with libcompizconfig-devel
+
 * Sat Jun 11 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.3-2
 - switch to gtk3
 

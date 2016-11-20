@@ -9,7 +9,7 @@ URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.12.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -45,7 +45,7 @@ BuildRequires: libxslt-devel
 BuildRequires: marco-devel
 BuildRequires: glib2-devel
 BuildRequires: libwnck3-devel
-BuildRequires: libcompizconfig-devel
+#BuildRequires: libcompizconfig-devel
 BuildRequires: dbus-devel
 BuildRequires: dbus-glib-devel
 
@@ -172,6 +172,10 @@ fi
 
 
 %changelog
+* Sun Nov 20 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.3-4
+- disable BR libcompizconfig-devel for rebuilding libcompizconfig
+- for libprotobuf soname bump
+
 * Sat Jun 11 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.3-3
 - bump version for rebuild with libcompizconfig-devel
 

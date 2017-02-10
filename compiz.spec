@@ -9,7 +9,7 @@ URL:            https://github.com/raveit65/compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.12.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.12.3-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Sun Nov 20 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.3-5
 - enable BR libcompizconfig-devel again
 

@@ -1,19 +1,19 @@
-%global    core_plugins    blur clone cube decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher video water wobbly zoom fs obs commands wall annotate svg matecompat
+%global    core_plugins    blur clone cube decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher water wobbly zoom fs obs commands wall annotate svg matecompat
  
 # List of plugins passed to ./configure.  The order is important
  
 %global    plugins         core,dbus,decoration,fade,minimize,move,obs,place,png,resize,scale,screenshot,svg,switcher,wall
 
 Name:           compiz
-URL:            https://github.com/raveit65/compiz
+URL:            https://github.com/compiz-reloaded/%{name}
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
-Version:        0.8.12.3
+Version:        0.8.14
 Release:        1%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
-Source0:       https://github.com/raveit65/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
+Source0:        https://github.com/compiz-reloaded/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
 
 # fedora specific
 Patch0:        compiz_fedora-logo.patch
@@ -106,11 +106,11 @@ make %{?_smp_mflags} V=1
 
 desktop-file-install                              \
     --delete-original                             \
-    --dir=$RPM_BUILD_ROOT%{_datadir}/applications \
-$RPM_BUILD_ROOT%{_datadir}/applications/*.desktop
+    --dir=%{buildroot}%{_datadir}/applications \
+%{buildroot}%{_datadir}/applications/*.desktop
 
-find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
-find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
+find %{buildroot} -name '*.la' -exec rm -f {} ';'
+find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 %find_lang %{name}
  
@@ -172,6 +172,22 @@ fi
 
 
 %changelog
+* Thu Apr 20 2017 Wolfgang Ulbrich <fedora@raveit.de> - 1:0.8.14-1
+- update to 0.8.14 release
+- Handle _NET_WM_MOVERESIZE ClientMessages.
+  Fixes the whisker menu resize bug.
+- Improve horizontal and vertical maximizing.
+- Remove the "Number of Desktops" option.
+- Fix a crash when displaying special characters in gtk-window-decorator.
+- Set rotate and wall default flip bindings to None.
+  Fixes a problem where edges of screen are unclickable by default.
+- Fix potential for skydome silently failing to render.
+- Don't fallback for exceeding max texture size.
+- Improve --button-layout behavior for gtk-window-decorator.
+- Update translations.
+- video plugin is dropped
+- modernize spec file
+
 * Tue Apr 12 2016 Wolfgang Ulbrich <chat-to-me@raveit.de> - 1:0.8.12.3-1
 - update 0.8.12.3 release
 - remove ExcludeArch: s390 s390x, they have libdrm now

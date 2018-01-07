@@ -9,7 +9,7 @@ URL:            https://github.com/compiz-reloaded/%{name}
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.14
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -121,25 +121,9 @@ for f in %{core_plugins}; do
 done >> core-files.txt
  
 
-%post
-/sbin/ldconfig
-/bin/touch --no-create %{_datadir}/compiz &>/dev/null || :
-/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+%post -p /sbin/ldconfig
  
-%postun
-/sbin/ldconfig
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/compiz &>/dev/null
-    /usr/bin/gtk-update-icon-cache %{_datadir}/compiz &>/dev/null || :
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
-%posttrans
-/usr/bin/gtk-update-icon-cache %{_datadir}/compiz &>/dev/null || :
-/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-
+%postun -p /sbin/ldconfig
 
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README.md TODO NEWS
@@ -171,6 +155,9 @@ fi
 
 
 %changelog
+* Sun Jan 07 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1:0.8.14-4
+- Remove obsolete scriptlets
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.14-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 

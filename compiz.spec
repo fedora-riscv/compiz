@@ -9,7 +9,7 @@ URL:            https://github.com/compiz-reloaded/%{name}
 License:        GPLv2+ and LGPLv2+ and MIT
 Group:          User Interface/Desktops
 Version:        0.8.14
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -155,6 +155,9 @@ done >> core-files.txt
 
 
 %changelog
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.14-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Sun Jan 07 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1:0.8.14-4
 - Remove obsolete scriptlets
 

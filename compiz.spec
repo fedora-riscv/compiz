@@ -121,9 +121,7 @@ for f in %{core_plugins}; do
 done >> core-files.txt
  
 
-%post -p /sbin/ldconfig
- 
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %files -f core-files.txt
 %doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README.md TODO NEWS

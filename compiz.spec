@@ -7,7 +7,6 @@
 Name:           compiz
 URL:            https://github.com/compiz-reloaded/%{name}
 License:        GPLv2+ and LGPLv2+ and MIT
-Group:          User Interface/Desktops
 Version:        0.8.14
 Release:        6%{?dist}
 Epoch:          1
@@ -69,7 +68,6 @@ binding redirected top-level windows to texture objects.
  
 %package devel
 Summary: Development packages for compiz
-Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
 Requires: libXcomposite-devel libXfixes-devel libXdamage-devel libXrandr-devel

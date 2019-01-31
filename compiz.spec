@@ -8,7 +8,7 @@ Name:           compiz
 URL:            https://github.com/compiz-reloaded/%{name}
 License:        GPLv2+ and LGPLv2+ and MIT
 Version:        0.8.14
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
  
@@ -151,6 +151,9 @@ done >> core-files.txt
 
 
 %changelog
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.14-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.14-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 

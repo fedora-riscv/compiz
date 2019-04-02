@@ -1,7 +1,8 @@
-diff -upNr compiz-0.8.2.orign/metadata/cube.xml.in compiz-0.8.2/metadata/cube.xml.in
---- compiz-0.8.2.orign/metadata/cube.xml.in	2009-02-15 10:10:23.000000000 +0100
-+++ compiz-0.8.2/metadata/cube.xml.in	2009-05-25 22:54:03.060114649 +0200
-@@ -92,9 +92,9 @@
+diff --git a/metadata/cube.xml.in b/metadata/cube.xml.in
+index 5d2e7a7..2a20012 100644
+--- a/metadata/cube.xml.in
++++ b/metadata/cube.xml.in
+@@ -96,9 +96,9 @@
  		    <_short>Cube Color</_short>
  		    <_long>Color of top and bottom sides of the cube</_long>
  		    <default>
@@ -14,7 +15,7 @@ diff -upNr compiz-0.8.2.orign/metadata/cube.xml.in compiz-0.8.2/metadata/cube.xm
  		    </default>
  		</option>
  		<subgroup>
-@@ -110,7 +110,7 @@
+@@ -114,7 +114,7 @@
  			<type>string</type>
  			<hints>file;image;</hints>
  			<default>

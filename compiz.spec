@@ -1,21 +1,21 @@
 %global    core_plugins    blur clone cube decoration fade ini inotify minimize move place png regex resize rotate scale screenshot switcher water wobbly zoom fs obs commands wall annotate svg matecompat
- 
+
 # List of plugins passed to ./configure.  The order is important
- 
+
 %global    plugins         core,dbus,decoration,fade,minimize,move,obs,place,png,resize,scale,screenshot,svg,switcher,wall
 
 Name:           compiz
-URL:            https://github.com/compiz-reloaded/%{name}
 License:        GPLv2+ and LGPLv2+ and MIT
-Version:        0.8.14
-Release:        7%{?dist}
+Version:        0.8.16.1
+Release:        1%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
- 
-Source0:        https://github.com/compiz-reloaded/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
+
+URL:            https://gitlab.com/compiz/compiz-core
+Source0:        %{url}/-/archive/v%{version}/compiz-core-v%{version}.tar.bz2
 
 # fedora specific
-Patch0:        compiz_fedora-logo.patch
+Patch0:        compiz-0.8.16-fedora-logo.patch
 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
@@ -46,8 +46,9 @@ BuildRequires: libwnck3-devel
 BuildRequires: libcompizconfig-devel
 BuildRequires: dbus-devel
 BuildRequires: dbus-glib-devel
+BuildRequires: automake
 
-Requires:       glx-utils
+Requires:      glx-utils
 
 # obsolete old subpackges
 Obsoletes: %{name}-xfce < %{epoch}:%{version}-%{release}
@@ -65,7 +66,7 @@ compositing effects in window management, such as a minimization
 effect and a cube work space. Compiz is an OpenGL compositing manager
 that use Compiz use EXT_texture_from_pixmap OpenGL extension for
 binding redirected top-level windows to texture objects.
- 
+
 %package devel
 Summary: Development packages for compiz
 Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
@@ -73,20 +74,21 @@ Requires: pkgconfig
 Requires: libXcomposite-devel libXfixes-devel libXdamage-devel libXrandr-devel
 Requires: libXinerama-devel libICE-devel libSM-devel libxml2-devel
 Requires: libxslt-devel startup-notification-devel
- 
+
 %description devel
 The compiz-devel package includes the header files,
 and developer docs for the compiz package.
 Install compiz-devel if you want to develop plugins for the compiz
 windows and compositing manager.
 
- 
+
 %prep
-%setup -q
+%setup -q -n compiz-core-v%{version}
 
 %patch0 -p1 -b .fedora-logo
- 
+
 %build
+./autogen.sh
 %configure \
     --with-gtk=3.0 \
     --enable-librsvg \
@@ -94,10 +96,10 @@ windows and compositing manager.
     --enable-marco \
     --enable-menu-entries \
     --with-default-plugins=%{plugins}
- 
+
 make %{?_smp_mflags} V=1
- 
- 
+
+
 %install
 %{make_install}
 
@@ -110,19 +112,22 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 %find_lang %{name}
- 
+
 cat %{name}.lang > core-files.txt
- 
+
 for f in %{core_plugins}; do
   echo %{_libdir}/compiz/lib$f.so
   echo %{_datadir}/compiz/$f.xml
 done >> core-files.txt
- 
+
+# placeholder for local icons
+mkdir -p %{buildroot}%{_datadir}/compiz/icons/hicolor/{scalable/{apps,\
+categories},22x22/{categories,devices,mimetypes}}
 
 %ldconfig_scriptlets
 
 %files -f core-files.txt
-%doc AUTHORS ChangeLog COPYING.GPL COPYING.LGPL README.md TODO NEWS
+%doc AUTHORS COPYING.GPL COPYING.LGPL README.md TODO NEWS
 %{_bindir}/compiz
 %{_bindir}/compiz-decorator
 %{_bindir}/gtk-window-decorator
@@ -132,6 +137,7 @@ done >> core-files.txt
 %{_libdir}/compiz/libglib.so
 %dir %{_datadir}/compiz
 %{_datadir}/compiz/*.png
+%{_datadir}/compiz/icons
 %{_datadir}/compiz/core.xml
 %{_datadir}/compiz/dbus.xml
 %{_datadir}/compiz/glib.xml
@@ -151,6 +157,11 @@ done >> core-files.txt
 
 
 %changelog
+* Tue Apr  2 2019 Jaroslav Škarvada <jskarvad@redhat.com> - 1:0.8.16.1-1
+- New version
+  Resolves: rhbz#1656467
+- New URL
+
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.14-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 

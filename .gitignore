@@ -1,8 +1,1 @@
-clog
-compiz-*.tar.*
-compiz-*.src.rpm
-kde-desktop-effects-*.tar.*
-core-*.tar.*
-.build-*.log
-/i?86/
-/x86_64/
+compiz-core-*.tar.bz2

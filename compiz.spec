@@ -7,7 +7,7 @@
 Name:           compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Version:        0.8.16.1
-Release:        1%{?dist}
+Release:        1%{?dist}.1
 Epoch:          1
 Summary:        OpenGL window and compositing manager
 
@@ -157,6 +157,10 @@ categories},22x22/{categories,devices,mimetypes}}
 
 
 %changelog
+* Fri May 10 2019 Jaroslav Škarvada <jskarvad@redhat.com> - 1:0.8.16.1-1.1
+- Rebuilt to fix gtk-window-decorator crash under MATE
+  Resolves: rhbz#1708056
+
 * Tue Apr  2 2019 Jaroslav Škarvada <jskarvad@redhat.com> - 1:0.8.16.1-1
 - New version
   Resolves: rhbz#1656467

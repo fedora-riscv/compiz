@@ -43,7 +43,7 @@ BuildRequires: libxslt-devel
 #BuildRequires: marco-devel
 BuildRequires: glib2-devel
 BuildRequires: libwnck3-devel
-BuildRequires: libcompizconfig-devel
+# BuildRequires: libcompizconfig-devel
 BuildRequires: dbus-devel
 BuildRequires: dbus-glib-devel
 BuildRequires: automake
@@ -159,6 +159,7 @@ categories},22x22/{categories,devices,mimetypes}}
 %changelog
 * Mon Jun 17 2019 Wolfgang Ulbrich <fedora@raveit.de - 1:0.8.16.1-2
 - build without marco, because of reverse dependencies to libcompizconfig
+- disable BR libcompizconfig-devel
 
 * Fri May 10 2019 Jaroslav Škarvada <jskarvad@redhat.com> - 1:0.8.16.1-1.1
 - Rebuilt to fix gtk-window-decorator crash under MATE

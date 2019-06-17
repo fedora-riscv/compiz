@@ -7,7 +7,7 @@
 Name:           compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Version:        0.8.16.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
 
@@ -16,6 +16,13 @@ Source0:        %{url}/-/archive/v%{version}/compiz-core-v%{version}.tar.bz2
 
 # fedora specific
 Patch0:        compiz-0.8.16-fedora-logo.patch
+Patch1:        compiz_0001-Fix-build-against-marco-1.23.patch
+Patch2:        compiz_0002-gtk-window-decorator-allow-building-against-older-ve.patch
+Patch3:        compiz_0003-gtk-window-decorator-fix-button-clickable-area-offse.patch
+Patch4:        compiz_0004-gtk-window-decorator-fix-ugly-top-right-corner.patch
+Patch5:        compiz_0005-gtk-window-decorator-use-code-from-compiz-0.9-for-co.patch
+# https://gitlab.com/compiz/compiz-core/merge_requests/141
+Patch6:        compiz_0006-update-marco_version_checks-to-match-marco-1.22.2-re.patch
 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
@@ -40,10 +47,10 @@ BuildRequires: cairo-devel
 BuildRequires: libtool
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libxslt-devel
-#BuildRequires: marco-devel
+BuildRequires: marco-devel
 BuildRequires: glib2-devel
 BuildRequires: libwnck3-devel
-# BuildRequires: libcompizconfig-devel
+BuildRequires: libcompizconfig-devel
 BuildRequires: dbus-devel
 BuildRequires: dbus-glib-devel
 BuildRequires: automake
@@ -86,6 +93,12 @@ windows and compositing manager.
 %setup -q -n compiz-core-v%{version}
 
 %patch0 -p1 -b .fedora-logo
+%patch1 -p1 -b .Fix-build-against-marco-1.23.patch
+%patch2 -p1 -b .gtk-window-decorator-allow-building-against-older-ve
+%patch3 -p1 -b .gtk-window-decorator-fix-button-clickable-area-offse.patch
+%patch4 -p1 -b .gtk-window-decorator-fix-ugly-top-right-corner
+%patch5 -p1 -b .gtk-window-decorator-use-code-from-compiz-0.9-for-co.patch
+%patch6 -p1 -b .update-marco_version_checks-to-match-marco-1.22.2-re.patch
 
 %build
 ./autogen.sh
@@ -157,6 +170,10 @@ categories},22x22/{categories,devices,mimetypes}}
 
 
 %changelog
+* Mon Jun 17 2019 Wolfgang Ulbrich <fedora@raveit.de - 1:0.8.16.1-3
+- build with marco-1.22.2
+- enable BR libcompizconfig-devel
+
 * Mon Jun 17 2019 Wolfgang Ulbrich <fedora@raveit.de - 1:0.8.16.1-2
 - build without marco, because of reverse dependencies to libcompizconfig
 - disable BR libcompizconfig-devel

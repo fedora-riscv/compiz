@@ -7,7 +7,7 @@
 Name:           compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Version:        0.8.16.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
 
@@ -40,7 +40,7 @@ BuildRequires: cairo-devel
 BuildRequires: libtool
 BuildRequires: libjpeg-turbo-devel
 BuildRequires: libxslt-devel
-BuildRequires: marco-devel
+#BuildRequires: marco-devel
 BuildRequires: glib2-devel
 BuildRequires: libwnck3-devel
 BuildRequires: libcompizconfig-devel
@@ -93,7 +93,7 @@ windows and compositing manager.
     --with-gtk=3.0 \
     --enable-librsvg \
     --enable-gtk \
-    --enable-marco \
+    --disable-marco \
     --enable-menu-entries \
     --with-default-plugins=%{plugins}
 
@@ -157,6 +157,9 @@ categories},22x22/{categories,devices,mimetypes}}
 
 
 %changelog
+* Tue Apr  2 2019 Wolfgang Ulbrich <fedora@raveit.de - 1:0.8.16.1-2
+- build without marco, because of reverse dependencies to libcompizconfig
+
 * Tue Apr  2 2019 Jaroslav Škarvada <jskarvad@redhat.com> - 1:0.8.16.1-1
 - New version
   Resolves: rhbz#1656467

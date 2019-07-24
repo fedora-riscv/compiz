@@ -7,7 +7,7 @@
 Name:           compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Version:        0.8.16.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
 
@@ -170,6 +170,9 @@ categories},22x22/{categories,devices,mimetypes}}
 
 
 %changelog
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.16.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Mon Jun 17 2019 Wolfgang Ulbrich <fedora@raveit.de - 1:0.8.16.1-3
 - build with marco-1.22.2
 - enable BR libcompizconfig-devel

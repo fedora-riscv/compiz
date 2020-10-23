@@ -7,7 +7,7 @@
 Name:           compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Version:        0.8.16.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
 
@@ -106,7 +106,7 @@ windows and compositing manager.
     --with-gtk=3.0 \
     --enable-librsvg \
     --enable-gtk \
-    --disable-marco \
+    --enable-marco \
     --enable-menu-entries \
     --with-default-plugins=%{plugins}
 
@@ -170,6 +170,9 @@ categories},22x22/{categories,devices,mimetypes}}
 
 
 %changelog
+* Fri Oct 23 2020 Wolfgang Ulbrich <fedora@raveit.de - 1:0.8.16.1-6
+- build with marco again
+
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.16.1-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 

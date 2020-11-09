@@ -6,8 +6,8 @@
 
 Name:           compiz
 License:        GPLv2+ and LGPLv2+ and MIT
-Version:        0.8.16.1
-Release:        6%{?dist}
+Version:        0.8.18
+Release:        1%{?dist}
 Epoch:          1
 Summary:        OpenGL window and compositing manager
 
@@ -15,14 +15,7 @@ URL:            https://gitlab.com/compiz/compiz-core
 Source0:        %{url}/-/archive/v%{version}/compiz-core-v%{version}.tar.bz2
 
 # fedora specific
-Patch0:        compiz-0.8.16-fedora-logo.patch
-Patch1:        compiz_0001-Fix-build-against-marco-1.23.patch
-Patch2:        compiz_0002-gtk-window-decorator-allow-building-against-older-ve.patch
-Patch3:        compiz_0003-gtk-window-decorator-fix-button-clickable-area-offse.patch
-Patch4:        compiz_0004-gtk-window-decorator-fix-ugly-top-right-corner.patch
-Patch5:        compiz_0005-gtk-window-decorator-use-code-from-compiz-0.9-for-co.patch
-# https://gitlab.com/compiz/compiz-core/merge_requests/141
-Patch6:        compiz_0006-update-marco_version_checks-to-match-marco-1.22.2-re.patch
+Patch0:        compiz-0.8.18-fedora-logo.patch
 
 BuildRequires: libX11-devel
 BuildRequires: libdrm-devel
@@ -93,12 +86,6 @@ windows and compositing manager.
 %setup -q -n compiz-core-v%{version}
 
 %patch0 -p1 -b .fedora-logo
-%patch1 -p1 -b .Fix-build-against-marco-1.23.patch
-%patch2 -p1 -b .gtk-window-decorator-allow-building-against-older-ve
-%patch3 -p1 -b .gtk-window-decorator-fix-button-clickable-area-offse.patch
-%patch4 -p1 -b .gtk-window-decorator-fix-ugly-top-right-corner
-%patch5 -p1 -b .gtk-window-decorator-use-code-from-compiz-0.9-for-co.patch
-%patch6 -p1 -b .update-marco_version_checks-to-match-marco-1.22.2-re.patch
 
 %build
 ./autogen.sh
@@ -170,8 +157,15 @@ categories},22x22/{categories,devices,mimetypes}}
 
 
 %changelog
-* Fri Oct 23 2020 Wolfgang Ulbrich <fedora@raveit.de - 1:0.8.16.1-6
+* Mon Nov  9 2020 Jaroslav Škarvada <jskarvad@redhat.com> - 1:0.8.18-1
+- New version
+  Resolves: rhbz#1891137
+
+* Fri Oct 23 2020 Wolfgang Ulbrich <fedora@raveit.de - 1:0.8.16.1-7
 - build with marco again
+
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.16.1-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.16.1-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild

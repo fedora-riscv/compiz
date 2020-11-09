@@ -3,8 +3,8 @@ index 5d2e7a7..2a20012 100644
 --- a/metadata/cube.xml.in
 +++ b/metadata/cube.xml.in
 @@ -96,9 +96,9 @@
- 		    <_short>Cube Color</_short>
- 		    <_long>Color of top and bottom sides of the cube</_long>
+ 		    <short>Cube Color</short>
+ 		    <long>Color of top and bottom sides of the cube</long>
  		    <default>
 -			<red>0xfefe</red>
 -			<green>0xffff</green>

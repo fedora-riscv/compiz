@@ -47,6 +47,7 @@ BuildRequires: libcompizconfig-devel
 BuildRequires: dbus-devel
 BuildRequires: dbus-glib-devel
 BuildRequires: automake
+BuildRequires: make
 
 Requires:      glx-utils
 

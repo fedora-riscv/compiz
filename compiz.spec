@@ -16,6 +16,7 @@ Source0:        %{url}/-/archive/v%{version}/compiz-core-v%{version}.tar.bz2
 
 # fedora specific
 Patch0:        compiz-0.8.18-fedora-logo.patch
+# FTBFS fix, this can be dropped with compiz > 0.8.18
 Patch1:        compiz-0.8.18-rsvg2-2.52-fix.patch
 
 BuildRequires: libX11-devel

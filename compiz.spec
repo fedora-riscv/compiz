@@ -4,6 +4,8 @@
 
 %global    plugins         core,dbus,decoration,fade,minimize,move,obs,place,png,resize,scale,screenshot,svg,switcher,wall
 
+%bcond_without bootstrap
+
 Name:           compiz
 License:        GPLv2+ and LGPLv2+ and MIT
 Version:        0.8.18
@@ -45,7 +47,9 @@ BuildRequires: libxslt-devel
 BuildRequires: marco-devel
 BuildRequires: glib2-devel
 BuildRequires: libwnck3-devel
+%if %{without bootstrap}
 BuildRequires: libcompizconfig-devel
+%endif
 BuildRequires: dbus-devel
 BuildRequires: dbus-glib-devel
 BuildRequires: automake
@@ -97,7 +101,11 @@ windows and compositing manager.
     --with-gtk=3.0 \
     --enable-librsvg \
     --enable-gtk \
+%if %{with bootstrap}
+    --disable-marco \
+%else
     --enable-marco \
+%endif
     --enable-menu-entries \
     --with-default-plugins=%{plugins}
 
@@ -161,6 +169,9 @@ categories},22x22/{categories,devices,mimetypes}}
 
 
 %changelog
+* Thu May 11 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 1:0.8.18-7~bootstrap
+- bootstrap for Fedora 38 riscv64 build.
+
 * Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.8.18-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
